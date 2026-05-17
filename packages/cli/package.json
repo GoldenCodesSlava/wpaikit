@@ -1,0 +1,19 @@
+{
+  "name": "@golden/wp-ai-kit",
+  "version": "0.1.0",
+  "description": "CLI for scaffolding and developing WordPress sites with custom boilerplates",
+  "type": "module",
+  "bin": {
+    "wpaikit": "./dist/index.js"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@golden/wp-ai-kit-core": "workspace:*",
+    "commander": "^12.0.0"
+  }
+}
