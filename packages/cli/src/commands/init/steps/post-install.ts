@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { exec, logger } from '@golden/wp-ai-kit-core'
+import { exec, logger } from '@veaceslav-golden/wp-ai-kit-core'
 
 async function runIfExists(
   cmd: string,

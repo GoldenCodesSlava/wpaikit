@@ -4,7 +4,7 @@
 
 `wpaikit` — инструмент командной строки для быстрого разворачивания WordPress-сайтов на основе нашего boilerplate, а также для разработки блоков и дизайн-систем с помощью AI-агентов (Claude Code, Codex).
 
-**Пакет в npm**: `@golden/wp-ai-kit`  
+**Пакет в npm**: `@veaceslav-golden/wp-ai-kit`  
 **Команда в терминале**: `wpaikit`
 
 ---
@@ -73,7 +73,7 @@ wpaikit init --name my-project --skip-install  # пропустить composer/n
 ### Фаза 3 — `wpaikit doctor` + публикация v0.1.0
 - `wpaikit doctor` — проверяет окружение: node, git, composer, npm, права на запись
 - Пишем тесты для всего что сделали
-- Публикуем первую версию `@golden/wp-ai-kit@0.1.0` в npm
+- Публикуем первую версию `@veaceslav-golden/wp-ai-kit@0.1.0` в npm
 
 ---
 
@@ -177,7 +177,7 @@ wpaikit sync codex
 ### Фаза 11 — Документация + релиз v1.0.0
 - Пишем документацию: setup для Claude Code, Codex, архитектура, как добавить свою команду
 - QA на macOS, Linux, WSL
-- Публикуем `@golden/wp-ai-kit@1.0.0`
+- Публикуем `@veaceslav-golden/wp-ai-kit@1.0.0`
 
 ---
 

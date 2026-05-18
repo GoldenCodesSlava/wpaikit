@@ -35,7 +35,7 @@ importers:
 
   packages/cli:
     dependencies:
-      '@golden/wp-ai-kit-core':
+      '@veaceslav-golden/wp-ai-kit-core':
         specifier: workspace:*
         version: link:../core
       commander:

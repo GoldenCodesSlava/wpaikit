@@ -1,5 +1,5 @@
 {
-  "name": "@golden/wp-ai-kit-core",
+  "name": "@veaceslav-golden/wp-ai-kit-core",
   "version": "0.1.0",
   "description": "Core utilities for wpaikit",
   "type": "module",
@@ -22,5 +22,8 @@
     "execa": "^9.0.0",
     "picocolors": "^1.0.0",
     "zod": "^3.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

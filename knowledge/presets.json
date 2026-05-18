@@ -1,0 +1,15 @@
+{
+  "presets": [
+    {
+      "id": "standard",
+      "name": "WP Standard",
+      "repo": "git@github.com:GoldenCodesSlava/boilerplate-wp-standard.git",
+      "branch": "main",
+      "postInstall": [
+        "composer install",
+        "npm install",
+        "npm run build"
+      ]
+    }
+  ]
+}

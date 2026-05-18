@@ -1,6 +1,6 @@
 import { resolve } from 'node:path'
-import { existsSync, rmSync, renameSync } from 'node:fs'
-import { exec, logger } from '@golden/wp-ai-kit-core'
+import { existsSync, rmSync, renameSync, copyFileSync } from 'node:fs'
+import { exec, logger } from '@veaceslav-golden/wp-ai-kit-core'
 import { BOILERPLATE_REPO } from '../../../constants.js'
 
 export async function cloneBoilerplate(targetDir: string): Promise<void> {
@@ -42,6 +42,13 @@ export async function cloneBoilerplate(targetDir: string): Promise<void> {
 
   const destWpContent = resolve(targetDir, 'wp-content')
   renameSync(clonedWpContent, destWpContent)
+
+  // Copy AGENTS.md from boilerplate root if it exists
+  const clonedAgentsMd = resolve(tempDir, 'AGENTS.md')
+  if (existsSync(clonedAgentsMd)) {
+    copyFileSync(clonedAgentsMd, resolve(targetDir, 'AGENTS.md'))
+    logger.step('Copied AGENTS.md from boilerplate')
+  }
 
   rmSync(tempDir, { recursive: true, force: true })
 

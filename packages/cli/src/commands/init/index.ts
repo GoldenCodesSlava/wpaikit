@@ -1,5 +1,5 @@
 import { resolve } from 'node:path'
-import { intro, outro, note, spinner, logger, Rollback } from '@golden/wp-ai-kit-core'
+import { intro, outro, note, spinner, logger, Rollback } from '@veaceslav-golden/wp-ai-kit-core'
 import { askInitQuestions } from './prompts.js'
 import { createProjectDir } from './steps/create-dir.js'
 import { downloadWordPress } from './steps/download-wp.js'

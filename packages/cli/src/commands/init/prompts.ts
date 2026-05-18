@@ -1,4 +1,4 @@
-import { promptText, confirm, select } from '@golden/wp-ai-kit-core'
+import { promptText, confirm, select } from '@veaceslav-golden/wp-ai-kit-core'
 import { toSlug, toPascalCase } from './normalize-name.js'
 
 export type LocationChoice = 'new-folder' | 'current-dir'

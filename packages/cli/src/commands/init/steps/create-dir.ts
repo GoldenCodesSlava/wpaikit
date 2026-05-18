@@ -1,7 +1,7 @@
 import { mkdirSync, existsSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { logger } from '@golden/wp-ai-kit-core'
-import type { Rollback } from '@golden/wp-ai-kit-core'
+import { logger } from '@veaceslav-golden/wp-ai-kit-core'
+import type { Rollback } from '@veaceslav-golden/wp-ai-kit-core'
 import { rmSync } from 'node:fs'
 
 export function createProjectDir(

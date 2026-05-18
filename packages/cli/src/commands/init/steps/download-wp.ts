@@ -1,7 +1,7 @@
 import { createWriteStream, rmSync, existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { pipeline } from 'node:stream/promises'
-import { exec, logger } from '@golden/wp-ai-kit-core'
+import { exec, logger } from '@veaceslav-golden/wp-ai-kit-core'
 import { WP_VERSION_API, WP_DOWNLOAD_URL } from '../../../constants.js'
 
 interface WpVersionResponse {

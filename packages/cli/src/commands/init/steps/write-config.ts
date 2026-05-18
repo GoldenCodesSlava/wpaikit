@@ -1,5 +1,5 @@
-import { writeConfig, logger } from '@golden/wp-ai-kit-core'
-import type { WpaikitConfig } from '@golden/wp-ai-kit-core'
+import { writeConfig, logger } from '@veaceslav-golden/wp-ai-kit-core'
+import type { WpaikitConfig } from '@veaceslav-golden/wp-ai-kit-core'
 
 export function writeProjectConfig(
   targetDir: string,

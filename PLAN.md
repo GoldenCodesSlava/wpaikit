@@ -6,7 +6,7 @@
 
 | | |
 |---|---|
-| **npm package** | `@golden/wp-ai-kit` |
+| **npm package** | `@veaceslav-golden/wp-ai-kit` |
 | **Binary** | `wpaikit` |
 | **Boilerplate repo** | `git@github.com:GoldenCodesSlava/boilerplate-wp-standard.git` |
 | **Language** | TypeScript (strict mode) |
@@ -164,7 +164,7 @@ wpaikit init --name my-project --preset woo     # future: select boilerplate var
 - Rollback scenario tests: mock failure at each step, verify cleanup
 - Snapshot tests for `--json` outputs
 
-**Publish**: `@golden/wp-ai-kit@0.1.0` to npm. Verify `npx @golden/wp-ai-kit init` from a clean environment.
+**Publish**: `@veaceslav-golden/wp-ai-kit@0.1.0` to npm. Verify `npx @veaceslav-golden/wp-ai-kit init` from a clean environment.
 
 ---
 
@@ -444,7 +444,7 @@ Same `/create-block Hero` scenario produces an equivalent result in Codex as in 
 - `docs/extending.md` — how to add a new command or adapter
 - `docs/troubleshooting.md`
 - QA run: macOS, Linux, WSL
-- Publish `@golden/wp-ai-kit@1.0.0`
+- Publish `@veaceslav-golden/wp-ai-kit@1.0.0`
 
 ---
 
@@ -473,7 +473,7 @@ Same `/create-block Hero` scenario produces an equivalent result in Codex as in 
 
 ## Post-1.0 Roadmap
 
-- MCP server (`@golden/wp-ai-kit-mcp`) — structured AI interface to theme data
+- MCP server (`@veaceslav-golden/wp-ai-kit-mcp`) — structured AI interface to theme data
 - `wpaikit create-cpt` — Custom Post Type scaffolding
 - `wpaikit create-pattern` — Gutenberg block patterns
 - `wpaikit deploy` — staging/production deployment

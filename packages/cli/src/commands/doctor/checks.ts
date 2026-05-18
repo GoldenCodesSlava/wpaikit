@@ -1,4 +1,4 @@
-import { exec } from '@golden/wp-ai-kit-core'
+import { exec } from '@veaceslav-golden/wp-ai-kit-core'
 import { accessSync, constants } from 'node:fs'
 
 export type CheckStatus = 'ok' | 'warn' | 'error'

@@ -1,0 +1,40 @@
+{
+  "groups": [
+    {
+      "label": "Essential",
+      "plugins": [
+        { "slug": "advanced-custom-fields", "label": "ACF Pro", "default": true },
+        { "slug": "timber", "label": "Timber", "default": true }
+      ]
+    },
+    {
+      "label": "SEO & Performance",
+      "plugins": [
+        { "slug": "wordpress-seo", "label": "Yoast SEO", "default": true },
+        { "slug": "w3-total-cache", "label": "W3 Total Cache", "default": false },
+        { "slug": "wp-rocket", "label": "WP Rocket", "default": false }
+      ]
+    },
+    {
+      "label": "Media",
+      "plugins": [
+        { "slug": "svg-support", "label": "SVG Support", "default": true },
+        { "slug": "regenerate-thumbnails", "label": "Regenerate Thumbnails", "default": false }
+      ]
+    },
+    {
+      "label": "Forms",
+      "plugins": [
+        { "slug": "gravityforms", "label": "Gravity Forms", "default": false },
+        { "slug": "contact-form-7", "label": "Contact Form 7", "default": false }
+      ]
+    },
+    {
+      "label": "Dev Tools",
+      "plugins": [
+        { "slug": "query-monitor", "label": "Query Monitor", "default": false },
+        { "slug": "debug-bar", "label": "Debug Bar", "default": false }
+      ]
+    }
+  ]
+}

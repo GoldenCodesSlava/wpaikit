@@ -1,4 +1,4 @@
-import { intro, outro, logger } from '@golden/wp-ai-kit-core'
+import { intro, outro, logger } from '@veaceslav-golden/wp-ai-kit-core'
 import { runAllChecks } from './checks.js'
 import type { CheckResult, CheckStatus } from './checks.js'
 

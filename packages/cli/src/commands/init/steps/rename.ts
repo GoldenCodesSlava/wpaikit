@@ -7,7 +7,7 @@ import {
   existsSync,
 } from 'node:fs'
 import { resolve, join } from 'node:path'
-import { logger } from '@golden/wp-ai-kit-core'
+import { logger } from '@veaceslav-golden/wp-ai-kit-core'
 import {
   BOILERPLATE_THEME_SLUG,
   BOILERPLATE_NAMESPACE,
