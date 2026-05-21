@@ -20,6 +20,26 @@ function makeThemeDir(base: string): string {
   )
 
   writeFileSync(
+    join(themesDir, 'index.php'),
+    "<?php\n$controller = new \\Boilerplate\\Theme\\Controllers\\PageController();\n",
+  )
+
+  writeFileSync(
+    join(themesDir, 'vite.config.mjs'),
+    "export default { base: '/wp-content/themes/boilerplate/frontend/dist/' }\n",
+  )
+
+  writeFileSync(
+    join(themesDir, 'main.scss'),
+    '// Main SCSS file - WordPress boilerplate\n',
+  )
+
+  writeFileSync(
+    join(themesDir, 'blocks.php'),
+    "<?php\nreturn ['title' => __('Boilerplate Blocks', 'boilerplate')];\n",
+  )
+
+  writeFileSync(
     join(themesDir, 'composer.json'),
     JSON.stringify(
       {
@@ -75,6 +95,31 @@ describe('renameBoilerplate', () => {
     expect(php).toContain('namespace MySite\\Theme;')
     expect(php).toContain('use MySite\\Theme\\Services\\TimberService;')
     expect(php).not.toContain('Boilerplate')
+  })
+
+  it('replaces fully-qualified PHP namespace references', () => {
+    renameBoilerplate(dir, 'My Site', 'my-site', 'MySite', 'my-site')
+    const php = readFileSync(join(dir, 'wp-content', 'themes', 'my-site', 'index.php'), 'utf-8')
+    expect(php).toContain('new \\MySite\\Theme\\Controllers\\PageController()')
+    expect(php).not.toContain('\\Boilerplate\\')
+  })
+
+  it('replaces identifiers in frontend config and scss files', () => {
+    renameBoilerplate(dir, 'My Site', 'my-site', 'MySite', 'my-site')
+
+    const vite = readFileSync(join(dir, 'wp-content', 'themes', 'my-site', 'vite.config.mjs'), 'utf-8')
+    const scss = readFileSync(join(dir, 'wp-content', 'themes', 'my-site', 'main.scss'), 'utf-8')
+
+    expect(vite).toContain('/wp-content/themes/my-site/frontend/dist/')
+    expect(vite).not.toContain('boilerplate')
+    expect(scss).toContain('WordPress my-site')
+  })
+
+  it('replaces human-facing block category names', () => {
+    renameBoilerplate(dir, 'My Site', 'my-site', 'MySite', 'my-site')
+    const php = readFileSync(join(dir, 'wp-content', 'themes', 'my-site', 'blocks.php'), 'utf-8')
+    expect(php).toContain('My Site Blocks')
+    expect(php).not.toContain('Boilerplate Blocks')
   })
 
   it('replaces text domain in PHP files', () => {

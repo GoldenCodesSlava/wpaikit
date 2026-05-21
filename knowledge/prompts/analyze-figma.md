@@ -4,7 +4,7 @@ Analyze a Figma frame or page for ACF block implementation readiness using the w
 
 ## Arguments
 
-User provided: {{ARGUMENTS}}
+Extract the arguments from the user's message or command invocation.
 
 Expected: a Figma URL pointing to a specific frame, page, or selection, with an optional language flag.
 
@@ -13,8 +13,8 @@ Supported flags:
 - `--lang ro` — output the report in Romanian
 - `--lang ru` — output the report in Russian
 
-Parse the arguments as follows:
-1. Extract the Figma URL (the argument that starts with `https://`).
+Parse the input as follows:
+1. Extract the Figma URL (the value that starts with `https://figma.com` or `https://www.figma.com`).
 2. Extract the `--lang` value if present; default to `en` if omitted.
 3. Store the resolved language as `REPORT_LANG`.
 
@@ -27,7 +27,7 @@ Before starting, read:
 
 ## Steps
 
-1. Parse `{{ARGUMENTS}}`: extract the Figma URL and the `--lang` flag (default: `en`).
+1. Parse the user's message: extract the Figma URL and the `--lang` flag (default: `en`).
 2. Use Figma MCP `get_design_context` with the provided URL to retrieve the design structure
 3. Apply every checklist item from the skill:
    - Block boundaries

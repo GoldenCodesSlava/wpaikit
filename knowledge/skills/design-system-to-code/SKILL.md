@@ -1,0 +1,267 @@
+---
+name: design-system-to-code
+description: Use when generating Twig component files, SCSS partials, and tailwind.config.js from .wpaikit/design-system.json. Requires /figma-components to have been run first.
+metadata:
+  short-description: Generate Twig + SCSS components and update tailwind.config.js from design-system.json
+---
+
+# Design System to Code
+
+## Purpose
+
+Translate `.wpaikit/design-system.json` into production code:
+- `views/components/*.twig` — Twig component files with BEM classes
+- `frontend/src/components/_*.scss` — SCSS partials with @apply
+- `frontend/tailwind.config.js` — updated with design token values
+- `frontend/src/main.scss` — updated with new @import lines
+
+All generation follows `knowledge/rules/figma-to-code.md` strictly.
+
+## Phase 1 — Setup
+
+Read `.wpaikit/design-system.json`.
+
+Validate:
+- `components` section is non-empty → otherwise stop: "Run /figma-components first"
+- `FILE_KEY` present in `_meta`
+- cwd contains `views/`, `frontend/` → otherwise stop: "Run from theme root"
+
+Store:
+- `COMPONENTS` — from `components` section (skip deprecated)
+- `TOKENS` — `{ colors, typography, spacing, radius }` (skip deprecated)
+- `FILE_KEY` — for Figma API calls
+
+Scan for existing files:
+- For each component, check if `views/components/[name].twig` or `frontend/src/components/_[name].scss` exists
+- Note conflicts for Phase 3 confirmation
+
+## Phase 2 — Read component styles from Figma
+
+For each component in `COMPONENTS`:
+- Call `get_design_context` on `figmaComponentId`
+- Extract for each variant: fills, border-radius, padding, gap, font style
+- If `get_design_context` fails → use token data from `TOKENS` as fallback
+
+Build per-component style map:
+```
+Button:
+  base: { display: flex, align: center, font-weight: 600, transition: true }
+  Primary: { fill: Colors/brand/primary, text: Colors/text/inverse }
+  Secondary: { fill: Colors/brand/accent, text: Colors/text/inverse }
+  Ghost: { fill: none, border: Colors/brand/primary, text: Colors/text/primary }
+  SM: { padding: 8/16, radius: Radius/md, font: Label/sm }
+  MD: { padding: 12/20, radius: Radius/lg, font: Body/base }
+  LG: { padding: 14/24, radius: Radius/lg, font: Body/lg }
+  disabled: { opacity: 40% }
+```
+
+## Phase 3 — Confirm
+
+Before showing the confirmation, check each existing file against the current component data from Phase 2:
+- If the file exists AND the component's style map has not changed since it was generated → mark as **auto-skip** (do not ask the user)
+- If the file exists AND there are new variants, new style values, or new fields → mark as **conflict** (ask the user)
+- If the file does not exist → mark as **new** (generate without asking)
+
+Show what will be generated:
+
+```
+=== Design System to Code ===
+
+New (will be generated):
+  Input     → views/components/input.twig + frontend/src/css/components/_input.scss
+  Select    → views/components/select.twig + frontend/src/css/components/_select.scss
+
+Conflicts (changed since last generation):
+  Button    → views/components/button.twig  [overwrite / skip]
+
+Auto-skipped (no changes detected):
+  Badge     → views/components/badge.twig ✓
+
+tailwind.config.js → N new tokens to add
+
+Proceed? [yes / cancel]
+```
+
+Wait for user confirmation only for conflicts. New files and auto-skipped files proceed without extra input.
+
+## File validation rule
+
+After writing each file, before moving to the next one:
+run the per-file validation loop from `knowledge/rules/figma-to-code.md` Rule 10.
+Fix all violations, re-validate, then proceed.
+
+## Phase 4 — Generate Twig components
+
+For each component, write `views/components/[component-name-kebab].twig`.
+
+### File structure
+
+```twig
+{#
+  Component: Button
+  Variants:
+    - type: Primary | Secondary | Ghost  (default: Primary)
+    - size: SM | MD | LG                 (default: MD)
+    - disabled: true | false             (default: false)
+  Usage:
+    {% include 'views/components/button.twig' with {
+      type: 'Primary', size: 'MD', label: cta.title, url: cta.url
+    } only %}
+#}
+
+{% set type = type|default('Primary') %}
+{% set size = size|default('MD') %}
+{% set is_disabled = disabled|default(false) %}
+
+<a href="{{ url|default('#')|raw }}"
+   class="btn btn--{{ type|lower }} btn--{{ size|lower }}{% if is_disabled %} btn--disabled{% endif %}"
+   {% if is_disabled %}aria-disabled="true" tabindex="-1"{% endif %}>
+  {{ label }}
+</a>
+```
+
+Rules:
+- All class names = BEM only, no Tailwind utilities
+- Use `{% include %}` for nested design system components
+- Wrap optional params in `{% if %}...{% endif %}`
+- `url|raw` for all URLs (after `esc_url()` in PHP)
+- Params documented in header comment with defaults
+
+## Phase 5 — Generate SCSS partials
+
+For each component, write `frontend/src/components/_[component-name-kebab].scss`.
+
+### File structure
+
+```scss
+// Component: Button
+// Variants: type (Primary, Secondary, Ghost), size (SM, MD, LG)
+// Generated by /design-system-to-code
+
+.btn {
+  @apply inline-flex items-center justify-center font-semibold transition-colors;
+
+  // Type variants
+  &--primary {
+    @apply bg-brand-primary text-inverse;
+    &:hover { @apply bg-brand-primary/90; }
+  }
+
+  &--secondary {
+    @apply bg-brand-accent text-inverse;
+    &:hover { @apply bg-brand-accent/90; }
+  }
+
+  &--ghost {
+    @apply bg-transparent border border-brand-primary text-primary;
+    &:hover { @apply bg-brand-primary/10; }
+  }
+
+  // Size variants
+  &--sm { @apply text-sm px-3 py-1.5 rounded-md gap-1.5; }
+  &--md { @apply text-base px-5 py-2.5 rounded-lg gap-2; }
+  &--lg { @apply text-lg px-6 py-3 rounded-lg gap-2.5; }
+
+  // State variants
+  &--disabled { @apply opacity-40 pointer-events-none; }
+}
+```
+
+Map token names to Tailwind classes using `TOKENS`:
+- `Colors/brand/primary` → `brand-primary`
+- `Colors/text/inverse` → `text-inverse`
+- `Radius/lg` → `rounded-lg`
+- `Spacing/4` → scale value → `p-4`, `gap-4`, etc.
+
+## Phase 6 — Update tailwind.config.js
+
+Read existing `frontend/tailwind.config.js`.
+
+Update the `theme.extend` section with values from `TOKENS`:
+
+```js
+theme: {
+  extend: {
+    colors: {
+      brand: {
+        primary: '#0f172a',  // Colors/brand/primary
+        accent:  '#0369a1',  // Colors/brand/accent
+        muted:   '#64748b',  // Colors/brand/muted
+      },
+      text: {
+        primary:   '#0f172a',
+        secondary: '#334155',
+        muted:     '#64748b',
+        inverse:   '#ffffff',
+      },
+      bg: {
+        canvas: '#ffffff',
+        subtle: '#f8fafc',
+        dark:   '#0f172a',
+      },
+      border: {
+        subtle:  '#e2e8f0',
+        default: '#cbd5e1',
+      },
+    },
+    borderRadius: {
+      sm:   '4px',   // Radius/sm
+      md:   '6px',   // Radius/md
+      lg:   '8px',   // Radius/lg
+      xl:   '12px',  // Radius/xl
+      '2xl':'16px',  // Radius/2xl
+    },
+    fontSize: {
+      // from Typography tokens
+    },
+  },
+},
+```
+
+Do not overwrite existing custom values — merge only.
+Only add tokens that exist in `TOKENS` and are not already in the config.
+
+## Phase 7 — Update main.scss
+
+Find the main SCSS entry file (`frontend/src/main.scss`, `index.scss`, or `app.scss`).
+
+Add `@import` lines for each new component partial, grouped under a comment:
+
+```scss
+// Design System Components
+@import 'components/button';
+@import 'components/badge';
+```
+
+Do not add duplicate imports if already present.
+
+## Phase 8 — Report
+
+```
+=== Design System to Code ===
+
+Components generated:
+  views/components/button.twig
+  frontend/src/components/_button.scss
+  views/components/badge.twig
+  frontend/src/components/_badge.scss
+
+Skipped (user chose skip):
+  [list any]
+
+tailwind.config.js → updated
+  Colors:  N added
+  Radius:  N added
+
+frontend/src/main.scss → N imports added
+
+Next step: run `npm run build` to verify compilation
+```
+
+## Boundaries
+
+- Follow `knowledge/rules/figma-to-code.md` at all times
+- Never write Tailwind utility classes directly in Twig
+- Never delete existing tailwind.config.js values
+- Do not overwrite files without user confirmation
+- Skip deprecated components and tokens

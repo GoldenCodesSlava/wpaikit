@@ -20,7 +20,10 @@ const TEXT_EXTENSIONS = new Set([
   '.php',
   '.json',
   '.css',
+  '.scss',
   '.js',
+  '.mjs',
+  '.cjs',
   '.ts',
   '.twig',
   '.html',
@@ -84,12 +87,16 @@ export function renameBoilerplate(
     [`namespace ${BOILERPLATE_NAMESPACE}\\`, `namespace ${namespace}\\`],
     // PHP use statements: "use Boilerplate\" → "use {Namespace}\"
     [`use ${BOILERPLATE_NAMESPACE}\\`, `use ${namespace}\\`],
+    // Fully-qualified PHP references: "\Boilerplate\" → "\{Namespace}\"
+    [`\\${BOILERPLATE_NAMESPACE}\\`, `\\${namespace}\\`],
     // Composer autoload PSR-4 key: "Boilerplate\\" → "{Namespace}\\"
     [`${BOILERPLATE_NAMESPACE}\\\\`, `${namespace}\\\\`],
     // composer.json name: "boilerplate/wordpress-theme" → "{slug}/wordpress-theme"
     [BOILERPLATE_COMPOSER_NAME, `${slug}/wordpress-theme`],
     // style.css Theme Name
     [`Theme Name: ${BOILERPLATE_THEME_NAME}`, `Theme Name: ${projectName}`],
+    // Human-facing block category names
+    [`${BOILERPLATE_THEME_NAME} Blocks`, `${projectName} Blocks`],
     // Text domain in PHP: 'boilerplate' → '{textDomain}'
     [`'${BOILERPLATE_TEXT_DOMAIN}'`, `'${textDomain}'`],
     // Text domain in JSON/twig: "boilerplate" → "{textDomain}"
