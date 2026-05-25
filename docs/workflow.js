@@ -142,6 +142,20 @@ const translations = {
     'skills.verification':
       'Automated post-generation checks for PHP, Twig, styles, and visual regressions.',
     'skills.seeVerify': 'See verify stage',
+    'skills.generateDesign':
+      'Interactively collect design materials and generate a full UI in Figma from brief, design system, and brand references.',
+    'skills.updateDS':
+      'Add new Figma frames to an existing design system — merge tokens and update Figma page without deleting existing data.',
+    'skills.setupFonts':
+      'Audit fonts against design-system.json, remove unused files, convert to woff2/woff, and generate @font-face SCSS.',
+    'skills.scanComponents':
+      'Scan SCSS and Twig files to build a components registry used by figma-to-block for reuse instead of duplication.',
+    'skills.validateCode':
+      'Validate SCSS, Twig, and PHP against coding rules. Report violations and fix them — including unknown hex colors.',
+    'skills.commentFrontend':
+      'Query the WordPress database directly, parse ACF blocks from post_content, and write a developer reference .md with Twig, SCSS, and JS paths.',
+    'overview.metricSkillsText':
+      'Design generation, analysis, design system, prep, components, sync, fonts, code output, validation, block generation, and developer reference.',
   },
   ru: {
     'brand.subtitle': 'Гид по процессу',
@@ -286,6 +300,20 @@ const translations = {
     'skills.verification':
       'Автоматические post-generation проверки для PHP, Twig, стилей и visual regressions.',
     'skills.seeVerify': 'Смотреть этап проверки',
+    'skills.generateDesign':
+      'Интерактивный сбор материалов и генерация полного UI в Figma из brief, design system и бренд-референсов.',
+    'skills.updateDS':
+      'Добавляет новые Figma frames в существующую дизайн-систему — мержит токены и обновляет Figma page без удаления данных.',
+    'skills.setupFonts':
+      'Аудит шрифтов по design-system.json, удаление неиспользуемых, конвертация в woff2/woff, генерация @font-face SCSS.',
+    'skills.scanComponents':
+      'Сканирует SCSS и Twig для построения реестра компонентов, который figma-to-block использует для переиспользования.',
+    'skills.validateCode':
+      'Валидирует SCSS, Twig и PHP по правилам кодирования. Находит нарушения и исправляет — включая неизвестные hex-цвета.',
+    'skills.commentFrontend':
+      'Запрашивает БД WordPress напрямую, парсит ACF блоки из post_content и записывает developer reference .md с путями Twig, SCSS и JS.',
+    'overview.metricSkillsText':
+      'Генерация дизайна, анализ, дизайн-система, подготовка, компоненты, синхронизация, шрифты, вывод кода, валидация, генерация блоков и developer reference.',
   },
   ro: {
     'brand.subtitle': 'Ghid de workflow',
@@ -433,7 +461,600 @@ const translations = {
     'skills.verification':
       'Verificari post-generation automate pentru PHP, Twig, stiluri si visual regressions.',
     'skills.seeVerify': 'Vezi etapa de verificare',
+    'skills.generateDesign':
+      'Colecteaza interactiv materiale de design si genereaza un UI complet in Figma din brief, sistem de design si referinte de brand.',
+    'skills.updateDS':
+      'Adauga frame-uri Figma noi la un sistem de design existent — imbina token-uri si actualizeaza pagina Figma fara a sterge datele existente.',
+    'skills.setupFonts':
+      'Auditeaza fonturile fata de design-system.json, elimina fisierele neutilizate, converteste in woff2/woff si genereaza SCSS cu @font-face.',
+    'skills.scanComponents':
+      'Scaneaza SCSS si Twig pentru a construi un registru de componente folosit de figma-to-block pentru reutilizare.',
+    'skills.validateCode':
+      'Valideaza SCSS, Twig si PHP conform regulilor de codare. Raporteaza si repara violari — inclusiv culori hex necunoscute.',
+    'skills.commentFrontend':
+      'Interogheaza direct baza de date WordPress, parseaza blocuri ACF din post_content si scrie un fisier .md de referinta pentru developer cu cai Twig, SCSS si JS.',
+    'overview.metricSkillsText':
+      'Generare design, analiza, sistem de design, pregatire, componente, sincronizare, fonturi, output cod, validare, generare blocuri si referinta developer.',
   },
+}
+
+const fullDocumentationTranslations = {
+  en: {
+    'nav.install': '1. Installation',
+    'nav.init': '2. wpaikit init',
+    'nav.knowledge': '3. Knowledge Base',
+    'nav.commands': '4. Commands',
+    'nav.fullWorkflows': '5. Full workflows',
+    'nav.situations': '6. Common cases',
+    'nav.keyFiles': '7. Key files',
+    'nav.update': '8. Update',
+    'nav.figmaWorkflow': 'Figma -> Block',
+    'fullHero.kicker': 'wpaikit -> WordPress -> Figma -> ACF -> Twig',
+    'fullHero.title': 'Complete wpaikit workflow',
+    'fullHero.description':
+      'A detailed path from CLI installation and <code>wpaikit init</code> to design generation, Design System, ACF blocks, code validation, and knowledge base updates.',
+    'fullHero.sources': 'Primary sources',
+    'fullHero.fastPath': 'Fast path',
+    'fullHero.pathInstall': 'Install the CLI and pass <code>wpaikit doctor</code>.',
+    'fullHero.pathInit': 'Run <code>wpaikit init</code> and configure WordPress.',
+    'fullHero.pathKnowledge': 'Install the knowledge base and run slash commands from the theme.',
+    'full.install.title': 'Install wpaikit',
+    'full.install.description':
+      'Start by checking the local environment. The CLI is installed globally and then used to create the WordPress project, install the knowledge base, and update commands.',
+    'full.install.requirements': 'Minimum requirements',
+    'full.install.fonttools':
+      '<code>Python + fonttools</code> for the <code>/setup-fonts</code> command',
+    'full.install.global': 'Global install',
+    'full.install.check': 'Check',
+    'full.install.doctorTitle': 'What doctor checks',
+    'full.install.doctorText':
+      'Checks Node, Git, Composer, npm, and write access in the current directory. If something is missing, the command shows what must be installed before starting the project.',
+    'full.init.description':
+      'The main starting command. It downloads WordPress, attaches the boilerplate, renames the theme, and prepares the project for manual database setup.',
+    'full.init.questions': 'Interactive questions',
+    'full.init.projectName': '<code>Project name</code> is the human-readable project name.',
+    'full.init.slug': '<code>Slug</code> is the kebab-case theme folder name.',
+    'full.init.namespace': '<code>Namespace</code> is the PHP namespace in PascalCase.',
+    'full.init.location': '<code>Location</code> is a new subdirectory or the current directory.',
+    'full.init.automatic': 'Automatic steps',
+    'full.init.stepDownload': 'Downloads the latest stable WordPress build.',
+    'full.init.stepClone': 'Clones the boilerplate into <code>wp-content/</code>.',
+    'full.init.stepRename': 'Renames the theme, namespace, and text domain.',
+    'full.init.stepInstall': 'Runs <code>composer install</code> and the frontend build.',
+    'full.init.stepMetadata': 'Creates <code>.wpaikit.json</code> with project metadata.',
+    'full.init.flags': 'Useful flags',
+    'full.init.manualTitle': 'Manual steps after init',
+    'full.init.manualDb': 'Create a local database with Herd, MAMP, TablePlus, or CLI.',
+    'full.init.manualConfig': 'Fill in credentials in <code>wp-config.php</code>.',
+    'full.init.manualWizard': 'Open the site in a browser and complete the WordPress wizard.',
+    'full.init.manualTheme': 'Activate the theme in <code>wp-admin -> Appearance -> Themes</code>.',
+    'full.knowledge.title': 'Install the Knowledge Base',
+    'full.knowledge.description':
+      'After creating the project, move into the theme root. All AI commands below should be run from there so agents can see the correct rules, prompts, and skills.',
+    'full.knowledge.copiedTitle': 'What gets copied',
+    'full.knowledge.copiedKnowledge':
+      '<code>knowledge/</code> contains rules, prompts, and skills.',
+    'full.knowledge.copiedClaude': '<code>CLAUDE.md</code> contains instructions for Claude Code.',
+    'full.knowledge.copiedAgents': '<code>AGENTS.md</code> contains instructions for Codex/OpenAI.',
+    'full.knowledge.copiedCommands': '<code>.claude/commands/</code> contains slash commands.',
+    'full.knowledge.updateTitle': 'When to update',
+    'full.knowledge.updateText':
+      'After updating the global CLI or when a command receives a new prompt or skill.',
+    'full.knowledge.ruleTitle': 'Working rule',
+    'full.knowledge.ruleText':
+      'The CLI performs deterministic operations. AI commands interpret Figma, briefs, block structure, and design decisions.',
+    'full.commands.title': 'Commands and when to run them',
+    'full.commands.description':
+      'Commands run in Claude Code from the theme root. Each command reads the required files from <code>knowledge/</code> first.',
+    'full.commands.generateDesign':
+      'Interactively collects the brief, Figma project URL, references, Design System, brand assets, icon library, and Pexels API key, then generates UI in Figma.',
+    'full.commands.designQuality':
+      'Checks a brief or Figma frames for category reflex, banned patterns, color strategy, register consistency, theme logic, typography, and layout rhythm.',
+    'full.commands.analyzeFigma':
+      'Audits a Figma frame for implementation readiness: Auto Layout, tokens, responsive variants, reusable components, and semantic naming.',
+    'full.commands.figmaDesignSystem':
+      'Extracts colors, typography, spacing, radius, and UI patterns from 4-6 representative frames. Creates a Design System page, Variables, Text Styles, and <code>.wpaikit/design-system.json</code>.',
+    'full.commands.figmaComponents':
+      'Creates Figma Component Sets with Type x Size x State variants from patterns in <code>design-system.json</code>.',
+    'full.commands.updateDesignSystem':
+      'Adds new frames to an existing Design System without deleting old tokens. It makes a diff, appends in Figma, and merges JSON.',
+    'full.commands.syncTokens':
+      'Synchronizes <code>design-system.json</code> when a designer manually changes Variables or Text Styles. Deleted tokens are marked <code>deprecated</code>.',
+    'full.commands.prepFigma':
+      'Creates a Dev Ready page, semantically renames layers, binds styles to tokens, replaces detached elements with components, and adds Auto Layout.',
+    'full.commands.setupFonts':
+      'Compares required font families and weights with files in <code>frontend/src/fonts/</code>, removes unused files, converts TTF/OTF to woff2/woff, and generates <code>_fonts.scss</code>.',
+    'full.commands.designSystemToCode':
+      'Generates Twig components and SCSS partials, updates Tailwind config, and adds imports to <code>main.scss</code>.',
+    'full.commands.scanComponents':
+      'Indexes Twig and SCSS components plus BEM blocks/elements/modifiers, then writes <code>.wpaikit/components-registry.md</code> for reuse.',
+    'full.commands.figmaToBlock':
+      'Generates one ACF block per run: PHP class, Twig template, SCSS partial, and ACF JSON. After each block, sync it in wp-admin Custom Fields.',
+    'full.commands.validateCode':
+      'Checks SCSS, Twig, and PHP against the rules. It can fix BEM, raw CSS, hardcoded hex colors, autoescape mistakes, namespaces, and image fields.',
+    'full.commands.commentFrontend':
+      'Reads the WordPress database directly, parses ACF blocks from <code>post_content</code>, and generates a developer reference with Twig, SCSS, PHP, and JS paths.',
+    'full.workflows.title': 'Full workflows',
+    'full.workflows.description':
+      'Two base scenarios: a project with an existing design and a project where the design is generated in Figma first.',
+    'full.workflows.aTitle': 'Workflow A - design already exists in Figma',
+    'full.workflows.aCode': `npm install -g @veaceslav-golden/wp-ai-kit-core
+npm install -g @veaceslav-golden/wp-ai-kit
+wpaikit doctor
+wpaikit init
+
+# manual:
+# create DB, configure wp-config.php,
+# complete WordPress wizard, activate theme
+
+cd wp-content/themes/{slug}
+wpaikit knowledge install
+
+/analyze-figma &lt;url&gt;
+/figma-design-system &lt;url&gt;
+/figma-components
+/prep-figma &lt;url&gt;
+/setup-fonts
+/design-system-to-code
+cd frontend && npm run build
+/scan-components
+/figma-to-block &lt;url&gt;
+/validate-code`,
+    'full.workflows.bTitle': 'Workflow B - project without a design',
+    'full.workflows.bCode': `npm install -g @veaceslav-golden/wp-ai-kit-core
+npm install -g @veaceslav-golden/wp-ai-kit
+wpaikit doctor
+wpaikit init
+cd wp-content/themes/{slug}
+wpaikit knowledge install
+
+/generate-design
+/design-quality-check &lt;figma-url&gt;
+/figma-design-system &lt;url&gt;
+/figma-components
+/prep-figma &lt;url&gt;
+
+# then continue like Workflow A:
+/setup-fonts
+/design-system-to-code
+/scan-components
+/figma-to-block &lt;url&gt;
+/validate-code`,
+    'full.workflows.importantTitle': 'Important',
+    'full.workflows.importantText':
+      'One <code>/figma-to-block</code> run generates one block. Repeat the command separately for each page section and sync ACF JSON in WordPress admin after every block.',
+    'full.situations.title': 'Common cases',
+    'full.situations.description': 'A short decision map for day-to-day project work.',
+    'full.situations.colSituation': 'Situation',
+    'full.situations.colRun': 'What to run',
+    'full.situations.colComment': 'Comment',
+    'full.situations.newBlock': 'New block from Figma',
+    'full.situations.newBlockComment':
+      'Prep can be skipped only if the frame is already dev-ready.',
+    'full.situations.tokensChanged': 'Designer changed colors or fonts',
+    'full.situations.tokensChangedComment': 'After that, check Tailwind and the build.',
+    'full.situations.pagesAdded': 'New pages were added in Figma',
+    'full.situations.pagesAddedComment': 'New tokens are added, old tokens are not deleted.',
+    'full.situations.componentAdded': 'A new Twig/SCSS component was added',
+    'full.situations.componentAddedComment': 'Updates the registry for future block generation.',
+    'full.situations.afterGeneration': 'Post-generation check is needed',
+    'full.situations.afterGenerationComment': 'Checks SCSS, Twig, and PHP against the rules.',
+    'full.situations.findFiles': 'A developer needs to find page files',
+    'full.situations.findFilesComment': 'Writes a markdown reference for the page blocks.',
+    'full.keyFiles.title': 'Key project files',
+    'full.keyFiles.description':
+      'These files and folders are most often needed during development and debugging.',
+    'full.keyFiles.metadataTitle': 'Metadata and AI',
+    'full.keyFiles.metadataConfig': '<code>.wpaikit.json</code> - name, namespace, preset.',
+    'full.keyFiles.metadataDesignSystem': '<code>.wpaikit/design-system.json</code> - token cache.',
+    'full.keyFiles.metadataRegistry':
+      '<code>.wpaikit/components-registry.md</code> - component index.',
+    'full.keyFiles.metadataKnowledge': '<code>knowledge/</code> - rules, prompts, skills.',
+    'full.keyFiles.frontendMain': '<code>frontend/src/css/main.scss</code> - SCSS entry.',
+    'full.keyFiles.frontendTailwind': '<code>frontend/tailwind.config.js</code> - Tailwind tokens.',
+    'full.keyFiles.frontendComponents':
+      '<code>frontend/src/css/components/</code> - component partials.',
+    'full.keyFiles.frontendBlocks': '<code>frontend/src/css/blocks/</code> - block partials.',
+    'full.keyFiles.themeTitle': 'WordPress theme',
+    'full.keyFiles.themeBlocks': '<code>blocks/</code> - PHP classes for ACF blocks.',
+    'full.keyFiles.themeViews': '<code>views/blocks/</code> - Twig block templates.',
+    'full.keyFiles.themeComponents': '<code>views/components/</code> - reusable Twig components.',
+    'full.keyFiles.themeAcf': '<code>acf-json/</code> - ACF field groups to sync in admin.',
+    'full.update.title': 'Update wpaikit',
+    'full.update.description':
+      'The CLI is updated globally, while the knowledge base is updated separately in each theme.',
+    'full.update.projectDevelopers': 'For project developers',
+    'full.update.packageAuthor': 'For the package author',
+    'full.figmaIntro.title': 'Figma -> ACF block: detailed stages',
+    'full.figmaIntro.description':
+      'The detailed Figma-to-block process map remains below. It is useful after the project is initialized and the work moves specifically to design and blocks.',
+  },
+  ru: {
+    'nav.install': '1. Установка',
+    'nav.init': '2. wpaikit init',
+    'nav.knowledge': '3. Knowledge Base',
+    'nav.commands': '4. Команды',
+    'nav.fullWorkflows': '5. Полные workflow',
+    'nav.situations': '6. Частые ситуации',
+    'nav.keyFiles': '7. Ключевые файлы',
+    'nav.update': '8. Обновление',
+    'nav.figmaWorkflow': 'Figma -> Block',
+    'fullHero.kicker': 'wpaikit -> WordPress -> Figma -> ACF -> Twig',
+    'fullHero.title': 'Полный workflow wpaikit',
+    'fullHero.description':
+      'Развернутый путь от установки CLI и <code>wpaikit init</code> до генерации дизайна, Design System, ACF-блоков, проверки кода и обновления knowledge base.',
+    'fullHero.sources': 'Основные источники',
+    'fullHero.fastPath': 'Быстрый путь',
+    'fullHero.pathInstall': 'Установить CLI и пройти <code>wpaikit doctor</code>.',
+    'fullHero.pathInit': 'Запустить <code>wpaikit init</code> и настроить WordPress.',
+    'fullHero.pathKnowledge': 'Установить knowledge base и запускать slash-команды из темы.',
+    'full.install.title': 'Установка wpaikit',
+    'full.install.description':
+      'Начинайте с проверки окружения. CLI ставится глобально и дальше используется для создания WordPress-проекта, установки knowledge base и обновления команд.',
+    'full.install.requirements': 'Минимальные требования',
+    'full.install.fonttools':
+      '<code>Python + fonttools</code> для команды <code>/setup-fonts</code>',
+    'full.install.global': 'Глобальная установка',
+    'full.install.check': 'Проверка',
+    'full.install.doctorTitle': 'Что делает doctor',
+    'full.install.doctorText':
+      'Проверяет доступность Node, Git, Composer, npm и права записи в текущей директории. Если чего-то не хватает, команда показывает, что надо установить до старта проекта.',
+    'full.init.description':
+      'Главная стартовая команда. Она скачивает WordPress, подключает boilerplate, переименовывает тему и готовит проект к ручной настройке базы данных.',
+    'full.init.questions': 'Интерактивные вопросы',
+    'full.init.projectName': '<code>Project name</code> — человекочитаемое имя проекта.',
+    'full.init.slug': '<code>Slug</code> — kebab-case для папки темы.',
+    'full.init.namespace': '<code>Namespace</code> — PHP namespace в PascalCase.',
+    'full.init.location': '<code>Location</code> — новый подкаталог или текущая директория.',
+    'full.init.automatic': 'Автоматические шаги',
+    'full.init.stepDownload': 'Скачивает последнюю стабильную WordPress-сборку.',
+    'full.init.stepClone': 'Клонирует boilerplate в <code>wp-content/</code>.',
+    'full.init.stepRename': 'Переименовывает тему, namespace и text domain.',
+    'full.init.stepInstall': 'Запускает <code>composer install</code> и frontend build.',
+    'full.init.stepMetadata': 'Создает <code>.wpaikit.json</code> с метаданными проекта.',
+    'full.init.flags': 'Полезные flags',
+    'full.init.manualTitle': 'Ручные шаги после init',
+    'full.init.manualDb': 'Создайте локальную базу данных через Herd, MAMP, TablePlus или CLI.',
+    'full.init.manualConfig': 'Заполните доступы в <code>wp-config.php</code>.',
+    'full.init.manualWizard': 'Откройте сайт в браузере и пройдите WordPress wizard.',
+    'full.init.manualTheme': 'Активируйте тему в <code>wp-admin -> Appearance -> Themes</code>.',
+    'full.knowledge.title': 'Установка Knowledge Base',
+    'full.knowledge.description':
+      'После создания проекта перейдите в корень темы. Все AI-команды ниже должны запускаться именно оттуда, чтобы агенты видели правильные rules, prompts и skills.',
+    'full.knowledge.copiedTitle': 'Что копируется',
+    'full.knowledge.copiedKnowledge': '<code>knowledge/</code> — rules, prompts, skills.',
+    'full.knowledge.copiedClaude': '<code>CLAUDE.md</code> — инструкции для Claude Code.',
+    'full.knowledge.copiedAgents': '<code>AGENTS.md</code> — инструкции для Codex/OpenAI.',
+    'full.knowledge.copiedCommands': '<code>.claude/commands/</code> — slash-команды.',
+    'full.knowledge.updateTitle': 'Когда обновлять',
+    'full.knowledge.updateText':
+      'После обновления глобального CLI или когда команда получила новый prompt/skill.',
+    'full.knowledge.ruleTitle': 'Рабочее правило',
+    'full.knowledge.ruleText':
+      'CLI делает детерминированные операции. AI-команды интерпретируют Figma, brief, структуру блоков и решения по дизайну.',
+    'full.commands.title': 'Команды и когда их запускать',
+    'full.commands.description':
+      'Команды запускаются в Claude Code из корня темы. Каждая команда предварительно читает нужные файлы из <code>knowledge/</code>.',
+    'full.commands.generateDesign':
+      'Интерактивно собирает brief, Figma project URL, референсы, Design System, brand assets, icon library и Pexels API key, затем генерирует UI в Figma.',
+    'full.commands.designQuality':
+      'Проверяет brief или Figma frames на category reflex, banned patterns, цветовую стратегию, register consistency, theme logic, typography и layout rhythm.',
+    'full.commands.analyzeFigma':
+      'Аудитирует Figma frame на готовность к реализации: Auto Layout, токены, responsive variants, reusable components и semantic naming.',
+    'full.commands.figmaDesignSystem':
+      'Извлекает colors, typography, spacing, radius и UI patterns из 4-6 representative frames. Создает Design System page, Variables, Text Styles и <code>.wpaikit/design-system.json</code>.',
+    'full.commands.figmaComponents':
+      'Создает Figma Component Sets с вариантами Type x Size x State на основе patterns из <code>design-system.json</code>.',
+    'full.commands.updateDesignSystem':
+      'Добавляет новые frames в существующий Design System без удаления старых токенов. Делает diff, append в Figma и merge JSON.',
+    'full.commands.syncTokens':
+      'Синхронизирует <code>design-system.json</code>, когда дизайнер вручную меняет Variables или Text Styles. Удаленные токены помечаются <code>deprecated</code>.',
+    'full.commands.prepFigma':
+      'Создает страницу Dev Ready, семантически переименовывает layers, связывает styles с tokens, заменяет detached элементы компонентами и добавляет Auto Layout.',
+    'full.commands.setupFonts':
+      'Сравнивает нужные font families/weights с файлами в <code>frontend/src/fonts/</code>, удаляет лишнее, конвертирует TTF/OTF в woff2/woff и генерирует <code>_fonts.scss</code>.',
+    'full.commands.designSystemToCode':
+      'Генерирует Twig components, SCSS partials, обновляет Tailwind config и добавляет imports в <code>main.scss</code>.',
+    'full.commands.scanComponents':
+      'Индексирует Twig и SCSS компоненты, BEM blocks/elements/modifiers и пишет <code>.wpaikit/components-registry.md</code> для повторного использования.',
+    'full.commands.figmaToBlock':
+      'Генерирует один ACF block за запуск: PHP class, Twig template, SCSS partial и ACF JSON. После каждого блока надо sync в wp-admin Custom Fields.',
+    'full.commands.validateCode':
+      'Проверяет SCSS, Twig и PHP по rules. Может чинить BEM, raw CSS, hardcoded hex, autoescape mistakes, namespaces и image fields.',
+    'full.commands.commentFrontend':
+      'Читает базу WordPress напрямую, парсит ACF blocks из <code>post_content</code> и генерирует developer reference с путями Twig, SCSS, PHP и JS.',
+    'full.workflows.title': 'Полные workflow',
+    'full.workflows.description':
+      'Два базовых сценария: проект с готовым дизайном и проект, где дизайн сначала генерируется в Figma.',
+    'full.workflows.aTitle': 'Workflow A — дизайн уже есть в Figma',
+    'full.workflows.aCode': `npm install -g @veaceslav-golden/wp-ai-kit-core
+npm install -g @veaceslav-golden/wp-ai-kit
+wpaikit doctor
+wpaikit init
+
+# вручную:
+# создайте DB, настройте wp-config.php,
+# завершите WordPress wizard, активируйте тему
+
+cd wp-content/themes/{slug}
+wpaikit knowledge install
+
+/analyze-figma &lt;url&gt;
+/figma-design-system &lt;url&gt;
+/figma-components
+/prep-figma &lt;url&gt;
+/setup-fonts
+/design-system-to-code
+cd frontend && npm run build
+/scan-components
+/figma-to-block &lt;url&gt;
+/validate-code`,
+    'full.workflows.bTitle': 'Workflow B — проект без дизайна',
+    'full.workflows.bCode': `npm install -g @veaceslav-golden/wp-ai-kit-core
+npm install -g @veaceslav-golden/wp-ai-kit
+wpaikit doctor
+wpaikit init
+cd wp-content/themes/{slug}
+wpaikit knowledge install
+
+/generate-design
+/design-quality-check &lt;figma-url&gt;
+/figma-design-system &lt;url&gt;
+/figma-components
+/prep-figma &lt;url&gt;
+
+# дальше как Workflow A:
+/setup-fonts
+/design-system-to-code
+/scan-components
+/figma-to-block &lt;url&gt;
+/validate-code`,
+    'full.workflows.importantTitle': 'Важно',
+    'full.workflows.importantText':
+      'Один запуск <code>/figma-to-block</code> генерирует один блок. Для каждой секции страницы повторяйте команду отдельно и после каждого блока синхронизируйте ACF JSON в WordPress admin.',
+    'full.situations.title': 'Частые ситуации',
+    'full.situations.description': 'Короткая карта решений для ежедневной работы с проектом.',
+    'full.situations.colSituation': 'Ситуация',
+    'full.situations.colRun': 'Что запускать',
+    'full.situations.colComment': 'Комментарий',
+    'full.situations.newBlock': 'Новый блок из Figma',
+    'full.situations.newBlockComment': 'Prep можно пропустить только если frame уже dev-ready.',
+    'full.situations.tokensChanged': 'Дизайнер поменял цвета или шрифты',
+    'full.situations.tokensChangedComment': 'После этого проверьте Tailwind и build.',
+    'full.situations.pagesAdded': 'В Figma добавились страницы',
+    'full.situations.pagesAddedComment': 'Новые токены добавляются, старые не удаляются.',
+    'full.situations.componentAdded': 'Добавлена новая Twig/SCSS компонента',
+    'full.situations.componentAddedComment': 'Обновляет registry для будущей генерации блоков.',
+    'full.situations.afterGeneration': 'Нужна проверка после генерации',
+    'full.situations.afterGenerationComment': 'Проверяет SCSS, Twig и PHP против rules.',
+    'full.situations.findFiles': 'Разработчику надо найти файлы страницы',
+    'full.situations.findFilesComment': 'Пишет markdown-референс по блокам страницы.',
+    'full.keyFiles.title': 'Ключевые файлы проекта',
+    'full.keyFiles.description': 'Эти файлы и папки чаще всего нужны при разработке и отладке.',
+    'full.keyFiles.metadataTitle': 'Metadata и AI',
+    'full.keyFiles.metadataConfig': '<code>.wpaikit.json</code> — имя, namespace, preset.',
+    'full.keyFiles.metadataDesignSystem':
+      '<code>.wpaikit/design-system.json</code> — cache токенов.',
+    'full.keyFiles.metadataRegistry':
+      '<code>.wpaikit/components-registry.md</code> — индекс компонентов.',
+    'full.keyFiles.metadataKnowledge': '<code>knowledge/</code> — rules, prompts, skills.',
+    'full.keyFiles.frontendMain': '<code>frontend/src/css/main.scss</code> — SCSS entry.',
+    'full.keyFiles.frontendTailwind': '<code>frontend/tailwind.config.js</code> — Tailwind tokens.',
+    'full.keyFiles.frontendComponents':
+      '<code>frontend/src/css/components/</code> — component partials.',
+    'full.keyFiles.frontendBlocks': '<code>frontend/src/css/blocks/</code> — block partials.',
+    'full.keyFiles.themeTitle': 'WordPress theme',
+    'full.keyFiles.themeBlocks': '<code>blocks/</code> — PHP classes for ACF blocks.',
+    'full.keyFiles.themeViews': '<code>views/blocks/</code> — Twig block templates.',
+    'full.keyFiles.themeComponents': '<code>views/components/</code> — reusable Twig components.',
+    'full.keyFiles.themeAcf': '<code>acf-json/</code> — ACF field groups to sync in admin.',
+    'full.update.title': 'Обновление wpaikit',
+    'full.update.description':
+      'CLI обновляется глобально, knowledge base обновляется отдельно в каждой теме.',
+    'full.update.projectDevelopers': 'Для разработчиков проекта',
+    'full.update.packageAuthor': 'Для автора пакета',
+    'full.figmaIntro.title': 'Figma -> ACF block: подробные этапы',
+    'full.figmaIntro.description':
+      'Ниже остается прежняя детальная карта Figma-to-block процесса. Она полезна, когда проект уже инициализирован и нужно работать именно с дизайном и блоками.',
+  },
+  ro: {
+    'nav.install': '1. Instalare',
+    'nav.init': '2. wpaikit init',
+    'nav.knowledge': '3. Knowledge Base',
+    'nav.commands': '4. Comenzi',
+    'nav.fullWorkflows': '5. Workflow-uri complete',
+    'nav.situations': '6. Situatii frecvente',
+    'nav.keyFiles': '7. Fisiere cheie',
+    'nav.update': '8. Actualizare',
+    'nav.figmaWorkflow': 'Figma -> Block',
+    'fullHero.kicker': 'wpaikit -> WordPress -> Figma -> ACF -> Twig',
+    'fullHero.title': 'Workflow complet wpaikit',
+    'fullHero.description':
+      'Traseu detaliat de la instalarea CLI si <code>wpaikit init</code> pana la generare de design, Design System, blocuri ACF, validare cod si actualizarea knowledge base.',
+    'fullHero.sources': 'Surse principale',
+    'fullHero.fastPath': 'Traseu rapid',
+    'fullHero.pathInstall': 'Instaleaza CLI-ul si treci de <code>wpaikit doctor</code>.',
+    'fullHero.pathInit': 'Ruleaza <code>wpaikit init</code> si configureaza WordPress.',
+    'fullHero.pathKnowledge': 'Instaleaza knowledge base si ruleaza slash commands din tema.',
+    'full.install.title': 'Instalare wpaikit',
+    'full.install.description':
+      'Incepe cu verificarea mediului local. CLI-ul se instaleaza global si apoi este folosit pentru crearea proiectului WordPress, instalarea knowledge base si actualizarea comenzilor.',
+    'full.install.requirements': 'Cerinte minime',
+    'full.install.fonttools':
+      '<code>Python + fonttools</code> pentru comanda <code>/setup-fonts</code>',
+    'full.install.global': 'Instalare globala',
+    'full.install.check': 'Verificare',
+    'full.install.doctorTitle': 'Ce verifica doctor',
+    'full.install.doctorText':
+      'Verifica Node, Git, Composer, npm si drepturile de scriere in directorul curent. Daca lipseste ceva, comanda arata ce trebuie instalat inainte de startul proiectului.',
+    'full.init.description':
+      'Comanda principala de start. Descarca WordPress, conecteaza boilerplate-ul, redenumeste tema si pregateste proiectul pentru configurarea manuala a bazei de date.',
+    'full.init.questions': 'Intrebari interactive',
+    'full.init.projectName': '<code>Project name</code> este numele lizibil al proiectului.',
+    'full.init.slug': '<code>Slug</code> este numele folderului temei in kebab-case.',
+    'full.init.namespace': '<code>Namespace</code> este namespace-ul PHP in PascalCase.',
+    'full.init.location': '<code>Location</code> este un subdirector nou sau directorul curent.',
+    'full.init.automatic': 'Pasi automati',
+    'full.init.stepDownload': 'Descarca ultima versiune stabila WordPress.',
+    'full.init.stepClone': 'Cloneaza boilerplate-ul in <code>wp-content/</code>.',
+    'full.init.stepRename': 'Redenumeste tema, namespace-ul si text domain-ul.',
+    'full.init.stepInstall': 'Ruleaza <code>composer install</code> si frontend build.',
+    'full.init.stepMetadata': 'Creeaza <code>.wpaikit.json</code> cu metadatele proiectului.',
+    'full.init.flags': 'Flag-uri utile',
+    'full.init.manualTitle': 'Pasi manuali dupa init',
+    'full.init.manualDb': 'Creeaza o baza de date locala prin Herd, MAMP, TablePlus sau CLI.',
+    'full.init.manualConfig': 'Completeaza credentialele in <code>wp-config.php</code>.',
+    'full.init.manualWizard': 'Deschide site-ul in browser si finalizeaza WordPress wizard.',
+    'full.init.manualTheme': 'Activeaza tema in <code>wp-admin -> Appearance -> Themes</code>.',
+    'full.knowledge.title': 'Instalare Knowledge Base',
+    'full.knowledge.description':
+      'Dupa crearea proiectului, intra in radacina temei. Toate comenzile AI de mai jos trebuie rulate de acolo, ca agentii sa vada rules, prompts si skills corecte.',
+    'full.knowledge.copiedTitle': 'Ce se copiaza',
+    'full.knowledge.copiedKnowledge': '<code>knowledge/</code> contine rules, prompts si skills.',
+    'full.knowledge.copiedClaude':
+      '<code>CLAUDE.md</code> contine instructiuni pentru Claude Code.',
+    'full.knowledge.copiedAgents':
+      '<code>AGENTS.md</code> contine instructiuni pentru Codex/OpenAI.',
+    'full.knowledge.copiedCommands': '<code>.claude/commands/</code> contine slash commands.',
+    'full.knowledge.updateTitle': 'Cand se actualizeaza',
+    'full.knowledge.updateText':
+      'Dupa actualizarea CLI-ului global sau cand o comanda primeste un prompt/skill nou.',
+    'full.knowledge.ruleTitle': 'Regula de lucru',
+    'full.knowledge.ruleText':
+      'CLI-ul face operatii deterministe. Comenzile AI interpreteaza Figma, brief-ul, structura blocurilor si deciziile de design.',
+    'full.commands.title': 'Comenzi si cand se ruleaza',
+    'full.commands.description':
+      'Comenzile ruleaza in Claude Code din radacina temei. Fiecare comanda citeste inainte fisierele necesare din <code>knowledge/</code>.',
+    'full.commands.generateDesign':
+      'Colecteaza interactiv brief-ul, Figma project URL, referinte, Design System, brand assets, icon library si Pexels API key, apoi genereaza UI in Figma.',
+    'full.commands.designQuality':
+      'Verifica brief-ul sau Figma frames pentru category reflex, banned patterns, strategie de culoare, register consistency, theme logic, typography si layout rhythm.',
+    'full.commands.analyzeFigma':
+      'Auditeaza un Figma frame pentru readiness de implementare: Auto Layout, token-uri, responsive variants, reusable components si semantic naming.',
+    'full.commands.figmaDesignSystem':
+      'Extrage colors, typography, spacing, radius si UI patterns din 4-6 representative frames. Creeaza Design System page, Variables, Text Styles si <code>.wpaikit/design-system.json</code>.',
+    'full.commands.figmaComponents':
+      'Creeaza Figma Component Sets cu variante Type x Size x State pe baza patterns din <code>design-system.json</code>.',
+    'full.commands.updateDesignSystem':
+      'Adauga frame-uri noi in Design System existent fara a sterge token-urile vechi. Face diff, append in Figma si merge JSON.',
+    'full.commands.syncTokens':
+      'Sincronizeaza <code>design-system.json</code> cand designerul modifica manual Variables sau Text Styles. Token-urile sterse sunt marcate <code>deprecated</code>.',
+    'full.commands.prepFigma':
+      'Creeaza pagina Dev Ready, redenumeste semantic layers, leaga styles de tokens, inlocuieste elemente detached cu componente si adauga Auto Layout.',
+    'full.commands.setupFonts':
+      'Compara font families/weights necesare cu fisierele din <code>frontend/src/fonts/</code>, elimina ce nu se foloseste, converteste TTF/OTF in woff2/woff si genereaza <code>_fonts.scss</code>.',
+    'full.commands.designSystemToCode':
+      'Genereaza Twig components, SCSS partials, actualizeaza Tailwind config si adauga imports in <code>main.scss</code>.',
+    'full.commands.scanComponents':
+      'Indexeaza componente Twig si SCSS, BEM blocks/elements/modifiers si scrie <code>.wpaikit/components-registry.md</code> pentru reutilizare.',
+    'full.commands.figmaToBlock':
+      'Genereaza un bloc ACF per rulare: PHP class, Twig template, SCSS partial si ACF JSON. Dupa fiecare bloc trebuie sync in wp-admin Custom Fields.',
+    'full.commands.validateCode':
+      'Verifica SCSS, Twig si PHP conform rules. Poate repara BEM, raw CSS, hardcoded hex, autoescape mistakes, namespaces si image fields.',
+    'full.commands.commentFrontend':
+      'Citeste direct baza de date WordPress, parseaza blocuri ACF din <code>post_content</code> si genereaza developer reference cu cai Twig, SCSS, PHP si JS.',
+    'full.workflows.title': 'Workflow-uri complete',
+    'full.workflows.description':
+      'Doua scenarii de baza: proiect cu design existent si proiect in care designul se genereaza mai intai in Figma.',
+    'full.workflows.aTitle': 'Workflow A - designul exista deja in Figma',
+    'full.workflows.aCode': `npm install -g @veaceslav-golden/wp-ai-kit-core
+npm install -g @veaceslav-golden/wp-ai-kit
+wpaikit doctor
+wpaikit init
+
+# manual:
+# creeaza DB, configureaza wp-config.php,
+# finalizeaza WordPress wizard, activeaza tema
+
+cd wp-content/themes/{slug}
+wpaikit knowledge install
+
+/analyze-figma &lt;url&gt;
+/figma-design-system &lt;url&gt;
+/figma-components
+/prep-figma &lt;url&gt;
+/setup-fonts
+/design-system-to-code
+cd frontend && npm run build
+/scan-components
+/figma-to-block &lt;url&gt;
+/validate-code`,
+    'full.workflows.bTitle': 'Workflow B - proiect fara design',
+    'full.workflows.bCode': `npm install -g @veaceslav-golden/wp-ai-kit-core
+npm install -g @veaceslav-golden/wp-ai-kit
+wpaikit doctor
+wpaikit init
+cd wp-content/themes/{slug}
+wpaikit knowledge install
+
+/generate-design
+/design-quality-check &lt;figma-url&gt;
+/figma-design-system &lt;url&gt;
+/figma-components
+/prep-figma &lt;url&gt;
+
+# apoi continua ca in Workflow A:
+/setup-fonts
+/design-system-to-code
+/scan-components
+/figma-to-block &lt;url&gt;
+/validate-code`,
+    'full.workflows.importantTitle': 'Important',
+    'full.workflows.importantText':
+      'O rulare <code>/figma-to-block</code> genereaza un singur bloc. Repeta comanda separat pentru fiecare sectiune de pagina si sincronizeaza ACF JSON in WordPress admin dupa fiecare bloc.',
+    'full.situations.title': 'Situatii frecvente',
+    'full.situations.description': 'Harta scurta de decizii pentru lucrul zilnic cu proiectul.',
+    'full.situations.colSituation': 'Situatie',
+    'full.situations.colRun': 'Ce rulezi',
+    'full.situations.colComment': 'Comentariu',
+    'full.situations.newBlock': 'Bloc nou din Figma',
+    'full.situations.newBlockComment':
+      'Prep poate fi sarit doar daca frame-ul este deja dev-ready.',
+    'full.situations.tokensChanged': 'Designerul a schimbat culori sau fonturi',
+    'full.situations.tokensChangedComment': 'Dupa asta verifica Tailwind si build-ul.',
+    'full.situations.pagesAdded': 'In Figma au fost adaugate pagini',
+    'full.situations.pagesAddedComment': 'Token-urile noi se adauga, cele vechi nu se sterg.',
+    'full.situations.componentAdded': 'A fost adaugata o componenta Twig/SCSS noua',
+    'full.situations.componentAddedComment':
+      'Actualizeaza registry-ul pentru generari viitoare de blocuri.',
+    'full.situations.afterGeneration': 'Este necesara verificarea dupa generare',
+    'full.situations.afterGenerationComment': 'Verifica SCSS, Twig si PHP conform rules.',
+    'full.situations.findFiles': 'Developerul trebuie sa gaseasca fisierele paginii',
+    'full.situations.findFilesComment': 'Scrie un markdown reference pentru blocurile paginii.',
+    'full.keyFiles.title': 'Fisiere cheie ale proiectului',
+    'full.keyFiles.description':
+      'Aceste fisiere si foldere sunt cel mai des necesare la dezvoltare si debugging.',
+    'full.keyFiles.metadataTitle': 'Metadata si AI',
+    'full.keyFiles.metadataConfig': '<code>.wpaikit.json</code> - nume, namespace, preset.',
+    'full.keyFiles.metadataDesignSystem':
+      '<code>.wpaikit/design-system.json</code> - cache token-uri.',
+    'full.keyFiles.metadataRegistry':
+      '<code>.wpaikit/components-registry.md</code> - index componente.',
+    'full.keyFiles.metadataKnowledge': '<code>knowledge/</code> - rules, prompts, skills.',
+    'full.keyFiles.frontendMain': '<code>frontend/src/css/main.scss</code> - SCSS entry.',
+    'full.keyFiles.frontendTailwind': '<code>frontend/tailwind.config.js</code> - Tailwind tokens.',
+    'full.keyFiles.frontendComponents':
+      '<code>frontend/src/css/components/</code> - component partials.',
+    'full.keyFiles.frontendBlocks': '<code>frontend/src/css/blocks/</code> - block partials.',
+    'full.keyFiles.themeTitle': 'Tema WordPress',
+    'full.keyFiles.themeBlocks': '<code>blocks/</code> - clase PHP pentru blocuri ACF.',
+    'full.keyFiles.themeViews': '<code>views/blocks/</code> - template-uri Twig pentru blocuri.',
+    'full.keyFiles.themeComponents':
+      '<code>views/components/</code> - componente Twig reutilizabile.',
+    'full.keyFiles.themeAcf': '<code>acf-json/</code> - field groups ACF pentru sync in admin.',
+    'full.update.title': 'Actualizare wpaikit',
+    'full.update.description':
+      'CLI-ul se actualizeaza global, iar knowledge base se actualizeaza separat in fiecare tema.',
+    'full.update.projectDevelopers': 'Pentru developerii proiectului',
+    'full.update.packageAuthor': 'Pentru autorul pachetului',
+    'full.figmaIntro.title': 'Figma -> ACF block: etape detaliate',
+    'full.figmaIntro.description':
+      'Mai jos ramane harta detaliata a procesului Figma-to-block. Este utila dupa initializarea proiectului, cand lucrul se muta specific pe design si blocuri.',
+  },
+}
+
+for (const [language, dictionary] of Object.entries(fullDocumentationTranslations)) {
+  Object.assign(translations[language], dictionary)
 }
 
 const fallbackLanguage = 'en'
@@ -471,6 +1092,13 @@ function applyLanguage(language) {
     const key = element.getAttribute('data-i18n')
     if (key && dictionary[key]) {
       element.textContent = dictionary[key]
+    }
+  }
+
+  for (const element of document.querySelectorAll('[data-i18n-html]')) {
+    const key = element.getAttribute('data-i18n-html')
+    if (key && dictionary[key]) {
+      element.innerHTML = dictionary[key]
     }
   }
 

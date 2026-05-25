@@ -129,6 +129,62 @@ Set:
 
 Add skipped containers to the report with measured gap values so the user can fix manually.
 
+## Step 5.5 — Enforce Block Layout Structure
+
+For each top-level block frame, verify and apply the required two-layer structure:
+
+```
+[SectionName]            ← top-level block frame
+  Container              ← inner container frame
+    [content elements]
+```
+
+### Top-level block frame
+
+Set:
+- `layoutMode`: `VERTICAL`
+- `primaryAxisSizingMode`: `AUTO` (hug vertically)
+- `counterAxisSizingMode`: `FIXED` with `width = page frame width` (Fill equivalent)
+- `counterAxisAlignItems`: `CENTER` (horizontally centered)
+- `paddingLeft`: 20, `paddingRight`: 20
+- `paddingTop` / `paddingBottom`: keep existing value or leave for manual adjustment
+
+Do not change `paddingTop` / `paddingBottom` if they already have non-zero values.
+If both are 0, add to report as "top/bottom padding needs manual review."
+
+### Container frame
+
+Check if a direct child named `Container`, `Wrapper`, or `Inner` exists with a fixed width.
+
+**If found:**
+- Verify its fixed width matches one of: 1200 / 1280 / 1440 / 1536 px
+- If width differs from all standard values → add to report as "non-standard container width: Npx"
+- Otherwise → no change needed
+
+**If not found:**
+- If there is exactly one direct child frame containing all content elements → rename it to `Container` and set fixed width = widest standard value that fits (prefer 1280px as default)
+- If there are multiple direct children at top level → do not auto-create Container; add to report as "missing Container frame — content is directly in block frame, needs manual restructure"
+
+### Full-width blocks
+
+A block is intentionally full-width when:
+- It has background imagery spanning the full frame
+- Its content intentionally goes edge-to-edge (gallery, full-bleed hero)
+
+Do not flag these as errors. Add them to the report as "full-width block — no Container, intentional."
+
+### Report additions from this step
+
+```
+Block structure enforced: N blocks updated
+Non-standard container widths:
+  - [BlockName] Container: 960px → not updated, needs manual fix
+Missing Container (content directly in block frame):
+  - [BlockName] — needs manual restructure
+Full-width blocks (no Container, intentional):
+  - [BlockName]
+```
+
 ## Step 6 — Componentize
 
 For each button, badge, or card layer that matches a component in `design-system.json`:
@@ -187,6 +243,7 @@ Auto Layout added: N containers
 Auto Layout skipped (irregular spacing):
   - HeroBlock > Container (gaps: 12px, 24px, 12px) — fix manually
 
+Block structure — N updated, N skipped (needs manual fix)
 Components replaced: N instances
 
 Layers renamed: N total

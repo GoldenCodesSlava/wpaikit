@@ -40,7 +40,37 @@ PricingBlock
 
 Flag vague or generated names like `Frame 89`, `Landing section`, `Group 4`, or `Desktop copy`.
 
-### 2. Layer Structure
+### 2. Block Layout Structure
+
+Check that every top-level block frame follows the two-layer structure required for implementation:
+
+```
+[SectionName]            ← top-level block frame  (Fill width, Auto Layout, centered)
+  Container              ← inner container frame   (fixed width: 1200/1280/1440/1536px)
+    [content elements]
+```
+
+**Top-level block frame** must be:
+- Width: Fill (not fixed, not Hug)
+- Layout: Vertical Auto Layout, horizontally centered
+- Padding: 20px left and right; top/bottom spacing varies per section
+
+**Container frame** must be:
+- Named `Container` (or equivalent: `Wrapper`, `Inner`)
+- Width: Fixed — one of the standard container widths (1200 / 1280 / 1440 / 1536 px)
+- All content elements must live inside Container, not directly in the block frame
+
+**Full-width exceptions:**
+- Some sections (Hero, Gallery, full-bleed CTA) may intentionally omit the fixed Container
+- These must be explicitly called out — do not flag them as errors if the design intent is clear
+
+Flag:
+- Content placed directly in the block frame (missing Container)
+- Container with non-standard or inconsistent fixed width across blocks
+- Block frame with fixed width instead of Fill
+- Block frame without Auto Layout (content positioned manually)
+
+### 3. Layer Structure
 
 Check whether the layer tree mirrors the intended HTML structure.
 
@@ -57,7 +87,7 @@ HeroBlock
 
 Layer names should be in English and semantic. Avoid slash-separated names for regular layers; reserve slash naming for Variables, Text Styles, and Components.
 
-### 3. ACF Field Readiness
+### 4. ACF Field Readiness
 
 Check whether content layers map cleanly to ACF fields.
 
@@ -74,7 +104,7 @@ Item               -> one repeater row
 
 For lists, expect `Items` as the repeater wrapper and `Item` as the repeated row. Flag unclear content groups, mixed data types in one layer, or decorative layers that appear to require ACF fields.
 
-### 4. Auto Layout
+### 5. Auto Layout
 
 Check that all structural layout layers use Auto Layout.
 
@@ -88,7 +118,7 @@ Flag manual positioning, inconsistent nesting, missing Auto Layout on containers
 
 Absolute positioning is acceptable only for decorative layers named `Decoration/*`, and those layers must not be required for content flow.
 
-### 5. Design Tokens
+### 6. Design Tokens
 
 Check whether colors, spacing, typography, and radius use Figma Variables or Styles that match the active Tailwind config.
 
@@ -117,7 +147,7 @@ If a project defines tokens such as `colors.primary.500`, `colors.gray.900`, `sp
 
 Flag hardcoded colors, off-scale spacing, one-off radii, and token names that do not exist in the project.
 
-### 6. Typography
+### 7. Typography
 
 Check that all text uses Text Styles instead of inline font sizes or custom line heights.
 
@@ -133,7 +163,7 @@ Label/sm
 
 Flag ad hoc letter spacing, custom line heights outside the design system, and inconsistent styles for equivalent content.
 
-### 7. Responsive Variants
+### 8. Responsive Variants
 
 Check whether responsive frames exist when layout changes materially.
 
@@ -157,7 +187,7 @@ xl: 1280px
 
 Desktop, tablet, and mobile variants should keep the same semantic layer names and ACF field mapping. Flag variants that rename content, drop required fields, or depend on separate unrelated layer structures.
 
-### 8. Reusable Components
+### 9. Reusable Components
 
 Identify repeated UI patterns that should become Figma Components and later Twig includes or macros.
 

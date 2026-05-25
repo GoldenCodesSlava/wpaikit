@@ -274,9 +274,11 @@ This applies to every SCSS partial, every Twig file, every PHP class, and every 
 - [ ] Settings tab always present and first, with `is_active` and `block_custom_id`
 - [ ] Tabs created only for field types that exist
 - [ ] Last tab has `endpoint: 1`, all others have `endpoint: 0`
+- [ ] `new_tab_group` is never `true` on any tab — always `false` or omitted
 - [ ] Field keys follow `field_{block_snake}_{field_name}` format
 - [ ] `link` fields have `return_format: array`
 - [ ] `image` fields have `return_format: id`
+- [ ] `instructions` field contains plain text only — never HTML tags
 
 ## 11. Twig includes for components in block templates
 

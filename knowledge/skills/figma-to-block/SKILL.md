@@ -397,6 +397,10 @@ Generate a valid ACF local JSON field group:
 Field key format: `field_{BLOCK_NAME_SNAKE}_{field_name}` (e.g. `field_hero_block_heading`)
 Tab key format: `field_{BLOCK_NAME_SNAKE}_tab_{tab_name_snake}` (e.g. `field_hero_block_tab_settings`)
 
+**`instructions` field — plain text only. Never use HTML tags (`<b>`, `<br>`, `<p>`, etc.) in any `instructions` value.**
+
+**Tab fields — `new_tab_group` must always be `false` (or omitted). Never set it to `true` on any tab.**
+
 For `link` type fields: set `return_format: array`.
 For `image` type fields: set `return_format: id`.
 For `repeater` type: nest sub-fields inside `sub_fields` (no inner tabs — flat list).

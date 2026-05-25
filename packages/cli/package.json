@@ -1,6 +1,6 @@
 {
   "name": "@veaceslav-golden/wp-ai-kit",
-  "version": "0.3.0",
+  "version": "0.4.2",
   "description": "CLI for scaffolding and developing WordPress sites with custom boilerplates",
   "type": "module",
   "bin": {
