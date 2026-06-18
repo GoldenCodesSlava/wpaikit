@@ -217,6 +217,7 @@ Tell me about the project — answer everything in one message:
 16. Container width    — 1200 / 1280 / 1440 / 1536 px
 17. Full-width blocks  — should some sections break out of the container to fill the full
                          screen width for visual contrast? (yes / no)
+18. Column grid        — use a column grid inside the container? (yes / no)
 ```
 
 ### Derive full context from scene
@@ -306,6 +307,32 @@ Which sections should be full-width?
 **If answer to question 17 is no:**
 Set `FULL_WIDTH_BLOCKS = []`.
 
+**If answer to question 18 is yes:**
+Ask as a follow-up (separate message):
+```
+Column grid settings:
+  Columns  — how many? (e.g. 12)
+  Gap      — space between columns in px? (e.g. 24)
+```
+Store as `COLUMNS` (number) and `COLUMN_GAP` (number).
+
+Calculate and store:
+```
+COLUMN_WIDTH = (CONTAINER_WIDTH - COLUMN_GAP * (COLUMNS - 1)) / COLUMNS
+```
+
+Show the result to the designer:
+```
+Column grid:
+  Container:    [CONTAINER_WIDTH]px
+  Columns:      [COLUMNS]
+  Gap:          [COLUMN_GAP]px
+  Column width: [COLUMN_WIDTH]px
+```
+
+**If answer to question 18 is no:**
+Set `COLUMNS = null`, `COLUMN_GAP = null`, `COLUMN_WIDTH = null`.
+
 Store all answers as `BRIEF`.
 
 ---
@@ -339,7 +366,9 @@ Then show the Design Brief Summary:
 ║
 ║  Mode:         [page-by-page / block-by-block]
 ║  Mobile:       [yes / no]
-║  Container:    [1200 / 1280 / 1440 / 1536]px
+║  Page frame:   [PAGE_WIDTH]px
+║  Container:    [CONTAINER_WIDTH]px
+║  Grid:         [COLUMNS] cols · [COLUMN_GAP]px gap · [COLUMN_WIDTH]px/col  (or: none)
 ║  Full-width:   [none / Hero · Gallery · ...]
 ║
 ║  Colors:       [from DS: N tokens / from logo: #XXX #XXX / neutral]
@@ -378,9 +407,20 @@ Maximum 3 adjustment rounds before proceeding.
 
 Load the `figma-use` skill before any `use_figma` call.
 
+### Page frame width
+
+Derive `PAGE_WIDTH` from `CONTAINER_WIDTH`:
+
+| CONTAINER_WIDTH | PAGE_WIDTH |
+|-----------------|------------|
+| 1440px or 1536px | 1920px |
+| 1200px or 1280px | 1440px |
+
+Store as `PAGE_WIDTH`.
+
 ### General rules
 
-- Desktop frame: **1440px** wide, height = auto (content)
+- Desktop frame: **`PAGE_WIDTH`px** wide, height = auto (content)
 - Mobile frame: **375px** wide — **only if `MOBILE = yes`**
 - Frame naming: `[PageName] / Desktop` and `[PageName] / Mobile`
 - All text content: **Lorem ipsum** at realistic lengths
@@ -389,6 +429,7 @@ Load the `figma-use` skill before any `use_figma` call.
 - All frames go into `TARGET_URL`
 - Apply `THEME`, `DENSITY`, and `TONE` consistently across all frames
 - If `ANTI_REFS` is set — pass them explicitly to `use_figma` as "avoid the visual language of [X]"
+- If `COLUMNS` is set — apply a column grid to the Container frame: `COLUMNS` columns, `COLUMN_GAP`px gutter, each column `COLUMN_WIDTH`px wide. Align all content elements to the column grid.
 - If `ICON_COMPONENTS` is set — pass component names to `use_figma`: "use these icon components: [list]. Do not create custom vector shapes for icons."
 - If `ICON_COMPONENTS = null` — Figma generates vector shapes automatically
 
@@ -441,30 +482,42 @@ Authorization: PEXELS_API_KEY
 
 ### Block layout structure
 
-Every section block must follow this two-layer structure:
+Every section block must follow this three-layer structure:
 
 ```
-[SectionName]            ← top-level block frame
-  Container              ← inner container frame
-    [content elements]
+Page frame     (PAGE_WIDTH px — fixed)
+  [SectionName]  (Fill = PAGE_WIDTH, Auto Layout, padding-x 20px, center)
+    Container    (fixed = CONTAINER_WIDTH px)
+      [content elements]
 ```
 
-**Top-level block frame rules:**
-- Width: Fill (100% of the page frame width)
-- Layout: Vertical Auto Layout, horizontally centered (`counterAxisAlignItems: CENTER`)
+**Page frame:**
+- Width: fixed `PAGE_WIDTH` px (1920px or 1440px — derived from container choice)
+- Height: auto (sum of all section heights)
+
+**Top-level block frame `[SectionName]`:**
+- Width: Fill — stretches to full `PAGE_WIDTH`
+- Layout: Horizontal Auto Layout, `justifyContent: CENTER`
 - Padding: 20px left, 20px right; top/bottom depends on density (see Density rules)
-- No fixed width — stretches full page width
+- This ensures the block always covers the full page width while centering the container
 
-**Container frame rules:**
-- Width: Fixed — exactly `CONTAINER_WIDTH` px (1200 / 1280 / 1440 / 1536)
+**Container frame:**
+- Width: Fixed — exactly `CONTAINER_WIDTH` px
 - Height: Hug contents
-- All section content goes inside Container, not directly in the block frame
+- All content goes inside Container, never directly in the block frame
+
+**Example with CONTAINER_WIDTH = 1440, PAGE_WIDTH = 1920:**
+```
+Page frame [1920px]
+  HeroBlock [Fill=1920px | padding-x 20px | justify center]
+    Container [1440px fixed]
+      Heading, CTA, Image...
+```
 
 **Full-width blocks** (`FULL_WIDTH_BLOCKS` list):
-- Sections listed as full-width still use the two-layer structure
-- BUT `Container` width = Fill (100%) instead of fixed
-- Alternatively: content is placed directly in the block frame when the visual effect requires edge-to-edge imagery or color
-- Use full-width sparingly — 1–3 sections max — to create visual contrast against contained sections
+- Block frame: same Fill + Auto Layout rules
+- Container: width = Fill (100%) instead of fixed — content spans edge-to-edge
+- Use sparingly — 1–3 sections max — to create visual contrast against contained sections
 
 ### Density rules
 
@@ -502,6 +555,66 @@ Apply `TONE` to decoration level, imagery treatment, and component style:
 - Consistent spacing system — predictable, not monotonous
 - Components serve the data — no decoration that competes with content
 - Whitespace is intentional — not filler
+
+### Layout Archetypes
+
+Before generating each section, select a Layout Archetype based on section type + STYLE + TONE.
+Pass the chosen archetype name and description explicitly to `use_figma`.
+
+**Three archetypes:**
+
+**Asymmetrical Bento**
+CSS Grid with mixed cell sizes — large feature block + smaller supporting blocks. No uniform columns.
+```
+┌──────────────────┬────────┐
+│  Large block     │ Small  │
+│                  ├────────┤
+├─────────┬────────│ Small  │
+│ Small   │ Small  │        │
+└─────────┴────────┴────────┘
+```
+
+**Editorial Split**
+Left half: oversized typography (H1 ≥ 80px, tight tracking). Right half: scrollable/stacked content cards, images, or interactive elements.
+```
+┌───────────────────┬────────────────────┐
+│                   │  ┌────┐  ┌────┐    │
+│  LARGE            │  └────┘  └────┘    │
+│  HEADING          │  ┌────┐  ┌────┐    │
+│  HERE             │  └────┘  └────┘    │
+└───────────────────┴────────────────────┘
+```
+
+**Z-Axis Cascade**
+Elements stacked like physical cards with offset + slight rotation (±2–3°). Creates depth and tactile feel.
+```
+    ┌───────────┐
+    │  Card 1   │
+         ┌───────────┐
+         │  Card 2   │
+              ┌───────────┐
+              │  Card 3   │
+```
+
+**Archetype selection table:**
+
+| Section type | STYLE | Recommended archetype |
+|---|---|---|
+| Features / Services | bold · expressive · luxury | Asymmetrical Bento |
+| Features / Services | minimal · clean · corporate | Simple grid (no archetype) |
+| About / Story | editorial · luxury · premium | Editorial Split |
+| Team | premium · warm | Z-Axis Cascade |
+| Testimonials | any | Z-Axis Cascade or Editorial Split |
+| Pricing | any | Simple grid (clarity first) |
+| Gallery | expressive · warm | Asymmetrical Bento |
+| Hero | bold · expressive | Editorial Split (type-led) |
+| Hero | minimal · clean | Centered or Editorial Split |
+| CTA Banner | any | Editorial Split or full-width centered |
+
+**Rules:**
+- Never use the same archetype for two consecutive sections — vary the rhythm
+- Simple grid is always valid when clarity matters more than expression
+- In wireframe mode: use only Simple grid — archetypes are hi-fi patterns
 
 ### Absolute bans — enforced at generation time
 

@@ -31,57 +31,54 @@ Store:
 
 ## Phase 2 — Present findings
 
-Group `_patterns` candidates and show a summary to the user.
+Read `_patterns` from `design-system.json` and present exactly what was found — no invented sizes or variants.
+
+### Grouping rules (apply before showing output)
+
+**Buttons:** group by fill hex. Same fill = same Type variant.
+- Name by visual role: filled dark → `Primary`, filled accent → `Secondary`, stroke-only → `Ghost`, no fill/stroke → `Text`
+- If only one fill found → only one Type. Never invent Secondary or Ghost if not in the design.
+- Size variants: create only if multiple distinct `height` values exist across found buttons. Use exact px labels (e.g. `48px`, `40px`), not SM/MD/LG.
+- State variants: only if hover/disabled/active states were detected in the scan. Default only = 1 state.
+
+**Badges:** group by fill + cornerRadius. Each unique combination = one Color variant.
+
+**Cards:** group by `childLayers[]` structure. Same child structure = same component.
+
+**Forms:** group by `subType`. States from `states[]` in JSON — only those actually found.
 
 ### Output format
 
 ```
 === UI Patterns found ===
 
-BUTTONS (N candidates)
-  Variations detected:
-    - filled dark    (#0f172a, r=8px, "Get Started", "Contact Us")  → Button/Primary
-    - filled accent  (#0369a1, r=8px, "Learn More")                 → Button/Secondary
-    - no fill/stroke (#ffffff, r=8px, "Skip")                       → Button/Ghost
-  Proposed variants: Type × Size × State
+BUTTONS (N found)
+  Button A: "Get Started" — fill #0f172a, 160×48px, padding-x 24 padding-y 12, r=8, no icon
+  Button B: "Learn More"  — stroke #0f172a, 140×48px, padding-x 20 padding-y 12, r=8, icon right (arrow-right 16px)
+
+  Proposed component: Button
+    Type:  Primary (filled #0f172a) · Ghost (stroke #0f172a)
+    Size:  48px — 1 height found (no size variants)
+    State: Default (from design) · Hover (derived) · Disabled (derived)
   Create? [yes / skip]
 
-BADGES (N candidates)
-  Variations detected:
-    - light gray fill, pill shape, short text  → Badge/Default
-    - green fill                               → Badge/Success
-  Proposed variants: Color × Size
+BADGES (N found)
+  Badge A: "New" — fill #e2e8f0, pill (r=9999), 72×28px, padding-x 10 padding-y 4
+  Proposed component: Badge — 1 style, no size variants
   Create? [yes / skip]
 
-CARDS (N candidates)
-  Variations detected:
-    - image + title + description + CTA (×4 times) → Card/Team
-  Proposed variants: none (single structure)
+CARDS (N found)
+  Card A: image 272×200 · Name text · Role text — 320×400px, padding 24, gap 16, r=12
+  Proposed component: Card/Team — exact structure from design
   Create? [yes / skip]
 
-FORMS (N candidates)
-  inputs     (N) — states: Default, Focus, Error, Disabled  → Input
-  selects    (N) — states: Default, Focus, Disabled          → Select
-  textareas  (N) — states: Default, Focus, Error             → Textarea
-  checkboxes (N) — states: Unchecked, Checked, Disabled      → Checkbox
-  radios     (N) — states: Unchecked, Checked, Disabled      → Radio
-  toggles    (N) — states: Off, On, Disabled                 → Toggle
+FORMS
+  inputs (N) — 320×48px, padding-x 16 padding-y 12, r=8, states: Default · Focus · Error · Disabled
   Create? [yes / skip]
 ```
 
 Wait for user response on each group before proceeding.
-
-Show only sub-types that have ≥ 1 candidate. Omit empty sub-types from the list.
-
-### Grouping rules
-
-**Buttons:** group by fill color similarity (same hex or same Variable). Each unique fill = one Type variant.
-
-**Badges:** group by fill + border-radius. Full radius (≥ 999px) = pill shape. Partial = rounded square.
-
-**Cards:** group by `childLayerTypes[]` signature. Cards with the same layer structure = same component candidate.
-
-**Forms:** group by `subType`. Within each sub-type, states become variant property values.
+Show only groups that have ≥ 1 candidate. Omit empty groups.
 
 ## Phase 3 — Create Components in Figma
 
@@ -91,102 +88,81 @@ Create components on page `PAGE_ID` in file `FILE_KEY`, inside a new frame named
 
 ### Button component
 
-Create a Figma Component Set named `Button` with variant properties:
+Create a Figma Component Set named `Button`.
 
-| Property | Values |
-|---|---|
-| Type | Primary, Secondary, Ghost |
-| Size | SM (32px height), MD (40px height), LG (48px height) |
-| State | Default, Hover, Disabled |
+**Variant properties — only what was confirmed in Phase 2:**
+- `Type` — one value per unique fill found (e.g. `Primary`, `Ghost`). Never add a type not found.
+- `Size` — one value per distinct height found. If only one height → no Size property at all.
+- `State` — always includes `Default`, `Hover`, and `Disabled` regardless of what was scanned.
 
-Structure of each variant (horizontal Auto Layout):
-- Optional icon slot (16px, hidden by default)
-- Text label
-- Padding: SM=`8px 16px`, MD=`12px 20px`, LG=`14px 24px`
-- Corner radius: from `TOKENS.radius` (match to the detected value)
-- Fill: map detected hex to Variable name from `TOKENS.colors`
+**State derivation rules:**
 
-State styling:
-- Default: base fill
-- Hover: fill opacity 90%
-- Disabled: fill opacity 40%, text opacity 40%
+`Hover` — if not found in the scan, derive from the Default variant:
+- Filled button: darken fill by 10% (multiply each RGB channel by 0.9)
+- Ghost/stroke button: apply a light fill tint (10% opacity of the stroke color) as background
+- Add a subtle box shadow: `0 2px 8px rgba(0,0,0,0.12)`
+
+`Disabled` — if not found in the scan, derive from the Default variant:
+- Set entire component opacity to 40%
+- Change cursor hint in layer name: append `(disabled)`
+
+**Structure of each variant** — use exact values from `_patterns.buttons`:
+- Width: from scanned `width` (or hug if auto)
+- Height: exact scanned `height`
+- Padding: exact `paddingLeft`, `paddingRight`, `paddingTop`, `paddingBottom`
+- Corner radius: exact `cornerRadius`
+- Fill: scanned `fills[0]` mapped to Variable from `TOKENS.colors`
+- Stroke: from scanned `stroke` (if present)
+- Text layer: exact `typography.fontFamily`, `fontSize`, `fontWeight`, `color` mapped to Variable
+- Icon slot: add only if `hasIcon: true` — position from `iconPosition`, size from `iconSize`
 
 ### Badge component
 
-Create a Figma Component Set named `Badge` with variant properties:
+Create a Figma Component Set named `Badge`.
 
-| Property | Values |
-|---|---|
-| Color | Default, Success, Warning, Error |
-| Size | SM (20px height), MD (28px height) |
+**Variant properties — only what was found:**
+- `Color` — one per unique fill combination found
+- `Size` — only if multiple heights exist in scanned badges
 
-Structure (horizontal Auto Layout):
-- Optional dot indicator (6px circle)
-- Text label
-- Padding: SM=`2px 8px`, MD=`4px 10px`
-- Corner radius: from detected value
-
-Color mapping:
-- Default → `Colors/border/subtle` fill, `Colors/text/secondary` text
-- Success → green tint (use `Colors/utility/success` if exists)
-- Warning → amber tint
-- Error → red tint
+**Structure** — use exact values from `_patterns.badges`:
+- Padding: exact `paddingLeft/Right/Top/Bottom`
+- Corner radius: exact `cornerRadius`
+- Typography: exact values from `typography`
+- Fill: mapped to Variable
 
 ### Card component
 
-Create a Figma Component named `Card/[DetectedName]` (e.g. `Card/Team`).
+Create a Figma Component named `Card/[DetectedName]`.
 
-Structure: mirror the detected `childLayerTypes[]` layout exactly, using Auto Layout.
-Replace raw fills with matching Variables from `TOKENS.colors`.
+**Structure** — mirror `childLayers[]` exactly:
+- Vertical Auto Layout
+- `gap` from scanned value
+- Padding: exact `paddingLeft/Right/Top/Bottom`
+- Corner radius: exact `cornerRadius`
+- Each child layer in order: image placeholder → text layers (with exact typography per layer)
 
-No variant properties unless multiple card structures were detected.
+No variant properties unless multiple distinct card structures were confirmed.
 
 ### Form components
 
-Create one Figma Component Set per confirmed sub-type. Place all form components in a `Forms` section on the Design System page (after the `Components` section, same section style).
+Create one Figma Component Set per confirmed sub-type.
 
-**Input / Textarea / Select:**
+**Structure** — use exact values from `_patterns.forms.[subType][]`:
+- Width × height: exact from scan
+- Padding: exact `paddingLeft/Right/Top/Bottom`
+- Corner radius: exact `cornerRadius`
+- Stroke: from scanned `stroke`
+- Fill: from scanned `fills` (mapped to Variable, or none)
+- Typography: exact from scanned `typography`
+- Icon: add only if `hasIcon: true`
 
-| Property | Values |
-|---|---|
-| State | Default, Focus, Error, Disabled (only states found in scan) |
-
-Structure (horizontal Auto Layout):
-- Placeholder text layer (left-aligned)
-- Select only: chevron icon layer (right side, 16px)
-- Textarea: vertical Auto Layout, min-height 120px
-- Stroke: 1px, mapped to `Colors/border/default` (Focus → `Colors/brand/primary`, Error → `Colors/utility/error`)
-- Fill: none or `Colors/bg/subtle`
-- Corner radius: from detected `cornerRadius`
+**State property** — only values from `states[]` in the scan. Never add `Error` or `Disabled` if not in the design.
 
 State styling:
-- Default: `Colors/border/default` stroke
-- Focus: `Colors/brand/primary` stroke, slightly elevated shadow
-- Error: `Colors/utility/error` stroke
-- Disabled: 40% opacity
-
-**Checkbox / Radio:**
-
-| Property | Values |
-|---|---|
-| State | Unchecked, Checked, Disabled |
-
-Structure:
-- Checkbox: 20×20px square, `cornerRadius: 4px`, stroke `Colors/border/default`
-- Checked state: fill `Colors/brand/primary`, white checkmark icon
-- Radio: 20×20px circle, stroke `Colors/border/default`
-- Checked state: fill `Colors/brand/primary`, white dot inside
-
-**Toggle:**
-
-| Property | Values |
-|---|---|
-| State | Off, On, Disabled |
-
-Structure:
-- Track: 44×24px pill (`cornerRadius: 9999`)
-- Off: fill `Colors/border/default`; On: fill `Colors/brand/primary`; Disabled: 40% opacity
-- Handle: 20×20px white circle, positioned left (Off) or right (On)
+- Default: scanned fill + stroke
+- Focus: swap stroke to `Colors/brand/primary`
+- Error: swap stroke to `Colors/utility/error`
+- Disabled: 40% opacity on entire component
 
 ## Phase 4 — Update `.wpaikit/design-system.json`
 

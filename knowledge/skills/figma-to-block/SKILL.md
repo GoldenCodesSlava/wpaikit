@@ -427,7 +427,8 @@ Omit any tab (except Settings) if it has no fields.
     "name": "is_active",
     "type": "true_false",
     "default_value": 1,
-    "ui": 1
+    "ui": 1,
+    "wrapper": { "width": "20", "class": "", "id": "" }
   },
   {
     "key": "field_hero_block_block_custom_id",
@@ -435,7 +436,8 @@ Omit any tab (except Settings) if it has no fields.
     "name": "block_custom_id",
     "type": "text",
     "placeholder": "#my-section",
-    "instructions": "Optional HTML id for anchor links"
+    "instructions": "Optional HTML id for anchor links",
+    "wrapper": { "width": "80", "class": "", "id": "" }
   },
   {
     "key": "field_hero_block_tab_content",
@@ -492,11 +494,30 @@ Omit any tab (except Settings) if it has no fields.
 ```
 
 **Rules:**
-- `endpoint: 0` on all tabs except the last one in the group (set `endpoint: 1` on the final tab to close it)
+- `endpoint: 0` on **every** tab without exception. Never set `endpoint: 1` on any tab.
 - Settings tab always present with `is_active` + `block_custom_id`
+- `is_active` always has `"wrapper": { "width": "20" }` — never any other value
+- `block_custom_id` always has `"wrapper": { "width": "80" }` — never any other value
 - Repeater field sits inside its own tab — the tab contains only that repeater entry
 
-## Phase 6 — Report
+## Phase 6 — Update project knowledge base
+
+If `.wpaikit/project.md` exists → update it:
+
+Find the `## Components & Blocks` section.
+Add a new row to the table for the generated block:
+
+```
+| {BLOCK_NAME_PASCAL} | block | `blocks/{BLOCK_NAME_PASCAL}/{BLOCK_NAME_PASCAL}.php`, `views/blocks/{BLOCK_NAME_PASCAL}/{BLOCK_NAME_PASCAL}.twig` |
+```
+
+If the block already exists in the table → update its row.
+
+If `.wpaikit/project.md` does not exist → skip silently. Note in Phase 7 report: "Run /scan-project to enable project knowledge base auto-updates."
+
+---
+
+## Phase 7 — Report
 
 ```
 === Block generated: HeroBlock ===
@@ -509,6 +530,9 @@ Files written:
 
 ACF fields: N
 Responsive: desktop + mobile (from Figma) / desktop + smart defaults
+
+Project knowledge base:
+  .wpaikit/project.md updated ✓   (or: "Run /scan-project to enable auto-updates")
 
 Next steps:
   1. Run `composer phpstan` to check the PHP class

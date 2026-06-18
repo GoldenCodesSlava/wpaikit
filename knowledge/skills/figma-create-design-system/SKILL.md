@@ -102,29 +102,70 @@ Skip 0 (no radius) unless it appears as the dominant pattern.
 
 ### UI Patterns (for `_patterns` cache)
 
-While scanning, also identify candidate components. Do not confirm or create them yet — only record for later use by `/figma-components`.
+While scanning, identify candidate components. Record **only what actually exists in the scanned frames** — never invent sizes, states, or variants that are not present.
 
 **Button candidates** — a layer is a button candidate if:
 - It is a frame or group with height between 32px and 64px
-- It contains exactly one text layer
+- It contains at least one text layer
 - It has a fill color or stroke
 - It has `cornerRadius` > 0
 
-Record: `nodeId`, `name`, `width`, `height`, `fills[]`, `cornerRadius`, `text`, `parentName`
+Record **every distinct button found**, with full detail:
+
+```
+nodeId          — Figma node ID
+name            — layer name as-is
+width           — exact px
+height          — exact px
+paddingLeft     — exact px from Auto Layout (0 if not Auto Layout)
+paddingRight    — exact px
+paddingTop      — exact px
+paddingBottom   — exact px
+fills[]         — all fill hex values (e.g. ["#0f172a"])
+stroke          — { color: "#hex", width: Npx } or null
+cornerRadius    — exact px (or per-corner if mixed)
+opacity         — 0–100 (default 100)
+hasIcon         — true | false
+iconPosition    — "left" | "right" | null
+iconName        — layer name of the icon child, or null
+iconSize        — px size of the icon frame, or null
+typography      — {
+                    fontFamily: "Inter",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    lineHeight: "24px" | "150%",
+                    letterSpacing: 0,
+                    color: "#hex",
+                    textContent: "Get Started"
+                  }
+parentName      — name of the parent block frame
+```
+
+Do not group buttons by size or invent SM/MD/LG — record each one individually exactly as found.
 
 **Badge/Tag candidates** — a layer is a badge candidate if:
-- Height between 20px and 36px
-- Contains one short text layer (< 20 chars)
+- Height between 16px and 36px
+- Contains one short text layer (< 30 chars)
 - Has a fill + `cornerRadius` > 0
 
-Record: same fields as button.
+Record with full detail (same fields as button, minus `hasIcon`/`iconPosition`/`iconName`/`iconSize`).
 
 **Card candidates** — a layer is a card candidate if:
 - It is a frame with vertical Auto Layout
 - Contains at least: one image layer + one text layer
 - Appears more than once with similar structure across the scanned frames
 
-Record: `nodeId`, `name`, `width`, `childLayerTypes[]`, `parentName`
+Record:
+```
+nodeId, name, width, height,
+paddingLeft, paddingRight, paddingTop, paddingBottom,
+gap (itemSpacing),
+cornerRadius,
+childLayers: [
+  { type: "image"|"text"|"frame"|"icon", name: "...", width, height }
+]
+parentName
+```
 
 **Form element candidates** — collect all of the following sub-types into a `forms` group:
 
@@ -144,12 +185,19 @@ If states are detected, record them in `states[]`. If not → record `states: ["
 
 Record per form element:
 ```
-nodeId, name, subType, width, height, states[], fills[], cornerRadius, parentName
+nodeId, name, subType,
+width, height,
+paddingLeft, paddingRight, paddingTop, paddingBottom,
+stroke: { color: "#hex", width: Npx } | null,
+fills[], cornerRadius,
+states[],
+typography: { fontFamily, fontSize, fontWeight, color, textContent },
+hasIcon, iconPosition, iconName,
+parentName
 ```
 
 Group candidates by `subType`. Each subType with ≥ 1 candidate = one form component candidate.
-
-Group candidates by visual similarity (same fills, same size range, same structure). Each group = one component candidate.
+Within each subType, deduplicate by identical `(width × height × fills × cornerRadius)` — treat true duplicates as one entry.
 
 ## Phase 3 — Deduplicate & Propose Names
 
@@ -327,36 +375,62 @@ Create the directory `.wpaikit/` if it does not exist, then write `design-system
     "9999": "Radius/full"
   },
   "_patterns": {
-    "forms": {
-      "inputs": [
-        {
-          "nodeId": "11-1",
-          "name": "Input/Default",
-          "subType": "input",
-          "width": 320,
-          "height": 48,
-          "states": ["Default", "Focus", "Error", "Disabled"],
-          "fills": [],
-          "cornerRadius": 8,
-          "parentName": "ContactBlock"
-        }
-      ],
-      "selects": [],
-      "textareas": [],
-      "checkboxes": [],
-      "radios": [],
-      "toggles": []
-    },
     "buttons": [
       {
         "nodeId": "12-3",
-        "name": "Frame 12",
+        "name": "Get Started",
         "width": 160,
         "height": 48,
+        "paddingLeft": 24,
+        "paddingRight": 24,
+        "paddingTop": 12,
+        "paddingBottom": 12,
         "fills": ["#0f172a"],
+        "stroke": null,
         "cornerRadius": 8,
-        "text": "Get Started",
+        "opacity": 100,
+        "hasIcon": false,
+        "iconPosition": null,
+        "iconName": null,
+        "iconSize": null,
+        "typography": {
+          "fontFamily": "Inter",
+          "fontSize": 16,
+          "fontWeight": 500,
+          "lineHeight": "24px",
+          "letterSpacing": 0,
+          "color": "#ffffff",
+          "textContent": "Get Started"
+        },
         "parentName": "HeroBlock"
+      },
+      {
+        "nodeId": "13-4",
+        "name": "Learn More",
+        "width": 140,
+        "height": 48,
+        "paddingLeft": 20,
+        "paddingRight": 20,
+        "paddingTop": 12,
+        "paddingBottom": 12,
+        "fills": [],
+        "stroke": { "color": "#0f172a", "width": 1 },
+        "cornerRadius": 8,
+        "opacity": 100,
+        "hasIcon": true,
+        "iconPosition": "right",
+        "iconName": "arrow-right",
+        "iconSize": 16,
+        "typography": {
+          "fontFamily": "Inter",
+          "fontSize": 16,
+          "fontWeight": 500,
+          "lineHeight": "24px",
+          "letterSpacing": 0,
+          "color": "#0f172a",
+          "textContent": "Learn More"
+        },
+        "parentName": "FeaturesBlock"
       }
     ],
     "badges": [
@@ -365,21 +439,80 @@ Create the directory `.wpaikit/` if it does not exist, then write `design-system
         "name": "Tag",
         "width": 72,
         "height": 28,
+        "paddingLeft": 10,
+        "paddingRight": 10,
+        "paddingTop": 4,
+        "paddingBottom": 4,
         "fills": ["#e2e8f0"],
+        "stroke": null,
         "cornerRadius": 9999,
-        "text": "New",
+        "typography": {
+          "fontFamily": "Inter",
+          "fontSize": 12,
+          "fontWeight": 500,
+          "lineHeight": "20px",
+          "letterSpacing": 0,
+          "color": "#475569",
+          "textContent": "New"
+        },
         "parentName": "BlogCard"
       }
     ],
     "cards": [
       {
         "nodeId": "78-9",
-        "name": "Frame 78",
+        "name": "TeamCard",
         "width": 320,
-        "childLayerTypes": ["image", "text", "text", "frame"],
+        "height": 400,
+        "paddingLeft": 24,
+        "paddingRight": 24,
+        "paddingTop": 24,
+        "paddingBottom": 24,
+        "gap": 16,
+        "cornerRadius": 12,
+        "childLayers": [
+          { "type": "image", "name": "Photo", "width": 272, "height": 200 },
+          { "type": "text",  "name": "Name",  "width": 272, "height": 28 },
+          { "type": "text",  "name": "Role",  "width": 272, "height": 20 }
+        ],
         "parentName": "TeamBlock"
       }
-    ]
+    ],
+    "forms": {
+      "inputs": [
+        {
+          "nodeId": "11-1",
+          "name": "Input/Default",
+          "subType": "input",
+          "width": 320,
+          "height": 48,
+          "paddingLeft": 16,
+          "paddingRight": 16,
+          "paddingTop": 12,
+          "paddingBottom": 12,
+          "fills": [],
+          "stroke": { "color": "#cbd5e1", "width": 1 },
+          "cornerRadius": 8,
+          "states": ["Default", "Focus", "Error", "Disabled"],
+          "typography": {
+            "fontFamily": "Inter",
+            "fontSize": 16,
+            "fontWeight": 400,
+            "color": "#94a3b8",
+            "textContent": "Enter your email"
+          },
+          "hasIcon": false,
+          "iconPosition": null,
+          "iconName": null,
+          "parentName": "ContactBlock"
+        }
+      ],
+      "selects": [],
+      "textareas": [],
+      "checkboxes": [],
+      "radios": [],
+      "toggles": []
+    }
   }
 }
 ```

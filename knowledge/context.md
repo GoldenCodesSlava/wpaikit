@@ -25,6 +25,7 @@ knowledge/
 │   ├── figma-update-design-system.md      Full prompt for adding new frames to existing design system
 │   ├── setup-fonts.md                     Full prompt for font audit, conversion, and @font-face generation
 │   ├── scan-components.md                 Full prompt for scanning SCSS/Twig and building components registry
+│   ├── scan-project.md                    Full prompt for scanning any project and building .wpaikit/project.md
 │   ├── validate-code.md                   Full prompt for validating SCSS/Twig/PHP against coding rules
 │   ├── get-comment-for-frontend.md        Full prompt for generating a developer block reference .md file
 │   ├── generate-design.md                 Full prompt for interactive Figma design generation
@@ -50,6 +51,8 @@ knowledge/
     │   └── SKILL.md        Merge new Figma frames into existing design system, update Figma page
     ├── scan-components/
     │   └── SKILL.md        Scan SCSS/Twig files, extract BEM classes and include signatures, write registry
+    ├── scan-project/
+    │   └── SKILL.md        Auto-detect project type, scan structure, write .wpaikit/project.md knowledge base
     ├── validate-code/
     │   └── SKILL.md        Validate SCSS/Twig/PHP against coding rules, fix violations, handle unknown colors
     ├── get-comment-for-frontend/
@@ -78,6 +81,7 @@ When the user writes `/command-name [args]`, read the linked prompt file and fol
 | `/design-system-to-code` | `knowledge/prompts/design-system-to-code.md` | Generate Twig components + SCSS partials + update tailwind.config.js from design-system.json |
 | `/setup-fonts` | `knowledge/prompts/setup-fonts.md` | Audit fonts vs design-system.json, remove unused, convert to woff/woff2, generate @font-face SCSS |
 | `/scan-components` | `knowledge/prompts/scan-components.md` | Scan SCSS and Twig files, build `.wpaikit/components-registry.md` for reuse in generation commands |
+| `/scan-project` | `knowledge/prompts/scan-project.md` | Scan any project (WP, Next.js, React, Laravel, Vue, Generic) and write `.wpaikit/project.md` knowledge base |
 | `/validate-code` | `knowledge/prompts/validate-code.md` | Validate SCSS, Twig, PHP against coding rules — report violations and fix them |
 | `/get-comment-for-frontend <page-url-or-slug>` | `knowledge/prompts/get-comment-for-frontend.md` | Generate a `.md` developer reference listing all ACF blocks on a page with Twig, SCSS, and JS paths |
 | `/generate-design` | `knowledge/prompts/generate-design.md` | Interactively collect design materials and generate a UI design directly in Figma |
@@ -94,6 +98,7 @@ When the user writes `/command-name [args]`, read the linked prompt file and fol
 ### Recommended order
 
 ```
+/scan-project           ← build project knowledge base (run once per project, any stack)
 /analyze-figma          ← audit (optional but useful)
 /figma-design-system    ← tokens + patterns cache
 /figma-components       ← components (reads cache, no extra Figma calls)
@@ -123,6 +128,7 @@ When the user writes `/command-name [args]`, read the linked prompt file and fol
 - `/figma-update-design-system` — never deletes or modifies existing tokens; skips frames already in `sourceFrames`; never runs `/design-system-to-code` automatically.
 - `/setup-fonts` — never deletes font files without user confirmation; never references ttf/otf in generated CSS.
 - `/scan-components` — read-only scan; only writes `.wpaikit/components-registry.md`; never modifies SCSS or Twig files.
+- `/scan-project` — read-only scan; only writes `.wpaikit/project.md`; never prints secrets or credentials; works for any project type.
 - `/get-comment-for-frontend` — read-only DB query (SELECT only); never prints DB credentials; writes only the output `.md` file.
 - `/generate-design` — writes only to the designer-specified target Figma file; never modifies the DS file; never generates Mobile without explicit request; always runs quality check before generating.
 - `/design-quality-check` — brief mode: read-only on text input; design mode: read-only on Figma unless designer confirms fixes; never blocks generation over a designer override.
