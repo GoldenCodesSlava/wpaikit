@@ -26,12 +26,15 @@
 ## Фазы разработки
 
 ### Фаза 0 — Настройка репозитория
+
 Инициализируем pnpm монорепо, настраиваем TypeScript, тесты, линтер, GitHub Actions. После этой фазы команда `wpaikit --version` должна работать локально.
 
 ---
 
 ### Фаза 1 — Ядро (`packages/core`)
+
 Вспомогательные модули, которые используют все остальные части:
+
 - **logger** — красивый вывод в терминал со спиннерами
 - **exec** — запуск shell-команд с маскировкой паролей в логах
 - **prompts** — интерактивные вопросы в терминале
@@ -42,6 +45,7 @@
 ---
 
 ### Фаза 2 — `wpaikit init` ⭐
+
 Главная команда. Разворачивает новый WP-проект одной командой.
 
 **Что происходит при запуске `wpaikit init --name my-project`:**
@@ -61,6 +65,7 @@
 **Сервер и база данных** — каждый разработчик настраивает сам (nginx, MAMP, Herd — кто как хочет). `wpaikit init` занимается только файлами.
 
 **Флаги:**
+
 ```bash
 wpaikit init --name my-project           # запуск с вопросами
 wpaikit init --name my-project --yes     # без вопросов (для CI)
@@ -71,6 +76,7 @@ wpaikit init --name my-project --skip-install  # пропустить composer/n
 ---
 
 ### Фаза 3 — `wpaikit doctor` + публикация v0.1.0
+
 - `wpaikit doctor` — проверяет окружение: node, git, composer, npm, права на запись
 - Пишем тесты для всего что сделали
 - Публикуем первую версию `@veaceslav-golden/wp-ai-kit@0.1.0` в npm
@@ -78,7 +84,12 @@ wpaikit init --name my-project --skip-install  # пропустить composer/n
 ---
 
 ### Фаза 4 — Knowledge Base (база знаний)
-Набор markdown-файлов в `knowledge/rules/` — нейтральные правила без привязки к конкретному AI-инструменту. Адаптеры (Claude Code, Codex) превращают их в skills/rules для своей среды.
+
+Исходники разделены на слои `common`, `wordpress` и `woocommerce`. Профиль `standard` устанавливает
+Common + WordPress, а `woo` добавляет WooCommerce. `wpaikit init` автоматически устанавливает
+нужный профиль в корень проекта. Повторный `wpaikit knowledge install` определяет preset и корень проекта по ближайшему
+родительскому `.wpaikit.json` и обновляет только файлы из manifest, не затирая локальные изменения
+без `--force`.
 
 **Что пишем:**
 
@@ -89,6 +100,7 @@ wpaikit init --name my-project --skip-install  # пропустить composer/n
 
 **Шаблоны блоков** (`knowledge/templates/block/`):
 Три Handlebars-шаблона под нашу архитектуру (ACF блоки, не нативный Gutenberg):
+
 - `BlockName.php.hbs` — PHP класс
 - `BlockName.twig.hbs` — Twig шаблон
 - `group_block_name.json.hbs` — ACF JSON группа
@@ -98,6 +110,7 @@ wpaikit init --name my-project --skip-install  # пропустить composer/n
 ### Фаза 5 — Команды для работы с блоками + v0.2.0
 
 **`wpaikit create-block <name>`** — создаёт новый ACF блок из шаблонов:
+
 ```bash
 wpaikit create-block Hero
 # Создаёт:
@@ -107,6 +120,7 @@ wpaikit create-block Hero
 ```
 
 **Вспомогательные команды:**
+
 ```bash
 wpaikit list-blocks --json      # список всех блоков в проекте
 wpaikit theme-info --json       # информация о теме (пути, namespace, версии)
@@ -117,9 +131,11 @@ wpaikit apply-tokens tokens.json # обновить токены (с бэкап�
 ---
 
 ### Фаза 6 — Универсальные промпты
+
 Файлы в `knowledge/prompts/` — инструкции для AI агентов. Написаны нейтрально, без привязки к Claude Code или Codex. Адаптеры потом превращают их в команды для конкретной среды.
 
 **Что пишем:**
+
 - `init-site.md` — как запустить `wpaikit init`
 - `create-block.md` — создать ACF блок по описанию
 - `create-block-by-figma.md` — создать блок из Figma дизайна
@@ -128,6 +144,7 @@ wpaikit apply-tokens tokens.json # обновить токены (с бэкап�
 ---
 
 ### Фаза 7 — Claude Code адаптер + v0.3.0
+
 Генерирует из `knowledge/` файлы для Claude Code:
 
 - `.claude/commands/*.md` — slash-команды (`/create-block`, `/init-site`)
@@ -144,6 +161,7 @@ wpaikit sync claude-code              # обновить после новой �
 ---
 
 ### Фаза 8 — Codex адаптер + v0.4.0
+
 Генерирует из `knowledge/` файлы для Codex:
 
 - `AGENTS.md` — индекс с описанием команд и ссылками на правила
@@ -160,6 +178,7 @@ wpaikit sync codex
 ---
 
 ### Фаза 9 — Figma интеграция + v0.5.0
+
 - Тестируем и финализируем промпт `create-block-by-figma`
 - Добавляем 5+ примеров в `knowledge/examples/figma-pairs/` (скриншот Figma + готовый блок + пояснения)
 - Документируем ограничения Figma MCP
@@ -169,12 +188,14 @@ wpaikit sync codex
 ---
 
 ### Фаза 10 — Design System + v0.6.0
+
 - Тестируем промпт `create-design-system` на реальных Figma-дизайнах
 - Финализируем `wpaikit apply-tokens` с полноценным rollback
 
 ---
 
 ### Фаза 11 — Документация + релиз v1.0.0
+
 - Пишем документацию: setup для Claude Code, Codex, архитектура, как добавить свою команду
 - QA на macOS, Linux, WSL
 - Публикуем `@veaceslav-golden/wp-ai-kit@1.0.0`
@@ -183,15 +204,15 @@ wpaikit sync codex
 
 ## Версии и что в них входит
 
-| Версия | Что появляется |
-|---|---|
+| Версия    | Что появляется                                          |
+| --------- | ------------------------------------------------------- |
 | **0.1.0** | `wpaikit init` — разворачивает WP-проект одной командой |
-| **0.2.0** | `wpaikit create-block` — создаёт ACF блок из шаблонов |
-| **0.3.0** | `/create-block` работает в Claude Code |
-| **0.4.0** | `/create-block` работает в Codex |
-| **0.5.0** | `/create-block-by-figma` — блок из Figma дизайна |
-| **0.6.0** | `/create-design-system` — дизайн-система из Figma |
-| **1.0.0** | Полный релиз с документацией |
+| **0.2.0** | `wpaikit create-block` — создаёт ACF блок из шаблонов   |
+| **0.3.0** | `/create-block` работает в Claude Code                  |
+| **0.4.0** | `/create-block` работает в Codex                        |
+| **0.5.0** | `/create-block-by-figma` — блок из Figma дизайна        |
+| **0.6.0** | `/create-design-system` — дизайн-система из Figma       |
+| **1.0.0** | Полный релиз с документацией                            |
 
 ---
 

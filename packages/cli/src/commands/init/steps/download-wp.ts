@@ -29,7 +29,6 @@ export async function downloadWordPress(targetDir: string): Promise<void> {
   if (!res.ok) throw new Error(`Failed to download WordPress: ${res.status}`)
   if (!res.body) throw new Error('Response body is empty')
 
-  const { Writable } = await import('node:stream')
   const fileStream = createWriteStream(tarballPath)
   const webStream = res.body
 

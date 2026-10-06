@@ -1,15 +1,19 @@
 import { resolve } from 'node:path'
 import { existsSync, rmSync, renameSync } from 'node:fs'
 import { exec, logger } from '@veaceslav-golden/wp-ai-kit-core'
-import { BOILERPLATE_REPO } from '../../../constants.js'
+import type { PresetDefinition } from '../../../presets.js'
 
-export async function cloneBoilerplate(targetDir: string): Promise<void> {
+export function getCloneArgs(preset: PresetDefinition, tempDir: string): string[] {
+  return ['clone', '--depth', '1', '--branch', preset.branch, preset.repo, tempDir]
+}
+
+export async function cloneBoilerplate(targetDir: string, preset: PresetDefinition): Promise<void> {
   logger.step('Cloning boilerplate wp-content...')
 
   const tempDir = resolve(targetDir, '__boilerplate-tmp')
 
   try {
-    await exec('git', ['clone', '--depth', '1', BOILERPLATE_REPO, tempDir], {
+    await exec('git', getCloneArgs(preset, tempDir), {
       env: {
         ...process.env,
         // BatchMode=yes: fail immediately instead of hanging on passphrase/host prompts

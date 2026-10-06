@@ -3,6 +3,8 @@ import { Command } from 'commander'
 import { runInit } from './commands/init/index.js'
 import { runDoctor } from './commands/doctor/index.js'
 import { runKnowledgeInstall } from './commands/knowledge/index.js'
+import type { InitCommandOptions } from './commands/init/prompts.js'
+import type { KnowledgeCommandOptions } from './commands/knowledge/index.js'
 
 const require = createRequire(import.meta.url)
 const { version } = require('../package.json') as { version: string }
@@ -14,10 +16,14 @@ export const program = new Command()
 
 program
   .command('init')
-  .description('Scaffold a new WordPress project from the standard boilerplate')
-  .action(async () => {
+  .description('Scaffold a new WordPress project from a selected boilerplate')
+  .option('--preset <preset>', 'boilerplate preset: standard or woo')
+  .option('--multilingual <profile>', 'Woo multilingual profile: wpml or none')
+  .option('--variant-catalog <mode>', 'Woo catalog mode: main-only or all')
+  .option('--wishlist <value>', 'Woo wishlist: yes or no')
+  .action(async (options: InitCommandOptions) => {
     try {
-      await runInit()
+      await runInit(options)
     } catch (err) {
       process.stderr.write(`\nError: ${(err as Error).message}\n`)
       process.exit(1)
@@ -43,10 +49,14 @@ const knowledge = program
 
 knowledge
   .command('install')
-  .description('Copy knowledge/, AGENTS.md and CLAUDE.md into the current project')
-  .action(async () => {
+  .alias('update')
+  .description('Install or update the knowledge profile for the current project')
+  .option('--profile <profile>', 'knowledge profile for a project without .wpaikit.json')
+  .option('--force', 'replace locally modified WPAIKit-managed files')
+  .option('--dry-run', 'show the planned changes without writing files')
+  .action(async (options: KnowledgeCommandOptions) => {
     try {
-      await runKnowledgeInstall()
+      await runKnowledgeInstall(options)
     } catch (err) {
       process.stderr.write(`\nError: ${(err as Error).message}\n`)
       process.exit(1)

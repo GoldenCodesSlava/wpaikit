@@ -1,7 +1,21 @@
 import { promptText, confirm, select } from '@veaceslav-golden/wp-ai-kit-core'
+import type { WooCommerceProjectConfig } from '@veaceslav-golden/wp-ai-kit-core'
+import {
+  MultilingualProfileSchema,
+  VariantCatalogProfileSchema,
+} from '@veaceslav-golden/wp-ai-kit-core'
 import { toSlug, toPascalCase } from './normalize-name.js'
+import { getPreset, PRESETS } from '../../presets.js'
+import type { PresetId } from '../../presets.js'
 
 export type LocationChoice = 'new-folder' | 'current-dir'
+
+export interface InitCommandOptions {
+  preset?: string
+  multilingual?: string
+  variantCatalog?: string
+  wishlist?: string
+}
 
 export interface InitAnswers {
   location: LocationChoice
@@ -9,10 +23,73 @@ export interface InitAnswers {
   slug: string
   namespace: string
   textDomain: string
-  preset: string
+  preset: PresetId
+  woocommerce?: WooCommerceProjectConfig
 }
 
-export async function askInitQuestions(): Promise<InitAnswers> {
+function parseWishlist(value: string): boolean {
+  const normalized = value.toLowerCase()
+
+  if (['yes', 'true', '1'].includes(normalized)) return true
+  if (['no', 'false', '0'].includes(normalized)) return false
+
+  throw new Error(`Invalid wishlist value "${value}". Use yes or no.`)
+}
+
+function assertNoWooOptions(options: InitCommandOptions): void {
+  if (options.multilingual || options.variantCatalog || options.wishlist) {
+    throw new Error(
+      '--multilingual, --variant-catalog and --wishlist are only valid with --preset woo.',
+    )
+  }
+}
+
+export async function askWooCommerceQuestions(
+  preset: PresetId,
+  options: InitCommandOptions,
+): Promise<WooCommerceProjectConfig | undefined> {
+  if (preset === 'standard') {
+    assertNoWooOptions(options)
+    return undefined
+  }
+
+  const multilingual = options.multilingual
+    ? MultilingualProfileSchema.parse(options.multilingual.toLowerCase())
+    : await select<WooCommerceProjectConfig['multilingual']>({
+        message: 'Multilingual profile:',
+        options: [
+          { value: 'wpml', label: 'WPML', hint: 'recommended' },
+          { value: 'none', label: 'None' },
+        ],
+        initialValue: 'wpml',
+      })
+
+  const variantCatalog = options.variantCatalog
+    ? VariantCatalogProfileSchema.parse(options.variantCatalog.toLowerCase())
+    : await select<WooCommerceProjectConfig['variantCatalog']>({
+        message: 'Products shown in the catalog:',
+        options: [
+          { value: 'main-only', label: 'Main variant only', hint: 'recommended' },
+          { value: 'all', label: 'All variants' },
+        ],
+        initialValue: 'main-only',
+      })
+
+  const wishlist = options.wishlist
+    ? parseWishlist(options.wishlist)
+    : await select<boolean>({
+        message: 'Enable wishlist:',
+        options: [
+          { value: false, label: 'No', hint: 'default' },
+          { value: true, label: 'Yes' },
+        ],
+        initialValue: false,
+      })
+
+  return { multilingual, variantCatalog, wishlist }
+}
+
+export async function askInitQuestions(options: InitCommandOptions = {}): Promise<InitAnswers> {
   const location = await select<LocationChoice>({
     message: 'Where do you want to set up the project?',
     options: [
@@ -57,11 +134,19 @@ export async function askInitQuestions(): Promise<InitAnswers> {
 
   const textDomain = slug
 
-  const preset = await select<string>({
-    message: 'Preset:',
-    options: [{ value: 'standard', label: 'Standard', hint: 'Timber + ACF + Vite + Tailwind' }],
-    initialValue: 'standard',
-  })
+  const preset = options.preset
+    ? getPreset(options.preset.toLowerCase()).id
+    : await select<PresetId>({
+        message: 'Preset:',
+        options: PRESETS.map((definition) => ({
+          value: definition.id,
+          label: definition.name,
+          hint: definition.description,
+        })),
+        initialValue: 'standard',
+      })
+
+  const woocommerce = await askWooCommerceQuestions(preset, options)
 
   const ready = await confirm(
     `Ready to scaffold "${projectName}"${location === 'new-folder' ? ` in ./${slug}/` : ' in the current directory'}?`,
@@ -78,5 +163,6 @@ export async function askInitQuestions(): Promise<InitAnswers> {
     namespace,
     textDomain,
     preset,
+    ...(woocommerce ? { woocommerce } : {}),
   }
 }

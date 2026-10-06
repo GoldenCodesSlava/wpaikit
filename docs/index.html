@@ -64,8 +64,10 @@
                 Основные источники
               </span>
               <a href="./workflow.md">workflow.md</a>
-              <a href="../knowledge/prompts/analyze-figma.md">analyze-figma.md</a>
-              <a href="../knowledge/rules/figma-to-block.md">figma-to-block rules</a>
+              <a href="../knowledge/layers/common/prompts/analyze-figma.md">analyze-figma.md</a>
+              <a href="../knowledge/layers/wordpress/rules/figma-to-block.md"
+                >figma-to-block rules</a
+              >
             </div>
           </div>
 
@@ -190,14 +192,17 @@ wpaikit doctor</code></pre>
                   <li data-i18n-html="full.init.stepMetadata">
                     Создает <code>.wpaikit.json</code> с метаданными проекта.
                   </li>
+                  <li data-i18n-html="full.init.stepKnowledge">
+                    Устанавливает выбранный Knowledge Base профиль в корень темы.
+                  </li>
                 </ul>
               </article>
               <article>
                 <h3 data-i18n="full.init.flags">Полезные flags</h3>
-                <p><code>wpaikit init --name my-project</code></p>
-                <p><code>wpaikit init --name my-project --yes</code></p>
-                <p><code>wpaikit init --name my-project --dry-run</code></p>
-                <p><code>wpaikit init --name my-project --skip-install</code></p>
+                <p><code>wpaikit init --preset standard</code></p>
+                <p><code>wpaikit init --preset woo --multilingual wpml</code></p>
+                <p><code>--variant-catalog main-only</code></p>
+                <p><code>--wishlist no</code></p>
               </article>
             </div>
 
@@ -234,10 +239,10 @@ define('BOILERPLATE_DEV', true);</code></pre>
             <div class="section__head">
               <span class="badge badge--active">AI setup</span>
               <div>
-                <h2 data-i18n="full.knowledge.title">Установка Knowledge Base</h2>
+                <h2 data-i18n="full.knowledge.title">Knowledge Base</h2>
                 <p data-i18n="full.knowledge.description">
-                  После создания проекта перейдите в корень темы. Все AI-команды ниже должны
-                  запускаться именно оттуда, чтобы агенты видели правильные rules, prompts и skills.
+                  Init устанавливает выбранный профиль автоматически. Из корня темы команда
+                  knowledge install проверяет и обновляет управляемые файлы.
                 </p>
               </div>
             </div>
@@ -245,6 +250,7 @@ define('BOILERPLATE_DEV', true);</code></pre>
             <div class="command-panel">
               <span class="command-panel__label">Theme root</span>
               <code>cd wp-content/themes/{slug}</code>
+              <code>wpaikit knowledge install --dry-run</code>
               <code>wpaikit knowledge install</code>
             </div>
 
@@ -411,6 +417,24 @@ wpaikit knowledge install</code></pre>
                 генерирует developer reference с путями Twig, SCSS, PHP и JS.
               </p>
             </article>
+            <article>
+              <span class="badge badge--active">SEO</span>
+              <h3>/figma-seo-structure</h3>
+              <p data-i18n="full.commands.seoStructure">
+                Аудит страницы Figma по структурному SEO: тип страницы, внутренние ссылки,
+                E-E-A-T, локальное SEO, Schema.org, layout states. После одобрения плана строит
+                недостающие блоки в копии страницы и добавляет SEO-аннотации для разработчиков.
+              </p>
+            </article>
+            <article>
+              <span class="badge badge--active">SEO</span>
+              <h3>/figma-seo-texts</h3>
+              <p data-i18n="full.commands.seoTexts">
+                Генерирует мультиязычные SEO-тексты для editorial-блоков страницы Figma: meta, H1,
+                тексты секций. Динамические блоки пропускает, Figma не меняет. Запускать после
+                /figma-seo-structure.
+              </p>
+            </article>
           </div>
         </section>
 
@@ -441,7 +465,6 @@ wpaikit init
 # complete WordPress wizard, activate theme
 
 cd wp-content/themes/{slug}
-wpaikit knowledge install
 
 /analyze-figma &lt;url&gt;
 /figma-design-system &lt;url&gt;
@@ -463,7 +486,6 @@ npm install -g @veaceslav-golden/wp-ai-kit
 wpaikit doctor
 wpaikit init
 cd wp-content/themes/{slug}
-wpaikit knowledge install
 
 /generate-design
 /design-quality-check &lt;figma-url&gt;
@@ -559,6 +581,18 @@ wpaikit knowledge install
                 Пишет markdown-референс по блокам страницы.
               </span>
             </div>
+            <div role="row">
+              <span role="cell" data-i18n="full.situations.seoPage">
+                Нужна SEO-структура и тексты страницы
+              </span>
+              <span role="cell"
+                ><code>/figma-seo-structure &lt;url&gt;</code> -&gt;
+                <code>/figma-seo-texts &lt;url&gt;</code></span
+              >
+              <span role="cell" data-i18n="full.situations.seoPageComment">
+                Сначала структура (блоки, ссылки, schema), затем тексты.
+              </span>
+            </div>
           </div>
         </section>
 
@@ -639,6 +673,7 @@ wpaikit knowledge install
               <pre class="code-block"><code>npm install -g @veaceslav-golden/wp-ai-kit-core@latest
 npm install -g @veaceslav-golden/wp-ai-kit@latest
 cd wp-content/themes/{slug}
+wpaikit knowledge install --dry-run
 wpaikit knowledge install</code></pre>
             </div>
             <div>
@@ -788,7 +823,7 @@ pnpm publish --no-git-checks --otp=XXXXXX</code></pre>
               <article>
                 <h3 data-i18n="common.skill">Skill</h3>
                 <p>
-                  <a href="../knowledge/skills/figma-create-design-system/SKILL.md">
+                  <a href="../knowledge/layers/common/skills/figma-create-design-system/SKILL.md">
                     figma-create-design-system
                   </a>
                 </p>
@@ -997,7 +1032,7 @@ Implementation notes
                 Audit Figma readiness. Output: Ready, Needs cleanup, or Not ready.
               </p>
               <a
-                href="../knowledge/skills/figma-design-analysis/SKILL.md"
+                href="../knowledge/layers/common/skills/figma-design-analysis/SKILL.md"
                 data-i18n="common.openSkill"
               >
                 Open skill
@@ -1010,7 +1045,7 @@ Implementation notes
                 Extract tokens and create Figma Variables, Text Styles, and local JSON.
               </p>
               <a
-                href="../knowledge/skills/figma-create-design-system/SKILL.md"
+                href="../knowledge/layers/common/skills/figma-create-design-system/SKILL.md"
                 data-i18n="common.openSkill"
               >
                 Open skill
@@ -1022,7 +1057,10 @@ Implementation notes
               <p data-i18n="skills.prep">
                 Prepare Figma structure for generation without changing visual appearance.
               </p>
-              <a href="../knowledge/skills/figma-prep/SKILL.md" data-i18n="common.openSkill">
+              <a
+                href="../knowledge/layers/common/skills/figma-prep/SKILL.md"
+                data-i18n="common.openSkill"
+              >
                 Open skill
               </a>
             </article>
@@ -1032,7 +1070,10 @@ Implementation notes
               <p data-i18n="skills.components">
                 Create reusable component variants from saved design system patterns.
               </p>
-              <a href="../knowledge/skills/figma-components/SKILL.md" data-i18n="common.openSkill">
+              <a
+                href="../knowledge/layers/common/skills/figma-components/SKILL.md"
+                data-i18n="common.openSkill"
+              >
                 Open skill
               </a>
             </article>
@@ -1042,7 +1083,10 @@ Implementation notes
               <p data-i18n="skills.toBlock">
                 Generate ACF block PHP, Twig, SCSS, and ACF JSON from a Figma block frame.
               </p>
-              <a href="../knowledge/skills/figma-to-block/SKILL.md" data-i18n="common.openSkill">
+              <a
+                href="../knowledge/layers/wordpress/skills/figma-to-block/SKILL.md"
+                data-i18n="common.openSkill"
+              >
                 Open skill
               </a>
             </article>
@@ -1053,7 +1097,10 @@ Implementation notes
                 Sync local design-system.json after Variables, Text Styles, or Components changed in
                 Figma.
               </p>
-              <a href="../knowledge/skills/figma-sync-tokens/SKILL.md" data-i18n="common.openSkill">
+              <a
+                href="../knowledge/layers/common/skills/figma-sync-tokens/SKILL.md"
+                data-i18n="common.openSkill"
+              >
                 Open skill
               </a>
             </article>
@@ -1065,7 +1112,7 @@ Implementation notes
                 JSON.
               </p>
               <a
-                href="../knowledge/skills/design-system-to-code/SKILL.md"
+                href="../knowledge/layers/wordpress/skills/design-system-to-code/SKILL.md"
                 data-i18n="common.openSkill"
               >
                 Open skill
@@ -1078,7 +1125,10 @@ Implementation notes
                 Interactively collect design materials and generate a full UI in Figma from brief,
                 design system, and brand references.
               </p>
-              <a href="../knowledge/skills/generate-design/SKILL.md" data-i18n="common.openSkill">
+              <a
+                href="../knowledge/layers/common/skills/generate-design/SKILL.md"
+                data-i18n="common.openSkill"
+              >
                 Open skill
               </a>
             </article>
@@ -1090,7 +1140,7 @@ Implementation notes
                 page without deleting existing data.
               </p>
               <a
-                href="../knowledge/skills/figma-update-design-system/SKILL.md"
+                href="../knowledge/layers/common/skills/figma-update-design-system/SKILL.md"
                 data-i18n="common.openSkill"
               >
                 Open skill
@@ -1103,7 +1153,10 @@ Implementation notes
                 Audit fonts against design-system.json, remove unused files, convert to woff2/woff,
                 and generate @font-face SCSS.
               </p>
-              <a href="../knowledge/skills/setup-fonts/SKILL.md" data-i18n="common.openSkill">
+              <a
+                href="../knowledge/layers/wordpress/skills/setup-fonts/SKILL.md"
+                data-i18n="common.openSkill"
+              >
                 Open skill
               </a>
             </article>
@@ -1114,7 +1167,10 @@ Implementation notes
                 Scan SCSS and Twig files to build a components registry used by figma-to-block for
                 reuse instead of duplication.
               </p>
-              <a href="../knowledge/skills/scan-components/SKILL.md" data-i18n="common.openSkill">
+              <a
+                href="../knowledge/layers/wordpress/skills/scan-components/SKILL.md"
+                data-i18n="common.openSkill"
+              >
                 Open skill
               </a>
             </article>
@@ -1125,7 +1181,10 @@ Implementation notes
                 Validate SCSS, Twig, and PHP against coding rules. Report violations and fix them —
                 including unknown hex colors.
               </p>
-              <a href="../knowledge/skills/validate-code/SKILL.md" data-i18n="common.openSkill">
+              <a
+                href="../knowledge/layers/wordpress/skills/validate-code/SKILL.md"
+                data-i18n="common.openSkill"
+              >
                 Open skill
               </a>
             </article>
@@ -1137,7 +1196,7 @@ Implementation notes
                 a developer reference .md with Twig, SCSS, and JS paths.
               </p>
               <a
-                href="../knowledge/skills/get-comment-for-frontend/SKILL.md"
+                href="../knowledge/layers/wordpress/skills/get-comment-for-frontend/SKILL.md"
                 data-i18n="common.openSkill"
               >
                 Open skill

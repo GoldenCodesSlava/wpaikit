@@ -84,6 +84,7 @@ Ce face automat:
 3. Redenumește tema, namespace-ul PHP și text domain-ul peste tot
 4. Rulează `composer install` și `npm install && npm run build` în temă
 5. Creează fișierul `.wpaikit.json` cu metadatele proiectului
+6. Instalează automat profilul Knowledge Base în rădăcina temei
 
 ### Pași manuali după init
 
@@ -105,17 +106,19 @@ cd salon-frumusete   # dacă ai ales un subdirector nou
 
 ---
 
-## Instalarea Knowledge Base
+## Knowledge Base
 
-Navighează în **folderul rădăcină al temei**:
+`wpaikit init` instalează automat profilul potrivit. Pentru actualizare sau reparare, navighează în
+**folderul rădăcină al temei**:
 
 ```bash
 cd wp-content/themes/salon-frumusete
 ```
 
-Instalează knowledge base-ul:
+Verifică schimbările și apoi actualizează knowledge base-ul:
 
 ```bash
+wpaikit knowledge install --dry-run
 wpaikit knowledge install
 ```
 
@@ -288,6 +291,81 @@ Summary: 1 critical ✗ · 1 warning ⚠ · 1 passed ✓
 
 - Automat, înainte de orice generare (integrat în `/generate-design`)
 - Manual, pentru a audita un design existent în Figma
+
+---
+
+### `/figma-seo-structure`
+
+**Scop:** Auditează o pagină Figma din punct de vedere SEO structural — ce blocuri lipsesc, cum leagă pagina alte pagini, E-E-A-T, SEO local, Schema.org și stările de layout. După aprobarea planului, construiește blocurile lipsă direct în Figma și adaugă adnotări SEO pentru developeri.
+
+```
+/figma-seo-structure <figma-url>
+/figma-seo-structure <figma-url> --lang ro
+```
+
+**Brief (întrebări la început):**
+
+- Nișa + piața principală (țară, oraș) — contează pentru intenția locală
+- Interogarea țintă a paginii (ex: „dermatolog Chișinău") sau `[auto]`
+- Mod: `[audit]` — doar raport · `[build]` — audit → aprobare → construire în Figma (implicit)
+- Unde se construiește: `[copy]` — duplicat al frame-ului (implicit) · `[in-place]`
+
+**Ce verifică:**
+
+| Zonă                   | Exemple                                                                                    |
+| ---------------------- | ------------------------------------------------------------------------------------------ |
+| Structura landing-ului | Un singur H1 pe interogare, filtrele sunt link-uri către landing-uri indexabile, paginare  |
+| Link-uri interne       | Carduri → pagini de entitate, legături încrucișate, bloc „similare", breadcrumbs          |
+| E-E-A-T                | Profil expert, certificate, recenzii cu rating agregat, fotografii reale                   |
+| SEO local              | Adresă, telefon `tel:`, program, hartă, NAP identic cu Google Business Profile             |
+| Conținut               | Text SEO unic, „Citește mai mult" prezent în HTML, FAQ onest (fără promisiuni rich snippet) |
+| Schema.org             | `ItemList`, `BreadcrumbList`, `Person`, `LocalBusiness`, `Product`/`Service` + `Offer`     |
+| Stări de layout        | Ce se întâmplă cu 0 / 1 / 2 / 3 / 4 / multe elemente în fiecare bloc repetitiv             |
+
+Fiecare punct: ✅ / ⚠️ / ❌ + motiv + prioritate (P1/P2/P3).
+
+**Output:**
+
+- Raport + plan → `seo-structure-{page-slug}.md` în directorul curent (se oprește și așteaptă aprobarea)
+- După aprobare: blocuri noi în copia paginii Figma, secțiune „Layout states", o pagină landing exemplu (pentru listări)
+- Adnotări în categoria `SEO`: ce trebuie să fie link și unde, canonical, schema + exemplu JSON-LD, reguli de layout
+- Lista datelor placeholder de înlocuit înainte de lansare (program, prețuri, recenzii, certificate)
+
+**Note:**
+
+- Auditul este read-only; nimic nu se construiește fără aprobare explicită
+- Frame-urile originale nu se modifică (dacă nu ai ales `[in-place]`); conținutul editat manual nu se suprascrie
+- Refolosește componentele și stilurile existente din fișier — nu inventează un limbaj vizual nou
+
+**Când se folosește:** Înainte de `/figma-seo-texts` și de implementare, pentru fiecare tip de pagină (listare, entitate, serviciu, contacte).
+
+---
+
+### `/figma-seo-texts`
+
+**Scop:** Generează texte SEO multilingve pentru blocurile editoriale ale unei pagini Figma.
+
+```
+/figma-seo-texts <figma-url>
+```
+
+**Brief (întrebări la început):** limbi + țară pentru fiecare, nișa, piața (țară/oraș), ce se generează (`[meta]` / `[copy]` / `[all]`), cuvinte cheie (`[auto]` / `[manual]`), ton (`[sales]` / `[informational]` / `[expert]`).
+
+**Ce face:**
+
+1. Citește pagina Figma și construiește harta blocurilor
+2. Clasifică fiecare bloc: `editorial` (se generează) sau `dynamic` (se sare — carduri produse, categorii, recenzii, footer)
+3. Afișează clasificarea și așteaptă confirmarea
+4. Generează 10–15 cuvinte cheie localizate per limbă (dacă `[auto]`) și așteaptă confirmarea
+5. Generează meta title/description, H1 și textele blocurilor — localizate, nu traduse mecanic
+6. Scrie `seo-texts-{page-slug}.md` în directorul curent
+
+**Note:**
+
+- Read-only din Figma — nu modifică straturi sau texte
+- Textele din Figma sunt considerate placeholder și sunt înlocuite complet
+
+**Când se folosește:** După ce structura paginii a fost aprobată (`/figma-seo-structure`), înainte de a completa conținutul în CMS.
 
 ---
 
@@ -645,8 +723,7 @@ wpaikit init                      # scaffold WordPress + boilerplate
   ↓ manual: crează DB, configurează wp-config.php,
             completează wizard WordPress, activează tema
 
-cd wp-content/themes/{slug}
-wpaikit knowledge install         # copiază knowledge base + slash commands
+cd {slug}                          # dacă init a creat un folder nou; knowledge este în rădăcina proiectului
 
 ─── DESIGN ──────────────────────────────────────────────────
 
@@ -670,6 +747,8 @@ wpaikit knowledge install         # copiază knowledge base + slash commands
 
 /figma-sync-tokens                # când designerul modifică tokeni în Figma
 /figma-update-design-system       # când apar pagini/secțiuni noi în Figma
+/figma-seo-structure <url>        # audit SEO structural + blocuri lipsă în Figma
+/figma-seo-texts <url>            # texte SEO multilingve pentru blocurile editoriale
 /scan-components                  # după adăugarea de componente noi
 /validate-code                    # verificare cod după orice modificare
 /get-comment-for-frontend <url>   # referință pentru developer la review/bugfix
@@ -714,6 +793,8 @@ wpaikit knowledge install         # copiază knowledge base + slash commands
 | Verificare cod după modificări             | `/validate-code`                                         |
 | Audit design generat pentru pattern-uri AI | `/design-quality-check <url>`                            |
 | Verificare brief înainte de generare       | `/design-quality-check` (fără URL)                       |
+| Audit SEO structural al unei pagini        | `/figma-seo-structure <url>`                             |
+| Texte SEO pentru o pagină                  | `/figma-seo-texts <url>`                                 |
 | Developer caută fișierele unui bloc        | `/get-comment-for-frontend <url>`                        |
 | Server de dezvoltare                       | `cd frontend && npm run dev`                             |
 | Build producție                            | `cd frontend && npm run build`                           |
@@ -756,7 +837,14 @@ cd packages/cli && pnpm publish --no-git-checks --otp=XXXXXX
 npm install -g @veaceslav-golden/wp-ai-kit-core@latest
 npm install -g @veaceslav-golden/wp-ai-kit@latest
 
-# 2. Actualizează knowledge base în proiect (din folderul temei)
+# 2. Actualizează knowledge base în proiect (din rădăcina proiectului sau a temei)
 cd wp-content/themes/{slug}
-wpaikit knowledge install
+wpaikit knowledge update --dry-run   # arată ce se schimbă
+wpaikit knowledge update             # alias pentru `wpaikit knowledge install`
 ```
+
+Output-ul afișează versiunea knowledge (ex: `Version: 1.7.0 → 1.8.0`) și numărul de fișiere
+scrise/șterse. Fișierele modificate local nu sunt suprascrise — comanda se oprește și le listează.
+Pentru a le înlocui oricum: `wpaikit knowledge update --force`.
+
+Verifică versiunea CLI instalată: `wpaikit --version`.

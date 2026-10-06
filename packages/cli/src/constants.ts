@@ -1,4 +1,3 @@
-export const BOILERPLATE_REPO = 'git@github.com:GoldenCodesSlava/boilerplate-wp-standard.git'
 export const WP_VERSION_API = 'https://api.wordpress.org/core/version-check/1.7/'
 export const WP_DOWNLOAD_URL = (version: string) =>
   `https://wordpress.org/wordpress-${version}.tar.gz`

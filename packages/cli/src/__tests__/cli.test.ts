@@ -11,6 +11,6 @@ describe('CLI program', () => {
   })
 
   it('has a version', () => {
-    expect(program.version()).toBe('0.1.0')
+    expect(program.version()).toMatch(/^\d+\.\d+\.\d+$/)
   })
 })

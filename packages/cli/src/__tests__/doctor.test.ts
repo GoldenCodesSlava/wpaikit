@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { checkNode, checkWriteAccess } from '../commands/doctor/checks.js'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'

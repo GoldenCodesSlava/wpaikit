@@ -8,6 +8,7 @@ function makeThemeDir(base: string): string {
   const themesDir = join(base, 'wp-content', 'themes', 'boilerplate')
   mkdirSync(join(themesDir, 'src', 'Theme'), { recursive: true })
   mkdirSync(join(themesDir, 'blocks', 'ExampleBlock'), { recursive: true })
+  mkdirSync(join(themesDir, 'frontend', 'src', 'js'), { recursive: true })
 
   writeFileSync(
     join(themesDir, 'style.css'),
@@ -16,12 +17,12 @@ function makeThemeDir(base: string): string {
 
   writeFileSync(
     join(themesDir, 'src', 'Theme', 'ThemeSetup.php'),
-    "<?php\nnamespace Boilerplate\\Theme;\nuse Boilerplate\\Theme\\Services\\TimberService;\n",
+    '<?php\nnamespace Boilerplate\\Theme;\nuse Boilerplate\\Theme\\Services\\TimberService;\n',
   )
 
   writeFileSync(
     join(themesDir, 'index.php'),
-    "<?php\n$controller = new \\Boilerplate\\Theme\\Controllers\\PageController();\n",
+    '<?php\n$controller = new \\Boilerplate\\Theme\\Controllers\\PageController();\n',
   )
 
   writeFileSync(
@@ -29,10 +30,7 @@ function makeThemeDir(base: string): string {
     "export default { base: '/wp-content/themes/boilerplate/frontend/dist/' }\n",
   )
 
-  writeFileSync(
-    join(themesDir, 'main.scss'),
-    '// Main SCSS file - WordPress boilerplate\n',
-  )
+  writeFileSync(join(themesDir, 'main.scss'), '// Main SCSS file - WordPress boilerplate\n')
 
   writeFileSync(
     join(themesDir, 'blocks.php'),
@@ -54,6 +52,31 @@ function makeThemeDir(base: string): string {
   writeFileSync(
     join(themesDir, 'blocks', 'ExampleBlock', 'ExampleBlock.php'),
     "<?php\nnamespace Boilerplate\\Theme\\Blocks\\ExampleBlock;\n__('example', 'boilerplate');\n",
+  )
+
+  writeFileSync(
+    join(themesDir, 'boilerplate-config.php'),
+    "<?php\ndefined('BOILERPLATE_WISHLIST') || define('BOILERPLATE_WISHLIST', false);\n",
+  )
+
+  writeFileSync(
+    join(themesDir, 'functions.php'),
+    "<?php\nrequire_once __DIR__ . '/boilerplate-config.php';\n",
+  )
+
+  writeFileSync(
+    join(themesDir, 'frontend', 'src', 'js', 'main.js'),
+    'window.boilerplateTheme = boilerplateTheme;\n',
+  )
+
+  writeFileSync(
+    join(themesDir, 'frontend', 'src', 'js', 'cookie-consent.js'),
+    "window.themeCookieConsent = {}; document.dispatchEvent(new Event('theme:consent-changed'));\n",
+  )
+
+  writeFileSync(
+    join(themesDir, 'frontend', 'src', 'js', 'analytics.js'),
+    "window.themeAnalytics = {}; localStorage.setItem('theme_analytics_dedupe_v1', '{}');\n",
   )
 
   return base
@@ -107,7 +130,10 @@ describe('renameBoilerplate', () => {
   it('replaces identifiers in frontend config and scss files', () => {
     renameBoilerplate(dir, 'My Site', 'my-site', 'MySite', 'my-site')
 
-    const vite = readFileSync(join(dir, 'wp-content', 'themes', 'my-site', 'vite.config.mjs'), 'utf-8')
+    const vite = readFileSync(
+      join(dir, 'wp-content', 'themes', 'my-site', 'vite.config.mjs'),
+      'utf-8',
+    )
     const scss = readFileSync(join(dir, 'wp-content', 'themes', 'my-site', 'main.scss'), 'utf-8')
 
     expect(vite).toContain('/wp-content/themes/my-site/frontend/dist/')
@@ -139,5 +165,59 @@ describe('renameBoilerplate', () => {
     )
     expect(composer.name).toBe('my-site/wordpress-theme')
     expect(composer.autoload['psr-4']['MySite\\']).toBe('src/')
+  })
+
+  it('renames the theme config file and its references', () => {
+    renameBoilerplate(dir, 'My Site', 'my-site', 'MySite', 'my-site')
+    const themeDir = join(dir, 'wp-content', 'themes', 'my-site')
+    const functions = readFileSync(join(themeDir, 'functions.php'), 'utf-8')
+
+    expect(existsSync(join(themeDir, 'my-site-config.php'))).toBe(true)
+    expect(existsSync(join(themeDir, 'boilerplate-config.php'))).toBe(false)
+    expect(functions).toContain("'/my-site-config.php'")
+  })
+
+  it('uses a valid camelCase JavaScript global', () => {
+    renameBoilerplate(dir, 'My Site', 'my-site', 'MySite', 'my-site')
+    const javascript = readFileSync(
+      join(dir, 'wp-content', 'themes', 'my-site', 'frontend', 'src', 'js', 'main.js'),
+      'utf-8',
+    )
+
+    expect(javascript).toBe('window.mySiteTheme = mySiteTheme;\n')
+    expect(javascript).not.toContain('my-siteTheme')
+  })
+
+  it('keeps stable cookie consent runtime identifiers', () => {
+    renameBoilerplate(dir, 'My Site', 'my-site', 'MySite', 'my-site')
+    const javascript = readFileSync(
+      join(
+        dir,
+        'wp-content',
+        'themes',
+        'my-site',
+        'frontend',
+        'src',
+        'js',
+        'cookie-consent.js',
+      ),
+      'utf-8',
+    )
+
+    expect(javascript).toContain('window.themeCookieConsent')
+    expect(javascript).toContain('theme:consent-changed')
+    expect(javascript).not.toContain('my-siteCookieConsent')
+  })
+
+  it('keeps stable analytics runtime identifiers', () => {
+    renameBoilerplate(dir, 'My Site', 'my-site', 'MySite', 'my-site')
+    const javascript = readFileSync(
+      join(dir, 'wp-content', 'themes', 'my-site', 'frontend', 'src', 'js', 'analytics.js'),
+      'utf-8',
+    )
+
+    expect(javascript).toContain('window.themeAnalytics')
+    expect(javascript).toContain('theme_analytics_dedupe_v1')
+    expect(javascript).not.toContain('my-siteAnalytics')
   })
 })

@@ -522,15 +522,16 @@ const fullDocumentationTranslations = {
     'full.init.stepRename': 'Renames the theme, namespace, and text domain.',
     'full.init.stepInstall': 'Runs <code>composer install</code> and the frontend build.',
     'full.init.stepMetadata': 'Creates <code>.wpaikit.json</code> with project metadata.',
+    'full.init.stepKnowledge': 'Installs the selected Knowledge Base profile in the theme root.',
     'full.init.flags': 'Useful flags',
     'full.init.manualTitle': 'Manual steps after init',
     'full.init.manualDb': 'Create a local database with Herd, MAMP, TablePlus, or CLI.',
     'full.init.manualConfig': 'Fill in credentials in <code>wp-config.php</code>.',
     'full.init.manualWizard': 'Open the site in a browser and complete the WordPress wizard.',
     'full.init.manualTheme': 'Activate the theme in <code>wp-admin -> Appearance -> Themes</code>.',
-    'full.knowledge.title': 'Install the Knowledge Base',
+    'full.knowledge.title': 'Knowledge Base',
     'full.knowledge.description':
-      'After creating the project, move into the theme root. All AI commands below should be run from there so agents can see the correct rules, prompts, and skills.',
+      'Init installs the selected profile automatically. From the theme root, knowledge install inspects and updates WPAIKit-managed files.',
     'full.knowledge.copiedTitle': 'What gets copied',
     'full.knowledge.copiedKnowledge':
       '<code>knowledge/</code> contains rules, prompts, and skills.',
@@ -574,6 +575,10 @@ const fullDocumentationTranslations = {
       'Checks SCSS, Twig, and PHP against the rules. It can fix BEM, raw CSS, hardcoded hex colors, autoescape mistakes, namespaces, and image fields.',
     'full.commands.commentFrontend':
       'Reads the WordPress database directly, parses ACF blocks from <code>post_content</code>, and generates a developer reference with Twig, SCSS, PHP, and JS paths.',
+    'full.commands.seoStructure':
+      'Audits a Figma page for structural SEO: page type, internal linking, E-E-A-T, local SEO, Schema.org, layout states. After the plan is approved, builds the missing blocks in a copy of the page and adds SEO annotations for developers.',
+    'full.commands.seoTexts':
+      'Generates multilingual SEO texts for the editorial blocks of a Figma page: meta, H1, section copy. Skips dynamic blocks and never modifies Figma. Run after /figma-seo-structure.',
     'full.workflows.title': 'Full workflows',
     'full.workflows.description':
       'Two base scenarios: a project with an existing design and a project where the design is generated in Figma first.',
@@ -588,7 +593,6 @@ wpaikit init
 # complete WordPress wizard, activate theme
 
 cd wp-content/themes/{slug}
-wpaikit knowledge install
 
 /analyze-figma &lt;url&gt;
 /figma-design-system &lt;url&gt;
@@ -606,7 +610,6 @@ npm install -g @veaceslav-golden/wp-ai-kit
 wpaikit doctor
 wpaikit init
 cd wp-content/themes/{slug}
-wpaikit knowledge install
 
 /generate-design
 /design-quality-check &lt;figma-url&gt;
@@ -641,6 +644,8 @@ wpaikit knowledge install
     'full.situations.afterGenerationComment': 'Checks SCSS, Twig, and PHP against the rules.',
     'full.situations.findFiles': 'A developer needs to find page files',
     'full.situations.findFilesComment': 'Writes a markdown reference for the page blocks.',
+    'full.situations.seoPage': 'Page needs SEO structure and copy',
+    'full.situations.seoPageComment': 'Structure first (blocks, links, schema), then texts.',
     'full.keyFiles.title': 'Key project files',
     'full.keyFiles.description':
       'These files and folders are most often needed during development and debugging.',
@@ -712,15 +717,16 @@ wpaikit knowledge install
     'full.init.stepRename': 'Переименовывает тему, namespace и text domain.',
     'full.init.stepInstall': 'Запускает <code>composer install</code> и frontend build.',
     'full.init.stepMetadata': 'Создает <code>.wpaikit.json</code> с метаданными проекта.',
+    'full.init.stepKnowledge': 'Устанавливает выбранный Knowledge Base профиль в корень темы.',
     'full.init.flags': 'Полезные flags',
     'full.init.manualTitle': 'Ручные шаги после init',
     'full.init.manualDb': 'Создайте локальную базу данных через Herd, MAMP, TablePlus или CLI.',
     'full.init.manualConfig': 'Заполните доступы в <code>wp-config.php</code>.',
     'full.init.manualWizard': 'Откройте сайт в браузере и пройдите WordPress wizard.',
     'full.init.manualTheme': 'Активируйте тему в <code>wp-admin -> Appearance -> Themes</code>.',
-    'full.knowledge.title': 'Установка Knowledge Base',
+    'full.knowledge.title': 'Knowledge Base',
     'full.knowledge.description':
-      'После создания проекта перейдите в корень темы. Все AI-команды ниже должны запускаться именно оттуда, чтобы агенты видели правильные rules, prompts и skills.',
+      'Init автоматически устанавливает выбранный профиль. Из корня темы knowledge install проверяет и обновляет файлы, которыми управляет WPAIKit.',
     'full.knowledge.copiedTitle': 'Что копируется',
     'full.knowledge.copiedKnowledge': '<code>knowledge/</code> — rules, prompts, skills.',
     'full.knowledge.copiedClaude': '<code>CLAUDE.md</code> — инструкции для Claude Code.',
@@ -763,6 +769,10 @@ wpaikit knowledge install
       'Проверяет SCSS, Twig и PHP по rules. Может чинить BEM, raw CSS, hardcoded hex, autoescape mistakes, namespaces и image fields.',
     'full.commands.commentFrontend':
       'Читает базу WordPress напрямую, парсит ACF blocks из <code>post_content</code> и генерирует developer reference с путями Twig, SCSS, PHP и JS.',
+    'full.commands.seoStructure':
+      'Аудит страницы Figma по структурному SEO: тип страницы, внутренние ссылки, E-E-A-T, локальное SEO, Schema.org, layout states. После одобрения плана строит недостающие блоки в копии страницы и добавляет SEO-аннотации для разработчиков.',
+    'full.commands.seoTexts':
+      'Генерирует мультиязычные SEO-тексты для editorial-блоков страницы Figma: meta, H1, тексты секций. Динамические блоки пропускает, Figma не меняет. Запускать после /figma-seo-structure.',
     'full.workflows.title': 'Полные workflow',
     'full.workflows.description':
       'Два базовых сценария: проект с готовым дизайном и проект, где дизайн сначала генерируется в Figma.',
@@ -777,7 +787,6 @@ wpaikit init
 # завершите WordPress wizard, активируйте тему
 
 cd wp-content/themes/{slug}
-wpaikit knowledge install
 
 /analyze-figma &lt;url&gt;
 /figma-design-system &lt;url&gt;
@@ -795,7 +804,6 @@ npm install -g @veaceslav-golden/wp-ai-kit
 wpaikit doctor
 wpaikit init
 cd wp-content/themes/{slug}
-wpaikit knowledge install
 
 /generate-design
 /design-quality-check &lt;figma-url&gt;
@@ -829,6 +837,8 @@ wpaikit knowledge install
     'full.situations.afterGenerationComment': 'Проверяет SCSS, Twig и PHP против rules.',
     'full.situations.findFiles': 'Разработчику надо найти файлы страницы',
     'full.situations.findFilesComment': 'Пишет markdown-референс по блокам страницы.',
+    'full.situations.seoPage': 'Нужна SEO-структура и тексты страницы',
+    'full.situations.seoPageComment': 'Сначала структура (блоки, ссылки, schema), затем тексты.',
     'full.keyFiles.title': 'Ключевые файлы проекта',
     'full.keyFiles.description': 'Эти файлы и папки чаще всего нужны при разработке и отладке.',
     'full.keyFiles.metadataTitle': 'Metadata и AI',
@@ -900,15 +910,16 @@ wpaikit knowledge install
     'full.init.stepRename': 'Redenumeste tema, namespace-ul si text domain-ul.',
     'full.init.stepInstall': 'Ruleaza <code>composer install</code> si frontend build.',
     'full.init.stepMetadata': 'Creeaza <code>.wpaikit.json</code> cu metadatele proiectului.',
+    'full.init.stepKnowledge': 'Instaleaza profilul Knowledge Base selectat in radacina temei.',
     'full.init.flags': 'Flag-uri utile',
     'full.init.manualTitle': 'Pasi manuali dupa init',
     'full.init.manualDb': 'Creeaza o baza de date locala prin Herd, MAMP, TablePlus sau CLI.',
     'full.init.manualConfig': 'Completeaza credentialele in <code>wp-config.php</code>.',
     'full.init.manualWizard': 'Deschide site-ul in browser si finalizeaza WordPress wizard.',
     'full.init.manualTheme': 'Activeaza tema in <code>wp-admin -> Appearance -> Themes</code>.',
-    'full.knowledge.title': 'Instalare Knowledge Base',
+    'full.knowledge.title': 'Knowledge Base',
     'full.knowledge.description':
-      'Dupa crearea proiectului, intra in radacina temei. Toate comenzile AI de mai jos trebuie rulate de acolo, ca agentii sa vada rules, prompts si skills corecte.',
+      'Init instaleaza automat profilul selectat. Din radacina temei, knowledge install verifica si actualizeaza fisierele administrate de WPAIKit.',
     'full.knowledge.copiedTitle': 'Ce se copiaza',
     'full.knowledge.copiedKnowledge': '<code>knowledge/</code> contine rules, prompts si skills.',
     'full.knowledge.copiedClaude':
@@ -953,6 +964,10 @@ wpaikit knowledge install
       'Verifica SCSS, Twig si PHP conform rules. Poate repara BEM, raw CSS, hardcoded hex, autoescape mistakes, namespaces si image fields.',
     'full.commands.commentFrontend':
       'Citeste direct baza de date WordPress, parseaza blocuri ACF din <code>post_content</code> si genereaza developer reference cu cai Twig, SCSS, PHP si JS.',
+    'full.commands.seoStructure':
+      'Auditeaza o pagina Figma pentru SEO structural: tipul paginii, link-uri interne, E-E-A-T, SEO local, Schema.org, layout states. Dupa aprobarea planului, construieste blocurile lipsa intr-o copie a paginii si adauga adnotari SEO pentru developeri.',
+    'full.commands.seoTexts':
+      'Genereaza texte SEO multilingve pentru blocurile editoriale ale unei pagini Figma: meta, H1, texte de sectiune. Sare peste blocurile dinamice si nu modifica Figma. Se ruleaza dupa /figma-seo-structure.',
     'full.workflows.title': 'Workflow-uri complete',
     'full.workflows.description':
       'Doua scenarii de baza: proiect cu design existent si proiect in care designul se genereaza mai intai in Figma.',
@@ -967,7 +982,6 @@ wpaikit init
 # finalizeaza WordPress wizard, activeaza tema
 
 cd wp-content/themes/{slug}
-wpaikit knowledge install
 
 /analyze-figma &lt;url&gt;
 /figma-design-system &lt;url&gt;
@@ -985,7 +999,6 @@ npm install -g @veaceslav-golden/wp-ai-kit
 wpaikit doctor
 wpaikit init
 cd wp-content/themes/{slug}
-wpaikit knowledge install
 
 /generate-design
 /design-quality-check &lt;figma-url&gt;
@@ -1021,6 +1034,8 @@ wpaikit knowledge install
     'full.situations.afterGenerationComment': 'Verifica SCSS, Twig si PHP conform rules.',
     'full.situations.findFiles': 'Developerul trebuie sa gaseasca fisierele paginii',
     'full.situations.findFilesComment': 'Scrie un markdown reference pentru blocurile paginii.',
+    'full.situations.seoPage': 'Pagina are nevoie de structura SEO si texte',
+    'full.situations.seoPageComment': 'Intai structura (blocuri, link-uri, schema), apoi textele.',
     'full.keyFiles.title': 'Fisiere cheie ale proiectului',
     'full.keyFiles.description':
       'Aceste fisiere si foldere sunt cel mai des necesare la dezvoltare si debugging.',

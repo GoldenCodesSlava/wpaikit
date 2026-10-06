@@ -1,11 +1,4 @@
-import {
-  readdirSync,
-  statSync,
-  readFileSync,
-  writeFileSync,
-  renameSync,
-  existsSync,
-} from 'node:fs'
+import { readdirSync, statSync, readFileSync, writeFileSync, renameSync, existsSync } from 'node:fs'
 import { resolve, join } from 'node:path'
 import { logger } from '@veaceslav-golden/wp-ai-kit-core'
 import {
@@ -76,6 +69,7 @@ export function renameBoilerplate(
   const themesDir = resolve(targetDir, 'wp-content', 'themes')
   const boilerplateThemeDir = resolve(themesDir, BOILERPLATE_THEME_SLUG)
   const newThemeDir = resolve(themesDir, slug)
+  const javascriptGlobal = `${namespace.charAt(0).toLowerCase()}${namespace.slice(1)}Theme`
 
   if (!existsSync(boilerplateThemeDir)) {
     throw new Error(`Expected theme folder "themes/${BOILERPLATE_THEME_SLUG}" not found`)
@@ -83,6 +77,8 @@ export function renameBoilerplate(
 
   // Replacements applied to file contents (order matters — most specific first)
   const replacements: Array<[string, string]> = [
+    // JavaScript identifiers cannot contain the hyphens allowed in a project slug.
+    ['boilerplateTheme', javascriptGlobal],
     // PHP namespace: "namespace Boilerplate\" → "namespace {Namespace}\"
     [`namespace ${BOILERPLATE_NAMESPACE}\\`, `namespace ${namespace}\\`],
     // PHP use statements: "use Boilerplate\" → "use {Namespace}\"
@@ -112,6 +108,11 @@ export function renameBoilerplate(
       replaceInFile(filePath, replacements)
     }
   })
+
+  const boilerplateConfig = resolve(boilerplateThemeDir, 'boilerplate-config.php')
+  if (existsSync(boilerplateConfig)) {
+    renameSync(boilerplateConfig, resolve(boilerplateThemeDir, `${slug}-config.php`))
+  }
 
   // Rename theme folder last
   renameSync(boilerplateThemeDir, newThemeDir)

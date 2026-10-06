@@ -4,13 +4,13 @@
 
 `wpaikit` is a CLI tool for scaffolding and developing WordPress sites based on custom boilerplates, with AI agent integration for block and design system development.
 
-| | |
-|---|---|
-| **npm package** | `@veaceslav-golden/wp-ai-kit` |
-| **Binary** | `wpaikit` |
+|                      |                                                               |
+| -------------------- | ------------------------------------------------------------- |
+| **npm package**      | `@veaceslav-golden/wp-ai-kit`                                 |
+| **Binary**           | `wpaikit`                                                     |
 | **Boilerplate repo** | `git@github.com:GoldenCodesSlava/boilerplate-wp-standard.git` |
-| **Language** | TypeScript (strict mode) |
-| **Package manager** | pnpm workspaces |
+| **Language**         | TypeScript (strict mode)                                      |
+| **Package manager**  | pnpm workspaces                                               |
 
 ---
 
@@ -38,25 +38,13 @@ wpaikit/
 │   ├── core/              # logger, exec, config, errors, rollback
 │   └── cli/               # wpaikit binary (commander)
 ├── knowledge/
-│   ├── rules/             # neutral markdown, no AI-specific frontmatter
-│   │   ├── wp-boilerplate.md
-│   │   ├── acf-blocks.md
-│   │   ├── figma-to-block.md
-│   │   └── design-system.md
-│   ├── templates/
-│   │   └── block/
-│   │       ├── BlockName.php.hbs
-│   │       ├── BlockName.twig.hbs
-│   │       └── group_block_name.json.hbs
-│   ├── prompts/           # universal prompts with {{ARGUMENTS}} placeholder
-│   │   ├── init-site.md
-│   │   ├── create-block.md
-│   │   ├── create-block-by-figma.md
-│   │   └── create-design-system.md
-│   ├── examples/
-│   │   └── figma-pairs/   # screenshot + generated block code + notes
-│   ├── presets.json
-│   └── plugins.json
+│   ├── layers/
+│   │   ├── common/        # cross-preset prompts, skills and Figma rules
+│   │   ├── wordpress/     # WordPress/Twig/ACF implementation knowledge
+│   │   └── woocommerce/   # commerce contracts, checks and recipes
+│   ├── profiles/          # standard = common + wordpress; woo adds woocommerce
+│   ├── templates/         # profile-aware AGENTS.md and CLAUDE.md sources
+│   └── version.json       # installed knowledge version
 ├── packages/
 │   └── adapters/
 │       ├── claude-code/   # generates .claude/commands/, .claude/skills/
@@ -87,14 +75,14 @@ wpaikit/
 
 Shared modules used by CLI (and later adapters):
 
-| Module | Responsibility |
-|---|---|
-| `logger.ts` | picocolors + @clack/prompts spinners; `info` / `success` / `warn` / `error` |
-| `exec.ts` | execa wrapper; masks passwords/tokens in log output |
-| `prompts.ts` | @clack/prompts wrappers with sensible defaults |
-| `config.ts` | read/write `.wpaikit.json` in project root |
-| `errors.ts` | typed errors: `PreflightError`, `ValidationError`, `RollbackError` |
-| `rollback.ts` | LIFO cleanup stack; runs on error at any step |
+| Module        | Responsibility                                                              |
+| ------------- | --------------------------------------------------------------------------- |
+| `logger.ts`   | picocolors + @clack/prompts spinners; `info` / `success` / `warn` / `error` |
+| `exec.ts`     | execa wrapper; masks passwords/tokens in log output                         |
+| `prompts.ts`  | @clack/prompts wrappers with sensible defaults                              |
+| `config.ts`   | read/write `.wpaikit.json` in project root                                  |
+| `errors.ts`   | typed errors: `PreflightError`, `ValidationError`, `RollbackError`          |
+| `rollback.ts` | LIFO cleanup stack; runs on error at any step                               |
 
 ---
 
@@ -109,14 +97,14 @@ Shared modules used by CLI (and later adapters):
 5. Rename theme folder: `wp-content/themes/boilerplate` → `wp-content/themes/<name>`
 6. Find/replace across all PHP, JSON, CSS, JS, MD files in `wp-content/themes/<name>/`:
 
-   | Find | Replace | Where |
-   |---|---|---|
-   | `Boilerplate\` | `<PascalCase>\` | PHP namespace |
-   | `'boilerplate'` | `'<kebab-case>'` | text domain in PHP |
-   | `"boilerplate"` | `"<kebab-case>"` | text domain in JSON |
-   | `boilerplate-blocks` | `<kebab-case>-blocks` | ACF block category |
-   | `group_boilerplate_` | `group_<snake_case>_` | ACF JSON keys |
-   | `Theme Name: Boilerplate` | `Theme Name: <Human Title>` | style.css |
+   | Find                      | Replace                     | Where               |
+   | ------------------------- | --------------------------- | ------------------- |
+   | `Boilerplate\`            | `<PascalCase>\`             | PHP namespace       |
+   | `'boilerplate'`           | `'<kebab-case>'`            | text domain in PHP  |
+   | `"boilerplate"`           | `"<kebab-case>"`            | text domain in JSON |
+   | `boilerplate-blocks`      | `<kebab-case>-blocks`       | ACF block category  |
+   | `group_boilerplate_`      | `group_<snake_case>_`       | ACF JSON keys       |
+   | `Theme Name: Boilerplate` | `Theme Name: <Human Title>` | style.css           |
 
 7. Copy `wp-config-sample.php` → `wp-config.php` with `DB_NAME` pre-filled as `<snake_case>`
 8. Post-install (skip with `--skip-install`):
@@ -136,6 +124,7 @@ wpaikit init --name my-project --preset woo     # future: select boilerplate var
 ```
 
 **Interactive mode** (when `--yes` not passed):
+
 - Confirm project name and derived values (PascalCase namespace, text domain)
 - Multiselect plugins from `knowledge/plugins.json` (with groups, defaults pre-checked)
 - Summary screen → confirm before running
@@ -151,6 +140,7 @@ wpaikit init --name my-project --preset woo     # future: select boilerplate var
 ## Phase 3: `wpaikit doctor` + tests + publish v0.1.0
 
 **`wpaikit doctor`** — environment check:
+
 - `node` version (minimum TBD)
 - `git` installed
 - `composer` installed (warn if not)
@@ -159,6 +149,7 @@ wpaikit init --name my-project --preset woo     # future: select boilerplate var
 - Output: human-readable + `--json`
 
 **Tests**:
+
 - Unit tests for all `packages/core` modules
 - Integration tests for `init` in a temp directory (mock WP download + boilerplate clone)
 - Rollback scenario tests: mock failure at each step, verify cleanup
@@ -170,9 +161,18 @@ wpaikit init --name my-project --preset woo     # future: select boilerplate var
 
 ## Phase 4: Knowledge Base
 
-All files in English. No AI-tool-specific frontmatter (adapters add that later).
+All files are authored once and composed by profile. `wpaikit init` installs the matching profile
+in the generated project root. `wpaikit knowledge install` auto-detects the preset and project root
+from the nearest parent `.wpaikit.json`, tracks owned files in `.wpaikit/knowledge-manifest.json`, and protects local
+changes unless `--force` is explicitly used.
+
+- `standard` = Common + WordPress
+- `woo` = Common + WordPress + WooCommerce
+
+The paths below describe the composed `knowledge/` directory inside a generated project.
 
 ### `knowledge/rules/wp-boilerplate.md`
+
 - Theme directory structure and extension points
 - Naming conventions: files (kebab-case), PHP classes (PascalCase), functions (camelCase)
 - Build pipeline: Vite config, Tailwind, SCSS, output paths
@@ -182,6 +182,7 @@ All files in English. No AI-tool-specific frontmatter (adapters add that later).
 - Where to put blocks, services, CPTs
 
 ### `knowledge/rules/acf-blocks.md`
+
 - Block anatomy: PHP class + Twig template + ACF JSON group (triplet)
 - PHP class structure based on `AbstractBlock`:
   - `init()`: sets `name` (kebab-case), `title`, `description`, `keywords`, `icon`
@@ -196,6 +197,7 @@ All files in English. No AI-tool-specific frontmatter (adapters add that later).
 - `BlocksService` auto-loads any class in the `Boilerplate\Theme\Blocks\` namespace
 
 ### `knowledge/rules/figma-to-block.md`
+
 - One Figma frame = one ACF block
 - Figma Variables → Tailwind token mapping
 - Auto-layout → flex/grid CSS
@@ -204,6 +206,7 @@ All files in English. No AI-tool-specific frontmatter (adapters add that later).
 - What NOT to do: inline styles, raw hex codes, classes outside design system
 
 ### `knowledge/rules/design-system.md`
+
 - `tailwind.config.js` structure and extension points
 - Token categories: colors, fonts, spacing, radius, shadows
 - Syncing with Figma Variables
@@ -212,13 +215,13 @@ All files in English. No AI-tool-specific frontmatter (adapters add that later).
 
 Three Handlebars templates. Template variables:
 
-| Variable | Example |
-|---|---|
-| `{{BlockName}}` | `HeroBlock` |
-| `{{block-name}}` | `hero-block` |
-| `{{block_name}}` | `hero_block` |
-| `{{BlockTitle}}` | `Hero Block` |
-| `{{namespace}}` | `Boilerplate` |
+| Variable         | Example       |
+| ---------------- | ------------- |
+| `{{BlockName}}`  | `HeroBlock`   |
+| `{{block-name}}` | `hero-block`  |
+| `{{block_name}}` | `hero_block`  |
+| `{{BlockTitle}}` | `Hero Block`  |
+| `{{namespace}}`  | `Boilerplate` |
 | `{{textDomain}}` | `boilerplate` |
 
 **`BlockName.php.hbs`** — PHP class extending AbstractBlock with `init()`, `getContext()`, `sanitizeContext()`, `getExample()` stubs.
@@ -236,7 +239,7 @@ Three Handlebars templates. Template variables:
       "id": "standard",
       "name": "WP Standard",
       "repo": "git@github.com:GoldenCodesSlava/boilerplate-wp-standard.git",
-      "branch": "main",
+      "branch": "master",
       "postInstall": [
         "composer install",
         "cd frontend && npm install",
@@ -267,6 +270,7 @@ wpaikit create-block Hero --dry-run  # print what would be created
 ```
 
 Steps:
+
 1. Normalize name to `PascalCase` + derive `kebab-case`, `snake_case`, `Human Title`
 2. Check no block with this name exists already
 3. Render 3 templates with Handlebars
@@ -307,11 +311,13 @@ What this command does.
 User passed: {{ARGUMENTS}}
 
 Expected arguments:
+
 - `--arg` (required) — description
 
 ## Context to load
 
 Before starting, read:
+
 1. `knowledge/rules/wp-boilerplate.md`
 2. `knowledge/rules/acf-blocks.md`
 
@@ -336,6 +342,7 @@ In other environments — read them explicitly before starting.
 **`init-site.md`** — run `wpaikit init` with collected parameters, show preset options.
 
 **`create-block.md`**:
+
 1. Read rules: `wp-boilerplate`, `acf-blocks`
 2. Run `wpaikit theme-info --json` to get project context
 3. Ask user: block name, fields needed, layout intent
@@ -343,6 +350,7 @@ In other environments — read them explicitly before starting.
 5. Edit generated files to add the correct ACF fields (PHP + JSON) and Twig layout
 
 **`create-block-by-figma.md`**:
+
 1. Read rules: `wp-boilerplate`, `acf-blocks`, `figma-to-block`
 2. Get design context via Figma MCP
 3. Run `wpaikit list-tokens --json` to get current design tokens
@@ -351,6 +359,7 @@ In other environments — read them explicitly before starting.
 6. Show result: created files, dev server command
 
 **`create-design-system.md`**:
+
 1. Read rules: `design-system`, `figma-to-block`
 2. Extract Variables from Figma MCP
 3. Map to tailwind.config.js token structure
@@ -365,10 +374,12 @@ In other environments — read them explicitly before starting.
 From `knowledge/`, produces Claude Code-specific files:
 
 **`.claude/commands/*.md`** — one per prompt in `knowledge/prompts/`:
+
 - Adds frontmatter: `description`, `argument-hint`
 - Replaces `{{ARGUMENTS}}` → `$ARGUMENTS`
 
 **`.claude/skills/<name>/SKILL.md`** — one per rule in `knowledge/rules/`:
+
 - Adds frontmatter: `name`, `description` (written as "when to activate this skill")
 - Content stays as-is from knowledge/rules/
 
@@ -391,6 +402,7 @@ Full cycle works: `wpaikit install claude-code` → `/create-block Hero` in Clau
 ### What the adapter generates
 
 **`AGENTS.md`** in project root — index only (no inline content):
+
 - List of available `wpaikit` commands with descriptions
 - List of available prompts with links to `docs/prompts/`
 - Links to rules in `docs/rules/`
@@ -450,15 +462,15 @@ Same `/create-block Hero` scenario produces an equivalent result in Codex as in 
 
 ## Milestones
 
-| Version | Scope |
-|---|---|
-| `0.1.0` | `wpaikit init` + `wpaikit doctor` |
-| `0.2.0` | `wpaikit create-block` + block utility commands |
+| Version | Scope                                                 |
+| ------- | ----------------------------------------------------- |
+| `0.1.0` | `wpaikit init` + `wpaikit doctor`                     |
+| `0.2.0` | `wpaikit create-block` + block utility commands       |
 | `0.3.0` | Claude Code adapter: `/create-block` works end-to-end |
-| `0.4.0` | Codex adapter: same result as Claude Code |
-| `0.5.0` | Figma integration: `/create-block-by-figma` |
-| `0.6.0` | Design system: `/create-design-system` |
-| `1.0.0` | Full docs, QA on all platforms |
+| `0.4.0` | Codex adapter: same result as Claude Code             |
+| `0.5.0` | Figma integration: `/create-block-by-figma`           |
+| `0.6.0` | Design system: `/create-design-system`                |
+| `1.0.0` | Full docs, QA on all platforms                        |
 
 ---
 

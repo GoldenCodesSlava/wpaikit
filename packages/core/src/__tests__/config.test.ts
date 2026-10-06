@@ -49,4 +49,31 @@ describe('config', () => {
     writeConfig(makeConfig('second'), dir)
     expect(readConfig(dir)?.name).toBe('second')
   })
+
+  it('writes and reads a WooCommerce profile', () => {
+    const config: WpaikitConfig = {
+      ...makeConfig('shop'),
+      preset: 'woo',
+      woocommerce: {
+        multilingual: 'wpml',
+        variantCatalog: 'main-only',
+        wishlist: false,
+      },
+    }
+
+    writeConfig(config, dir)
+    expect(readConfig(dir)).toEqual(config)
+  })
+
+  it('rejects a woo preset without WooCommerce configuration', () => {
+    expect(() =>
+      writeConfig(
+        {
+          ...makeConfig('shop'),
+          preset: 'woo',
+        } as WpaikitConfig,
+        dir,
+      ),
+    ).toThrow(/WooCommerce configuration is required/)
+  })
 })
