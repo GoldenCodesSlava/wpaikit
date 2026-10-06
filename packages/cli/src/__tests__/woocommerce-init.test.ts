@@ -104,7 +104,7 @@ describe('WooCommerce init contracts', () => {
   it('checks the bundled plugin PHP runtime when the plugin is present', async () => {
     mkdirSync(join(dir, 'wp-content', 'plugins', 'wpaikit-product-catalog-io'), { recursive: true })
     const checks = await checkCatalogPhpRuntime(dir)
-    expect(checks.map(({ name }) => name)).toEqual(['Catalog PHP', 'Catalog PHP extensions'])
+    expect(checks.map(({ name }) => name)).toEqual(['Catalog PHP CLI', 'Catalog PHP CLI extensions'])
   })
 
   it('requires only WooCommerce when WPML is disabled', () => {

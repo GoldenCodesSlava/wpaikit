@@ -621,6 +621,12 @@ production-сборка реализованы в `0.7.0`. WooCommerce preset у
 релизным барьером: текущий options-backed runner ограничен 2000 локализованными записями,
 тогда как Definition of Done требует 10 000 физических товаров.
 
+Runtime smoke выполнен на двух изолированных WordPress 7.1.3 + WooCommerce 11.1.2 установках.
+Профиль `none`: установка ZIP, три экспорта, price/stock Commit и Rollback. Профиль `wpml`:
+активация WPML/WCML, языки EN/RO/RU, экспорт и database-aware Preflight трёх форматов,
+full Commit и Rollback. Smoke выявил и исправил возврат source ID из `wpml_object_id`:
+адаптер теперь разрешает переводы через публичные WPML hooks translation group.
+
 ## 19. Интеграция с WPAIKit
 
 - исходники plugin хранить как отдельный versioned package/repository, а не в theme;

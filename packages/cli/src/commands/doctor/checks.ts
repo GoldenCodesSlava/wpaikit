@@ -135,13 +135,13 @@ export async function checkCatalogPhpRuntime(cwd: string): Promise<CheckResult[]
     const compatible = majorMinor[0]! > 8 || (majorMinor[0] === 8 && majorMinor[1]! >= 2)
     return [
       {
-        name: 'Catalog PHP',
+        name: 'Catalog PHP CLI',
         status: compatible ? 'ok' : 'error',
         message: runtime.version,
         ...(compatible ? {} : { fix: 'Use PHP 8.2 or later for the catalog plugin.' }),
       },
       {
-        name: 'Catalog PHP extensions',
+        name: 'Catalog PHP CLI extensions',
         status: runtime.extensions.length === 0 ? 'ok' : 'error',
         message: runtime.extensions.length === 0 ? 'zip, xml, mbstring available' : `missing: ${runtime.extensions.join(', ')}`,
         ...(runtime.extensions.length === 0 ? {} : { fix: 'Enable the missing extensions in the PHP installation used by WordPress.' }),
@@ -149,7 +149,7 @@ export async function checkCatalogPhpRuntime(cwd: string): Promise<CheckResult[]
     ]
   } catch {
     return [{
-      name: 'Catalog PHP',
+      name: 'Catalog PHP CLI',
       status: 'error',
       message: 'PHP CLI unavailable or could not be inspected',
       fix: 'Install PHP 8.2+ with zip, xml and mbstring extensions.',
