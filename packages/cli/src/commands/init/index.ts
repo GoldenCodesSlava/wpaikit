@@ -10,11 +10,12 @@ import { configureWooBoilerplate } from './steps/configure-boilerplate.js'
 import { getPreset } from '../../presets.js'
 import type { InitCommandOptions } from './prompts.js'
 import { getWooPluginRequirements } from '../../woocommerce-plugins.js'
-import { installKnowledge } from '../knowledge/index.js'
+import { PACK_IDS, installKnowledge, parsePacksOption } from '../knowledge/index.js'
 
 export async function runInit(options: InitCommandOptions = {}): Promise<void> {
   intro('wpaikit init')
 
+  const knowledgePacks = options.packs ? parsePacksOption(options.packs) : [...PACK_IDS]
   const answers = await askInitQuestions(options)
 
   const { location, projectName, slug, namespace, textDomain, preset, woocommerce } = answers
@@ -76,8 +77,12 @@ export async function runInit(options: InitCommandOptions = {}): Promise<void> {
     const s3 = spinner()
     s3.start('Installing project knowledge...')
     try {
-      const knowledge = await installKnowledge({ targetDir, profile: preset })
-      s3.stop(`Knowledge installed (${knowledge.layers.join(' + ')})`)
+      const knowledge = await installKnowledge({
+        targetDir,
+        packs: knowledgePacks,
+        wordpressProfile: preset,
+      })
+      s3.stop(`Knowledge installed (${knowledge.packs.join(' + ')})`)
     } catch (err) {
       s3.stop('Knowledge install failed')
       throw err

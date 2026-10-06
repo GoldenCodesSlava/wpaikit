@@ -21,6 +21,7 @@ program
   .option('--multilingual <profile>', 'Woo multilingual profile: wpml or none')
   .option('--variant-catalog <mode>', 'Woo catalog mode: main-only or all')
   .option('--wishlist <value>', 'Woo wishlist: yes or no')
+  .option('--packs <list>', 'knowledge packs: all (default) or design,slicing,wordpress')
   .action(async (options: InitCommandOptions) => {
     try {
       await runInit(options)
@@ -50,8 +51,9 @@ const knowledge = program
 knowledge
   .command('install')
   .alias('update')
-  .description('Install or update the knowledge profile for the current project')
-  .option('--profile <profile>', 'knowledge profile for a project without .wpaikit.json')
+  .description('Install or update knowledge packs for the current project')
+  .option('--packs <list>', 'all or a comma-separated list of: design, slicing, wordpress')
+  .option('--wp-profile <profile>', 'WordPress profile (standard or woo) for the WordPress pack')
   .option('--force', 'replace locally modified WPAIKit-managed files')
   .option('--dry-run', 'show the planned changes without writing files')
   .action(async (options: KnowledgeCommandOptions) => {

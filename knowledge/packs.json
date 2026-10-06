@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "packs": {
+    "design": {
+      "label": "Design",
+      "hint": "Figma: analysis, design system, components, generation, SEO",
+      "commands": [
+        "analyze-figma",
+        "figma-design-system",
+        "figma-components",
+        "prep-figma",
+        "figma-sync-tokens",
+        "figma-update-design-system",
+        "generate-design",
+        "design-quality-check",
+        "figma-seo-structure",
+        "figma-seo-texts"
+      ],
+      "sharedCommands": [],
+      "sharedFiles": ["rules/figma-blocks.md", "contracts/design-system.md"]
+    },
+    "slicing": {
+      "label": "Slicing",
+      "hint": "Figma → HTML + SCSS + Tailwind + JS, no CMS",
+      "commands": ["figma-to-block-html"],
+      "sharedCommands": ["scan-project", "setup-fonts"],
+      "sharedFiles": ["rules/figma-blocks.md", "contracts/design-system.md"]
+    },
+    "wordpress": {
+      "label": "WordPress",
+      "hint": "ACF blocks, Twig, PHP, boilerplate rules",
+      "commands": [
+        "figma-to-block",
+        "design-system-to-code",
+        "scan-components",
+        "validate-code",
+        "get-comment-for-frontend"
+      ],
+      "sharedCommands": ["scan-project", "setup-fonts"],
+      "sharedFiles": ["rules/figma-blocks.md", "contracts/design-system.md"],
+      "variants": {
+        "standard": {
+          "label": "WordPress Standard",
+          "hint": "Timber + ACF + Vite + Tailwind",
+          "extraDirs": []
+        },
+        "woo": {
+          "label": "WooCommerce",
+          "hint": "Standard + WooCommerce layer",
+          "extraDirs": ["woocommerce"]
+        }
+      }
+    }
+  },
+  "commands": {
+    "analyze-figma": {
+      "usage": "/analyze-figma <figma-url> [--lang en|ro|ru]",
+      "description": "Audit a Figma frame for block implementation readiness",
+      "constraint": "read-only, do not modify Figma files."
+    },
+    "figma-design-system": {
+      "usage": "/figma-design-system <figma-url>",
+      "description": "Extract tokens from frames → create Design System page + Variables + Text Styles + `_patterns` cache",
+      "constraint": "may create a new page, Variables, and Text Styles; never modify existing design frames."
+    },
+    "figma-components": {
+      "usage": "/figma-components",
+      "description": "Create Figma Components with variants from `_patterns` in `.wpaikit/design-system.json`",
+      "constraint": "reads `.wpaikit/design-system.json` only; never calls `get_design_context`."
+    },
+    "prep-figma": {
+      "usage": "/prep-figma <figma-url>",
+      "description": "Prepare a page frame for code generation — tokens, Auto Layout, naming, components",
+      "constraint": "works on a copy in \"Dev Ready\" page; never modifies original frames."
+    },
+    "figma-sync-tokens": {
+      "usage": "/figma-sync-tokens",
+      "description": "Sync `design-system.json` after designer manually edited Variables or Styles in Figma",
+      "constraint": "read-only from Figma; updates only token sections of `design-system.json`; never deletes tokens (uses `deprecated: true`)."
+    },
+    "figma-update-design-system": {
+      "usage": "/figma-update-design-system",
+      "description": "Add new Figma frames to existing design system — merge tokens and update Figma page",
+      "constraint": "never deletes or modifies existing tokens; skips frames already in `sourceFrames`; never runs code generation automatically."
+    },
+    "generate-design": {
+      "usage": "/generate-design",
+      "description": "Interactively collect design materials and generate a UI design directly in Figma",
+      "constraint": "writes only to the designer-specified target Figma file; never modifies the DS file; never generates Mobile without explicit request; always runs quality check before generating."
+    },
+    "design-quality-check": {
+      "usage": "/design-quality-check [<figma-url>]",
+      "description": "Audit a design brief (no URL) or existing Figma design (with URL) for AI slop patterns and quality issues",
+      "constraint": "brief mode: read-only on text input; design mode: read-only on Figma unless designer confirms fixes; never blocks generation over a designer override."
+    },
+    "figma-seo-structure": {
+      "usage": "/figma-seo-structure <figma-url> [--lang en|ro|ru]",
+      "description": "Audit a Figma page for structural SEO → build missing blocks in Figma + SEO annotations",
+      "constraint": "audit is read-only; builds only after the user approves the plan; never edits original frames unless the user explicitly says to edit in place; all invented data is flagged as placeholder."
+    },
+    "figma-seo-texts": {
+      "usage": "/figma-seo-texts <figma-url>",
+      "description": "Generate multilingual SEO texts from a Figma page — skips dynamic blocks, localizes per language",
+      "constraint": "read-only from Figma; never modifies Figma layers; never skips confirmation of block list or keywords; only writes the output `.md` file."
+    },
+    "figma-to-block-html": {
+      "usage": "/figma-to-block-html <desktop-url> [<mobile-url>]",
+      "description": "Slice a Figma block frame into HTML + SCSS (Tailwind `@apply`) + JS for interactive blocks",
+      "constraint": "static front-end only; never overwrites files without confirmation."
+    },
+    "figma-to-block": {
+      "usage": "/figma-to-block <desktop-url> [<mobile-url>]",
+      "description": "Generate PHP + Twig + SCSS + ACF JSON for a WordPress block from a Figma frame",
+      "constraint": "run from the active theme root containing `blocks/`, `views/` and `acf-json/`; never overwrite files without confirmation."
+    },
+    "design-system-to-code": {
+      "usage": "/design-system-to-code",
+      "description": "Generate Twig components + SCSS partials + update tailwind.config.js from design-system.json",
+      "constraint": "reads `.wpaikit/design-system.json`; never overwrites files without confirmation."
+    },
+    "scan-components": {
+      "usage": "/scan-components",
+      "description": "Scan SCSS and Twig files, build `.wpaikit/components-registry.md` for reuse in generation commands",
+      "constraint": "read-only scan; only writes `.wpaikit/components-registry.md`; never modifies SCSS or Twig files."
+    },
+    "validate-code": {
+      "usage": "/validate-code",
+      "description": "Validate SCSS, Twig, PHP against coding rules — report violations and fix them",
+      "constraint": "fixes only after reporting the violations."
+    },
+    "get-comment-for-frontend": {
+      "usage": "/get-comment-for-frontend <page-url-or-slug>",
+      "description": "Generate a `.md` developer reference listing all ACF blocks on a page with Twig, SCSS, and JS paths",
+      "constraint": "read-only DB query (SELECT only); never prints DB credentials; writes only the output `.md` file."
+    },
+    "scan-project": {
+      "usage": "/scan-project",
+      "description": "Scan any project and write the `.wpaikit/project.md` knowledge base",
+      "constraint": "read-only scan; only writes `.wpaikit/project.md`; never prints secrets or credentials."
+    },
+    "setup-fonts": {
+      "usage": "/setup-fonts",
+      "description": "Audit fonts vs design-system.json, remove unused, convert to woff/woff2, generate @font-face SCSS",
+      "constraint": "never deletes font files without user confirmation; never references ttf/otf in generated CSS."
+    }
+  }
+}

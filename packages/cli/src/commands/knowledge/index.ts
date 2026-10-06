@@ -1,6 +1,6 @@
 import { createHash, randomUUID } from 'node:crypto'
 import { existsSync } from 'node:fs'
-import { lstat, mkdir, readFile, readdir, rename, rm, rmdir, writeFile } from 'node:fs/promises'
+import { lstat, mkdir, readFile, rename, rm, rmdir, writeFile } from 'node:fs/promises'
 import { dirname, isAbsolute, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
@@ -11,12 +11,24 @@ import {
   readConfig,
   hasConfig,
   select,
+  multiselect,
 } from '@veaceslav-golden/wp-ai-kit-core'
 import { z } from 'zod'
-import { getPreset } from '../../presets.js'
 import type { PresetId } from '../../presets.js'
+import {
+  PACK_IDS,
+  WORDPRESS_PROFILES,
+  buildPackFiles,
+  formatSelection,
+  loadPackCatalog,
+  normalizePacks,
+  parsePacksOption,
+} from './packs.js'
+import type { KnowledgeSelection, PackCatalog, PackId } from './packs.js'
 
-const PROFILE_IDS = ['standard', 'woo'] as const
+export { PACK_IDS, parsePacksOption } from './packs.js'
+export type { KnowledgeSelection, PackId } from './packs.js'
+
 const MANIFEST_RELATIVE_PATH = '.wpaikit/knowledge-manifest.json'
 
 const ManagedPathSchema = z
@@ -34,25 +46,41 @@ const KnowledgeVersionSchema = z.object({
   version: z.string().min(1),
 })
 
-const KnowledgeProfileSchema = z.object({
-  id: z.enum(PROFILE_IDS),
-  layers: z.array(z.string().regex(/^[a-z][a-z0-9-]*$/)).min(1),
-})
+const ManagedFilesSchema = z.record(ManagedPathSchema, z.string().regex(/^[a-f0-9]{64}$/))
 
-const KnowledgeManifestSchema = z.object({
+const KnowledgeManifestV1Schema = z.object({
   schemaVersion: z.literal(1),
   knowledgeVersion: z.string().min(1),
-  profile: z.enum(PROFILE_IDS),
+  profile: z.enum(WORDPRESS_PROFILES),
   layers: z.array(z.string().min(1)),
-  files: z.record(ManagedPathSchema, z.string().regex(/^[a-f0-9]{64}$/)),
+  files: ManagedFilesSchema,
 })
 
-type KnowledgeManifest = z.infer<typeof KnowledgeManifestSchema>
+const KnowledgeManifestV2Schema = z.object({
+  schemaVersion: z.literal(2),
+  knowledgeVersion: z.string().min(1),
+  packs: z.array(z.enum(PACK_IDS)).min(1),
+  wordpressProfile: z.enum(WORDPRESS_PROFILES).optional(),
+  files: ManagedFilesSchema,
+})
 
-interface DesiredFile {
-  contents: Buffer
-  hash: string
-}
+type KnowledgeManifest = z.infer<typeof KnowledgeManifestV2Schema>
+
+/** v1 manifests always contained the full kit for a WordPress profile. */
+const KnowledgeManifestSchema = z
+  .union([KnowledgeManifestV2Schema, KnowledgeManifestV1Schema])
+  .transform(
+    (manifest): KnowledgeManifest =>
+      manifest.schemaVersion === 2
+        ? manifest
+        : {
+            schemaVersion: 2,
+            knowledgeVersion: manifest.knowledgeVersion,
+            packs: [...PACK_IDS],
+            wordpressProfile: manifest.profile,
+            files: manifest.files,
+          },
+  )
 
 interface ExistingFile {
   kind: 'missing' | 'file' | 'other'
@@ -64,20 +92,20 @@ interface AppliedFile {
   backup?: string
 }
 
-export interface KnowledgeInstallOptions {
+export type KnowledgeChange = { path: string; action: 'add' | 'update' | 'remove' }
+
+export interface KnowledgeInstallOptions extends KnowledgeSelection {
   targetDir: string
-  profile: PresetId
   knowledgeSource?: string
-  claudeCommandsSource?: string | null
   force?: boolean
   dryRun?: boolean
 }
 
-export interface KnowledgeInstallResult {
-  profile: PresetId
+export interface KnowledgeInstallResult extends KnowledgeSelection {
   version: string
   previousVersion: string | null
-  layers: string[]
+  commands: string[]
+  changes: KnowledgeChange[]
   written: number
   removed: number
   unchanged: number
@@ -85,7 +113,8 @@ export interface KnowledgeInstallResult {
 }
 
 export interface KnowledgeCommandOptions {
-  profile?: string
+  packs?: string
+  wpProfile?: string
   force?: boolean
   dryRun?: boolean
 }
@@ -106,20 +135,12 @@ export function resolveKnowledgeTargetDir(startDir: string): string {
   return findProjectRoot(startDir) ?? resolve(startDir)
 }
 
-function bundledSources(): { knowledge: string; claudeCommands: string } {
-  const distDir = dirname(fileURLToPath(import.meta.url))
-  return {
-    knowledge: resolve(distDir, 'knowledge'),
-    claudeCommands: resolve(distDir, 'claude-commands'),
-  }
+export function bundledKnowledgeSource(): string {
+  return resolve(dirname(fileURLToPath(import.meta.url)), 'knowledge')
 }
 
 function hash(contents: Buffer): string {
   return createHash('sha256').update(contents).digest('hex')
-}
-
-function toManagedPath(...parts: string[]): string {
-  return parts.join('/').split(sep).join('/')
 }
 
 function managedDestination(targetDir: string, managedPath: string): string {
@@ -130,79 +151,6 @@ function managedDestination(targetDir: string, managedPath: string): string {
 async function readJson<T>(path: string, schema: z.ZodType<T>): Promise<T> {
   const raw = await readFile(path, 'utf-8')
   return schema.parse(JSON.parse(raw))
-}
-
-async function collectFiles(root: string, current: string = root): Promise<Map<string, Buffer>> {
-  const files = new Map<string, Buffer>()
-  const entries = await readdir(current, { withFileTypes: true })
-  entries.sort((left, right) => left.name.localeCompare(right.name))
-
-  for (const entry of entries) {
-    const source = resolve(current, entry.name)
-
-    if (entry.isSymbolicLink()) {
-      throw new Error(`Knowledge source must not contain symbolic links: ${source}`)
-    }
-
-    if (entry.isDirectory()) {
-      const nested = await collectFiles(root, source)
-      for (const [relativePath, contents] of nested) files.set(relativePath, contents)
-      continue
-    }
-
-    if (!entry.isFile()) continue
-
-    const relativePath = source
-      .slice(root.length + 1)
-      .split(sep)
-      .join('/')
-    files.set(relativePath, await readFile(source))
-  }
-
-  return files
-}
-
-function addDesiredFile(
-  desired: Map<string, DesiredFile>,
-  managedPath: string,
-  contents: Buffer,
-): void {
-  const validated = ManagedPathSchema.parse(managedPath)
-  if (desired.has(validated)) {
-    throw new Error(`Knowledge layers contain the same target file: ${validated}`)
-  }
-  desired.set(validated, { contents, hash: hash(contents) })
-}
-
-async function buildDesiredFiles(
-  knowledgeSource: string,
-  claudeCommandsSource: string | null,
-  profile: PresetId,
-  layers: string[],
-): Promise<Map<string, DesiredFile>> {
-  const desired = new Map<string, DesiredFile>()
-
-  for (const layer of layers) {
-    const layerRoot = resolve(knowledgeSource, 'layers', layer)
-    if (!existsSync(layerRoot)) throw new Error(`Knowledge layer not found: ${layer}`)
-
-    for (const [relativePath, contents] of await collectFiles(layerRoot)) {
-      addDesiredFile(desired, toManagedPath('knowledge', relativePath), contents)
-    }
-  }
-
-  const agents = await readFile(resolve(knowledgeSource, 'templates', `AGENTS.${profile}.md`))
-  const claude = await readFile(resolve(knowledgeSource, 'templates', 'CLAUDE.md'))
-  addDesiredFile(desired, 'AGENTS.md', agents)
-  addDesiredFile(desired, 'CLAUDE.md', claude)
-
-  if (claudeCommandsSource && existsSync(claudeCommandsSource)) {
-    for (const [relativePath, contents] of await collectFiles(claudeCommandsSource)) {
-      addDesiredFile(desired, toManagedPath('.claude', 'commands', relativePath), contents)
-    }
-  }
-
-  return new Map([...desired.entries()].sort(([left], [right]) => left.localeCompare(right)))
 }
 
 async function inspectFile(path: string): Promise<ExistingFile> {
@@ -253,12 +201,7 @@ export async function installKnowledge(
   options: KnowledgeInstallOptions,
 ): Promise<KnowledgeInstallResult> {
   const targetDir = resolve(options.targetDir)
-  const bundled = bundledSources()
-  const knowledgeSource = resolve(options.knowledgeSource ?? bundled.knowledge)
-  const claudeCommandsSource =
-    options.claudeCommandsSource === null
-      ? null
-      : resolve(options.claudeCommandsSource ?? bundled.claudeCommands)
+  const knowledgeSource = resolve(options.knowledgeSource ?? bundledKnowledgeSource())
 
   if (!existsSync(knowledgeSource)) {
     throw new Error(
@@ -267,23 +210,15 @@ export async function installKnowledge(
     )
   }
 
+  const selection = normalizeSelection(options)
   const version = await readJson(resolve(knowledgeSource, 'version.json'), KnowledgeVersionSchema)
-  const profile = await readJson(
-    resolve(knowledgeSource, 'profiles', `${options.profile}.json`),
-    KnowledgeProfileSchema,
-  )
-
-  if (profile.id !== options.profile) {
-    throw new Error(
-      `Knowledge profile file declares "${profile.id}", expected "${options.profile}"`,
-    )
-  }
-
-  const desired = await buildDesiredFiles(
-    knowledgeSource,
-    claudeCommandsSource,
-    options.profile,
-    profile.layers,
+  const catalog = await loadPackCatalog(knowledgeSource)
+  const built = await buildPackFiles(knowledgeSource, catalog, selection)
+  const desired = new Map(
+    [...built.files].map(([managedPath, contents]) => [
+      ManagedPathSchema.parse(managedPath),
+      { contents, hash: hash(contents) },
+    ]),
   )
   const manifestPath = resolve(targetDir, MANIFEST_RELATIVE_PATH)
   const previous = await readManifest(manifestPath)
@@ -339,20 +274,32 @@ export async function installKnowledge(
   }
 
   const manifest: KnowledgeManifest = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     knowledgeVersion: version.version,
-    profile: options.profile,
-    layers: profile.layers,
+    packs: selection.packs,
+    ...(selection.wordpressProfile ? { wordpressProfile: selection.wordpressProfile } : {}),
     files: Object.fromEntries([...desired].map(([managedPath, file]) => [managedPath, file.hash])),
   }
   const manifestContents = serializeManifest(manifest)
   const manifestChanged = previous.raw !== manifestContents
 
   const result: KnowledgeInstallResult = {
-    profile: options.profile,
+    ...selection,
     version: version.version,
     previousVersion: previous.manifest?.knowledgeVersion ?? null,
-    layers: profile.layers,
+    commands: built.commands,
+    changes: [
+      ...writes.map(
+        (path): KnowledgeChange => ({
+          path,
+          action:
+            previousFiles[path] || existsSync(managedDestination(targetDir, path))
+              ? 'update'
+              : 'add',
+        }),
+      ),
+      ...staleExisting.map((path): KnowledgeChange => ({ path, action: 'remove' })),
+    ].sort((left, right) => left.path.localeCompare(right.path)),
     written: writes.length,
     removed: staleExisting.length,
     unchanged: desired.size - writes.length,
@@ -430,34 +377,134 @@ export async function installKnowledge(
   return result
 }
 
-export async function resolveKnowledgeProfile(
-  targetDir: string,
-  requestedProfile?: string,
-): Promise<PresetId> {
-  const projectRoot = findProjectRoot(targetDir)
-  const config = projectRoot ? readConfig(projectRoot) : null
+function normalizeSelection(selection: KnowledgeSelection): KnowledgeSelection {
+  const packs = normalizePacks(selection.packs)
+  if (packs.length === 0) throw new Error('Select at least one knowledge pack')
 
-  const requested = requestedProfile ? getPreset(requestedProfile.toLowerCase()).id : undefined
+  if (!packs.includes('wordpress')) return { packs }
+  if (!selection.wordpressProfile)
+    throw new Error('The WordPress pack requires a WordPress profile')
+  return { packs, wordpressProfile: z.enum(WORDPRESS_PROFILES).parse(selection.wordpressProfile) }
+}
+
+function parseWordpressProfile(value: string): PresetId {
+  const parsed = z.enum(WORDPRESS_PROFILES).safeParse(value.toLowerCase())
+  if (!parsed.success) {
+    throw new Error(`Unknown WordPress profile "${value}". Use ${WORDPRESS_PROFILES.join(' or ')}.`)
+  }
+  return parsed.data
+}
+
+export interface KnowledgePrompts {
+  select: typeof select
+  multiselect: typeof multiselect
+}
+
+export interface ResolveSelectionOptions {
+  packs?: string
+  wpProfile?: string
+  /** Ask questions when nothing else decides the selection. Defaults to a TTY check. */
+  interactive?: boolean
+  prompts?: KnowledgePrompts
+  catalog?: PackCatalog
+}
+
+async function promptPacks(prompts: KnowledgePrompts, catalog?: PackCatalog): Promise<PackId[]> {
+  const mode = await prompts.select<'all' | 'choose'>({
+    message: 'Which knowledge packs do you want to install?',
+    options: [
+      { value: 'all', label: 'All', hint: 'Design + Slicing + WordPress' },
+      { value: 'choose', label: 'Choose packs' },
+    ],
+    initialValue: 'all',
+  })
+  if (mode === 'all') return [...PACK_IDS]
+
+  return prompts.multiselect<PackId>({
+    message: 'Select packs:',
+    options: PACK_IDS.map((pack) => ({
+      value: pack,
+      label: catalog?.packs[pack].label ?? pack,
+      hint: catalog?.packs[pack].hint,
+    })),
+    required: true,
+  })
+}
+
+/**
+ * Decides which packs (and which WordPress profile) to install.
+ * Order: --packs → previous manifest → prompt (TTY) → all.
+ * The WordPress profile is only resolved when the WordPress pack is selected:
+ * .wpaikit.json → --wp-profile → previous manifest → prompt (TTY) → standard.
+ */
+export async function resolveKnowledgeSelection(
+  startDir: string,
+  options: ResolveSelectionOptions = {},
+): Promise<KnowledgeSelection> {
+  const projectRoot = findProjectRoot(startDir)
+  const targetDir = projectRoot ?? resolve(startDir)
+  const config = projectRoot ? readConfig(projectRoot) : null
+  const previous = (await readManifest(resolve(targetDir, MANIFEST_RELATIVE_PATH))).manifest
+  const interactive = options.interactive ?? Boolean(process.stdin.isTTY && process.stdout.isTTY)
+  const prompts = options.prompts ?? { select, multiselect }
+
+  let packs: PackId[]
+  if (options.packs !== undefined) packs = parsePacksOption(options.packs)
+  else if (previous) packs = normalizePacks(previous.packs)
+  else if (interactive) packs = normalizePacks(await promptPacks(prompts, options.catalog))
+  else packs = [...PACK_IDS]
+
+  const requested = options.wpProfile ? parseWordpressProfile(options.wpProfile) : undefined
+
+  if (!packs.includes('wordpress')) {
+    if (requested) {
+      throw new Error('--wp-profile requires the WordPress pack. Add wordpress to --packs.')
+    }
+    return { packs }
+  }
 
   if (config) {
     if (requested && requested !== config.preset) {
       throw new Error(
-        `Knowledge profile "${requested}" does not match .wpaikit.json preset "${config.preset}".`,
+        `WordPress profile "${requested}" does not match .wpaikit.json preset "${config.preset}".`,
       )
     }
-    return config.preset
+    return { packs, wordpressProfile: config.preset }
   }
 
-  if (requested) return requested
+  if (requested) return { packs, wordpressProfile: requested }
+  if (previous?.wordpressProfile) return { packs, wordpressProfile: previous.wordpressProfile }
 
-  return select<PresetId>({
-    message: 'Knowledge profile:',
-    options: [
-      { value: 'standard', label: 'WordPress Standard', hint: 'Common + WordPress' },
-      { value: 'woo', label: 'WooCommerce', hint: 'Common + WordPress + WooCommerce' },
-    ],
+  if (!interactive) return { packs, wordpressProfile: 'standard' }
+
+  const variants = options.catalog?.packs.wordpress.variants
+  const wordpressProfile = await prompts.select<PresetId>({
+    message: 'WordPress profile:',
+    options: WORDPRESS_PROFILES.map((profile) => ({
+      value: profile,
+      label: variants?.[profile].label ?? profile,
+      hint: variants?.[profile].hint,
+    })),
     initialValue: 'standard',
   })
+  return { packs, wordpressProfile }
+}
+
+function selectionNotes(selection: KnowledgeSelection): string[] {
+  const notes: string[] = []
+  if (!selection.packs.includes('design') && selection.packs.length > 0) {
+    notes.push(
+      '.wpaikit/design-system.json is created by /figma-design-system (Design pack) ' +
+        'or delivered by the designer.',
+    )
+  }
+  return notes
+}
+
+const CHANGE_MARKS: Record<KnowledgeChange['action'], string> = {
+  add: '+',
+  update: '~',
+  remove: '-',
 }
 
 export async function runKnowledgeInstall(options: KnowledgeCommandOptions = {}): Promise<void> {
@@ -465,14 +512,19 @@ export async function runKnowledgeInstall(options: KnowledgeCommandOptions = {})
 
   const cwd = process.cwd()
   const targetDir = resolveKnowledgeTargetDir(cwd)
-  const profile = await resolveKnowledgeProfile(cwd, options.profile)
+  const catalog = await loadPackCatalog(bundledKnowledgeSource()).catch(() => undefined)
+  const selection = await resolveKnowledgeSelection(cwd, {
+    packs: options.packs,
+    wpProfile: options.wpProfile,
+    catalog,
+  })
   const s = spinner()
   s.start(options.dryRun ? 'Inspecting knowledge installation...' : 'Installing knowledge...')
 
   try {
     const result = await installKnowledge({
       targetDir,
-      profile,
+      ...selection,
       force: options.force,
       dryRun: options.dryRun,
     })
@@ -485,11 +537,18 @@ export async function runKnowledgeInstall(options: KnowledgeCommandOptions = {})
           : result.version
       }`,
     )
-    logger.step(`Profile:   ${result.profile}`)
-    logger.step(`Layers:    ${result.layers.join(' + ')}`)
+    logger.step(`Packs:     ${formatSelection(result, catalog)}`)
+    logger.step(`Commands:  ${result.commands.length}`)
     logger.step(`Written:   ${result.written}`)
     logger.step(`Removed:   ${result.removed}`)
     logger.step(`Unchanged: ${result.unchanged}`)
+
+    if (options.dryRun && result.changes.length > 0) {
+      logger.message(
+        result.changes.map((change) => `${CHANGE_MARKS[change.action]} ${change.path}`).join('\n'),
+      )
+    }
+    for (const note of selectionNotes(result)) logger.info(note)
   } catch (error) {
     s.stop(options.dryRun ? 'Inspection failed' : 'Install failed')
     throw error

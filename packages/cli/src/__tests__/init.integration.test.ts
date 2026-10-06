@@ -131,8 +131,15 @@ describe('createProjectDir', () => {
     expect(createProjectDir(tmpBase, 'my-site', true, rollback, 'woo')).toBe(tmpBase)
     const manifest = JSON.parse(
       readFileSync(join(tmpBase, '.wpaikit', 'knowledge-manifest.json'), 'utf-8'),
-    ) as { profile: string; files: Record<string, string> }
-    expect(manifest.profile).toBe('woo')
+    ) as {
+      schemaVersion: number
+      packs: string[]
+      wordpressProfile: string
+      files: Record<string, string>
+    }
+    expect(manifest.schemaVersion).toBe(2)
+    expect(manifest.packs).toEqual(['design', 'slicing', 'wordpress'])
+    expect(manifest.wordpressProfile).toBe('woo')
     expect(Object.keys(manifest.files)).toEqual([
       'AGENTS.md',
       'CLAUDE.md',

@@ -120,10 +120,10 @@ function adoptLegacyKnowledge(cwd: string, profile: KnowledgeProfile): Knowledge
     resolve(cwd, KNOWLEDGE_MANIFEST),
     `${JSON.stringify(
       {
-        schemaVersion: 1,
+        schemaVersion: 2,
         knowledgeVersion: 'legacy-adopted',
-        profile,
-        layers: profile === 'woo' ? ['common', 'wordpress', 'woocommerce'] : ['common', 'wordpress'],
+        packs: ['design', 'slicing', 'wordpress'],
+        wordpressProfile: profile,
         files,
       },
       null,

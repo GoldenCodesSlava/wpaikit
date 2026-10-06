@@ -122,9 +122,36 @@ wpaikit knowledge install --dry-run
 wpaikit knowledge install
 ```
 
+### Pachete knowledge
+
+Knowledge base-ul este împărțit în pachete independente. Fiecare rol instalează doar ce îi trebuie:
+
+| Pachet | Pentru cine | Conține |
+|---|---|---|
+| `design` | designer | Comenzile Figma: analiză, design system, componente, prep, generare, SEO. Fără reguli WordPress. |
+| `slicing` | integrator (fără CMS) | `/figma-to-block-html` — HTML + SCSS (Tailwind `@apply`) + JS, plus `/scan-project` și `/setup-fonts` |
+| `wordpress` | dezvoltator WordPress | `/figma-to-block` (PHP + Twig + SCSS + ACF JSON), regulile boilerplate-ului; profilul `woo` adaugă WooCommerce |
+
+```bash
+wpaikit knowledge install                                   # întreabă ce pachete să instaleze
+wpaikit knowledge install --packs design                    # designer: profilul WordPress nu este cerut
+wpaikit knowledge install --packs slicing
+wpaikit knowledge install --packs slicing,wordpress --wp-profile woo
+wpaikit knowledge install --packs all                       # design + slicing + wordpress
+```
+
+- Fără `--packs`, comanda refolosește selecția salvată în `.wpaikit/knowledge-manifest.json`;
+  la prima instalare întreabă (sau instalează `all` fără terminal interactiv).
+- Profilul WordPress (`standard` / `woo`) se alege doar pentru pachetul `wordpress` și se ia din
+  `.wpaikit.json`, dacă există.
+- Dacă scoți un pachet, fișierele lui gestionate de WPAIKit sunt șterse; fișierele modificate local
+  opresc instalarea. Folosește `--dry-run` pentru a vedea lista `+ / ~ / -` înainte.
+- `wpaikit init` instalează `all`; folosește `wpaikit init --packs <list>` pentru altă selecție.
+
 Ce se copiază în proiectul tău:
 
-- `knowledge/` — prompturi, skill-uri și reguli pentru toate comenzile AI
+- `knowledge/<pachet>/` — prompturi, skill-uri și reguli ale pachetelor selectate;
+  `knowledge/shared/` — reguli și comenzi comune; `knowledge/context.md` — lista comenzilor instalate
 - `CLAUDE.md` — instrucțiuni pentru Claude Code (încărcat automat)
 - `AGENTS.md` — instrucțiuni pentru Codex/OpenAI
 - `.claude/commands/` — comenzile slash pentru Claude Code
@@ -843,7 +870,7 @@ wpaikit knowledge update --dry-run   # arată ce se schimbă
 wpaikit knowledge update             # alias pentru `wpaikit knowledge install`
 ```
 
-Output-ul afișează versiunea knowledge (ex: `Version: 1.7.0 → 1.8.0`) și numărul de fișiere
+Output-ul afișează versiunea knowledge (ex: `Version: 1.8.0 → 2.0.0`), pachetele instalate și numărul de fișiere
 scrise/șterse. Fișierele modificate local nu sunt suprascrise — comanda se oprește și le listează.
 Pentru a le înlocui oricum: `wpaikit knowledge update --force`.
 

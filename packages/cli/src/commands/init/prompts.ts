@@ -15,6 +15,7 @@ export interface InitCommandOptions {
   multilingual?: string
   variantCatalog?: string
   wishlist?: string
+  packs?: string
 }
 
 export interface InitAnswers {
