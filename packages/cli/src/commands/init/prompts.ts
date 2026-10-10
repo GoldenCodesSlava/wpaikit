@@ -1,12 +1,14 @@
 import { promptText, confirm, select } from '@veaceslav-golden/wp-ai-kit-core'
-import type { WooCommerceProjectConfig } from '@veaceslav-golden/wp-ai-kit-core'
+import type { SeoProfile, WooCommerceProjectConfig } from '@veaceslav-golden/wp-ai-kit-core'
 import {
   MultilingualProfileSchema,
+  SeoProfileSchema,
   VariantCatalogProfileSchema,
 } from '@veaceslav-golden/wp-ai-kit-core'
 import { toSlug, toPascalCase } from './normalize-name.js'
 import { getPreset, PRESETS } from '../../presets.js'
 import type { PresetId } from '../../presets.js'
+import { SEO_CHOICES } from '../../seo.js'
 
 export type LocationChoice = 'new-folder' | 'current-dir'
 
@@ -15,6 +17,7 @@ export interface InitCommandOptions {
   multilingual?: string
   variantCatalog?: string
   wishlist?: string
+  seo?: string
   packs?: string
 }
 
@@ -26,6 +29,7 @@ export interface InitAnswers {
   textDomain: string
   preset: PresetId
   woocommerce?: WooCommerceProjectConfig
+  seo: SeoProfile
 }
 
 function parseWishlist(value: string): boolean {
@@ -90,6 +94,26 @@ export async function askWooCommerceQuestions(
   return { multilingual, variantCatalog, wishlist }
 }
 
+export async function askSeoQuestion(options: InitCommandOptions): Promise<SeoProfile> {
+  if (options.seo) {
+    const parsed = SeoProfileSchema.safeParse(options.seo.toLowerCase())
+
+    if (!parsed.success) {
+      throw new Error(
+        `Invalid SEO value "${options.seo}". Use ${SEO_CHOICES.map(({ value }) => value).join(', ')}.`,
+      )
+    }
+
+    return parsed.data
+  }
+
+  return select<SeoProfile>({
+    message: 'SEO:',
+    options: SEO_CHOICES.map(({ value, label, hint }) => ({ value, label, hint })),
+    initialValue: 'module',
+  })
+}
+
 export async function askInitQuestions(options: InitCommandOptions = {}): Promise<InitAnswers> {
   const location = await select<LocationChoice>({
     message: 'Where do you want to set up the project?',
@@ -148,6 +172,7 @@ export async function askInitQuestions(options: InitCommandOptions = {}): Promis
       })
 
   const woocommerce = await askWooCommerceQuestions(preset, options)
+  const seo = await askSeoQuestion(options)
 
   const ready = await confirm(
     `Ready to scaffold "${projectName}"${location === 'new-folder' ? ` in ./${slug}/` : ' in the current directory'}?`,
@@ -165,5 +190,6 @@ export async function askInitQuestions(options: InitCommandOptions = {}): Promis
     textDomain,
     preset,
     ...(woocommerce ? { woocommerce } : {}),
+    seo,
   }
 }

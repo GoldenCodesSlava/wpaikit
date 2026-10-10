@@ -10,7 +10,8 @@ export {
   WooCommerceProjectConfigSchema,
   MultilingualProfileSchema,
   VariantCatalogProfileSchema,
+  SeoProfileSchema,
 } from './config.js'
-export type { WpaikitConfig, WooCommerceProjectConfig } from './config.js'
+export type { WpaikitConfig, WooCommerceProjectConfig, SeoProfile } from './config.js'
 export { WpaikitError, PreflightError, ValidationError, RollbackError } from './errors.js'
 export { Rollback } from './rollback.js'

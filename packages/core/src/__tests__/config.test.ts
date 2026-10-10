@@ -65,6 +65,24 @@ describe('config', () => {
     expect(readConfig(dir)).toEqual(config)
   })
 
+  it('writes and reads the SEO choice', () => {
+    const config: WpaikitConfig = { ...makeConfig('site'), seo: 'rank-math' }
+
+    writeConfig(config, dir)
+    expect(readConfig(dir)?.seo).toBe('rank-math')
+  })
+
+  it('keeps configs written before the SEO choice valid', () => {
+    writeConfig(makeConfig('legacy'), dir)
+    expect(readConfig(dir)?.seo).toBeUndefined()
+  })
+
+  it('rejects an unknown SEO choice', () => {
+    expect(() =>
+      writeConfig({ ...makeConfig('site'), seo: 'aioseo' } as unknown as WpaikitConfig, dir),
+    ).toThrow()
+  })
+
   it('rejects a woo preset without WooCommerce configuration', () => {
     expect(() =>
       writeConfig(

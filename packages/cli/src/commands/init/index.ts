@@ -6,10 +6,14 @@ import { cloneBoilerplate } from './steps/clone-boilerplate.js'
 import { renameBoilerplate } from './steps/rename.js'
 import { runPostInstall } from './steps/post-install.js'
 import { writeProjectConfig } from './steps/write-config.js'
-import { configureWooBoilerplate } from './steps/configure-boilerplate.js'
+import {
+  configureBoilerplate,
+  getStandardConfigureArgs,
+  getWooConfigureArgs,
+} from './steps/configure-boilerplate.js'
 import { getPreset } from '../../presets.js'
 import type { InitCommandOptions } from './prompts.js'
-import { getWooPluginRequirements } from '../../woocommerce-plugins.js'
+import { getProjectPluginRequirements } from '../../project-plugins.js'
 import { PACK_IDS, installKnowledge, parsePacksOption } from '../knowledge/index.js'
 
 export async function runInit(options: InitCommandOptions = {}): Promise<void> {
@@ -18,7 +22,7 @@ export async function runInit(options: InitCommandOptions = {}): Promise<void> {
   const knowledgePacks = options.packs ? parsePacksOption(options.packs) : [...PACK_IDS]
   const answers = await askInitQuestions(options)
 
-  const { location, projectName, slug, namespace, textDomain, preset, woocommerce } = answers
+  const { location, projectName, slug, namespace, textDomain, preset, woocommerce, seo } = answers
   const presetDefinition = getPreset(preset)
 
   const cwd = process.cwd()
@@ -53,13 +57,16 @@ export async function runInit(options: InitCommandOptions = {}): Promise<void> {
     // 4. Rename theme + namespace + text domain
     renameBoilerplate(targetDir, projectName, slug, namespace, textDomain)
 
-    // 5. Apply preset-specific theme configuration
-    if (preset === 'woo') {
-      if (!woocommerce) {
-        throw new Error('WooCommerce configuration is required for the woo preset')
-      }
-      await configureWooBoilerplate(targetDir, slug, woocommerce)
+    // 5. Apply init choices to the theme (Woo profile, SEO module kept or removed)
+    if (preset === 'woo' && !woocommerce) {
+      throw new Error('WooCommerce configuration is required for the woo preset')
     }
+    await configureBoilerplate(
+      targetDir,
+      slug,
+      preset,
+      woocommerce ? getWooConfigureArgs(woocommerce, seo) : getStandardConfigureArgs(seo),
+    )
 
     // 6. Post-install (composer install, npm install, npm run build)
     await runPostInstall(targetDir, slug)
@@ -71,6 +78,7 @@ export async function runInit(options: InitCommandOptions = {}): Promise<void> {
       textDomain,
       preset,
       ...(woocommerce ? { woocommerce } : {}),
+      seo,
     })
 
     // 8. Install the profile-aware AI knowledge base
@@ -110,9 +118,11 @@ export async function runInit(options: InitCommandOptions = {}): Promise<void> {
     nextSteps.push(`  ${stepNum++}. Open the site in a browser and complete WordPress setup`)
     nextSteps.push(`  ${stepNum}. Activate the "${slug}" theme in wp-admin`)
 
-    if (woocommerce) {
+    const requiredPlugins = getProjectPluginRequirements({ woocommerce, seo })
+
+    if (requiredPlugins.length > 0) {
       nextSteps.push('', 'Required plugins:')
-      for (const plugin of getWooPluginRequirements(woocommerce)) {
+      for (const plugin of requiredPlugins) {
         const source =
           plugin.source === 'licensed'
             ? ' (licensed package)'
@@ -122,6 +132,13 @@ export async function runInit(options: InitCommandOptions = {}): Promise<void> {
         nextSteps.push(`  - ${plugin.label}${source}`)
       }
       nextSteps.push('', 'Run `wpaikit doctor` after WordPress and the database are configured.')
+    }
+
+    if (seo === 'later') {
+      nextSteps.push(
+        '',
+        'SEO: the built-in module was removed. Install an SEO plugin (e.g. Yoast SEO or Rank Math).',
+      )
     }
 
     note(nextSteps.join('\n'), 'Project scaffolded')

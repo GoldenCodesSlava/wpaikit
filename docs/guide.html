@@ -1,0 +1,2486 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="WPAIKit docs: installing the CLI and knowledge packs, workflows for designers, slicers, WordPress and WooCommerce developers."
+    />
+    <title>WPAIKit — documentation</title>
+    <style>
+      :root {
+        --bg: #f6f7f9;
+        --surface: #ffffff;
+        --surface-2: #f0f2f5;
+        --border: #e2e5ea;
+        --text: #16181d;
+        --muted: #5b6270;
+        --accent: #4f46e5;
+        --accent-soft: #eef0ff;
+        --accent-text: #3730a3;
+        --code-bg: #12141a;
+        --code-text: #e6e8ee;
+        --ok: #0f7b4b;
+        --ok-soft: #e7f6ee;
+        --warn: #9a5b00;
+        --warn-soft: #fff4e0;
+        --design: #db2777;
+        --slicing: #0891b2;
+        --wordpress: #2563eb;
+        --woo: #7c3aed;
+        --radius: 12px;
+        --shadow: 0 1px 2px rgb(16 24 40 / 6%), 0 4px 16px rgb(16 24 40 / 4%);
+        color-scheme: light;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) {
+          --bg: #0e1015;
+          --surface: #161920;
+          --surface-2: #1d2129;
+          --border: #2a2f3a;
+          --text: #e8eaf0;
+          --muted: #9aa1b0;
+          --accent: #8b85ff;
+          --accent-soft: #23233d;
+          --accent-text: #c7c4ff;
+          --code-bg: #0a0b0f;
+          --ok: #4ade80;
+          --ok-soft: #12291c;
+          --warn: #fbbf24;
+          --warn-soft: #2b2210;
+          --design: #f472b6;
+          --slicing: #22d3ee;
+          --wordpress: #60a5fa;
+          --woo: #a78bfa;
+          --shadow: none;
+          color-scheme: dark;
+        }
+      }
+
+      :root[data-theme='dark'] {
+        --bg: #0e1015;
+        --surface: #161920;
+        --surface-2: #1d2129;
+        --border: #2a2f3a;
+        --text: #e8eaf0;
+        --muted: #9aa1b0;
+        --accent: #8b85ff;
+        --accent-soft: #23233d;
+        --accent-text: #c7c4ff;
+        --code-bg: #0a0b0f;
+        --ok: #4ade80;
+        --ok-soft: #12291c;
+        --warn: #fbbf24;
+        --warn-soft: #2b2210;
+        --design: #f472b6;
+        --slicing: #22d3ee;
+        --wordpress: #60a5fa;
+        --woo: #a78bfa;
+        --shadow: none;
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 140px;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 16px/1.6 -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a {
+        color: var(--accent);
+      }
+
+      code,
+      pre,
+      kbd {
+        font-family: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+      }
+
+      :not(pre) > code {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 1px 6px;
+        font-size: 0.88em;
+        overflow-wrap: anywhere;
+      }
+
+      /* ---------- header ---------- */
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: color-mix(in srgb, var(--bg) 88%, transparent);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .topbar__inner {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 14px 16px 0;
+      }
+
+      .brand-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: var(--text);
+        margin-right: auto;
+      }
+
+      .brand__mark {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 700;
+        font-size: 14px;
+      }
+
+      .brand strong {
+        font-size: 17px;
+      }
+
+      .brand small {
+        color: var(--muted);
+        font-size: 13px;
+        margin-left: 6px;
+      }
+
+      .icon-btn {
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text);
+        border-radius: 8px;
+        height: 34px;
+        padding: 0 10px;
+        font: inherit;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .icon-btn:hover {
+        border-color: var(--accent);
+      }
+
+      .tabs {
+        display: flex;
+        gap: 4px;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .tabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      .tab {
+        flex: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 0;
+        background: none;
+        color: var(--muted);
+        font: inherit;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 10px 14px 12px;
+        border-bottom: 2px solid transparent;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .tab:hover {
+        color: var(--text);
+      }
+
+      .tab[aria-selected='true'] {
+        color: var(--text);
+        border-bottom-color: var(--tab-color, var(--accent));
+      }
+
+      .tab:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: -2px;
+        border-radius: 6px;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--tab-color, var(--accent));
+      }
+
+      .tab[data-tab='install'] {
+        --tab-color: var(--accent);
+      }
+      .tab[data-tab='design'] {
+        --tab-color: var(--design);
+      }
+      .tab[data-tab='slicing'] {
+        --tab-color: var(--slicing);
+      }
+      .tab[data-tab='wordpress'] {
+        --tab-color: var(--wordpress);
+      }
+      .tab[data-tab='woocommerce'] {
+        --tab-color: var(--woo);
+      }
+
+      /* ---------- layout ---------- */
+      main {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 28px 16px 80px;
+      }
+
+      .panel {
+        display: grid;
+        grid-template-columns: 220px minmax(0, 1fr);
+        gap: 40px;
+      }
+
+      .panel[hidden] {
+        display: none;
+      }
+
+      .toc {
+        position: sticky;
+        top: 140px;
+        align-self: start;
+        font-size: 14px;
+      }
+
+      .toc__title {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+        margin: 0 0 8px;
+      }
+
+      .toc a {
+        display: block;
+        padding: 5px 10px;
+        border-left: 2px solid var(--border);
+        color: var(--muted);
+        text-decoration: none;
+      }
+
+      .toc a:hover,
+      .toc a.is-active {
+        color: var(--text);
+        border-left-color: var(--accent);
+      }
+
+      .content {
+        min-width: 0;
+      }
+
+      .hero {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 28px;
+        margin-bottom: 28px;
+        border-top: 4px solid var(--panel-color, var(--accent));
+      }
+
+      .hero__eyebrow {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--panel-color, var(--accent));
+        margin: 0 0 6px;
+      }
+
+      .hero h1 {
+        font-size: clamp(26px, 4vw, 34px);
+        line-height: 1.2;
+        margin: 0 0 10px;
+      }
+
+      .hero p {
+        color: var(--muted);
+        margin: 0;
+        max-width: 760px;
+      }
+
+      .hero .cmd {
+        margin-top: 18px;
+      }
+
+      #panel-design {
+        --panel-color: var(--design);
+      }
+      #panel-slicing {
+        --panel-color: var(--slicing);
+      }
+      #panel-wordpress {
+        --panel-color: var(--wordpress);
+      }
+      #panel-woocommerce {
+        --panel-color: var(--woo);
+      }
+
+      section {
+        margin-bottom: 44px;
+      }
+
+      h2 {
+        font-size: 22px;
+        line-height: 1.3;
+        margin: 0 0 14px;
+      }
+
+      h3 {
+        font-size: 17px;
+        margin: 24px 0 10px;
+      }
+
+      p {
+        margin: 0 0 14px;
+      }
+
+      ul,
+      ol {
+        padding-left: 22px;
+        margin: 0 0 14px;
+      }
+
+      li + li {
+        margin-top: 4px;
+      }
+
+      .anchor {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .anchor:hover::after {
+        content: ' #';
+        color: var(--muted);
+      }
+
+      /* ---------- code ---------- */
+      .cmd {
+        position: relative;
+        margin: 0 0 14px;
+      }
+
+      .cmd pre {
+        margin: 0;
+        background: var(--code-bg);
+        color: var(--code-text);
+        border-radius: 10px;
+        padding: 14px 92px 14px 16px;
+        overflow-x: auto;
+        font-size: 14px;
+        line-height: 1.55;
+      }
+
+      .cmd pre .c {
+        color: #8b93a7;
+      }
+
+      .copy {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        border: 1px solid #33384a;
+        background: #1d2130;
+        color: #cfd4e2;
+        border-radius: 6px;
+        font: inherit;
+        font-size: 12px;
+        padding: 4px 10px;
+        cursor: pointer;
+      }
+
+      .copy:hover {
+        background: #282d40;
+      }
+
+      .copy.is-done {
+        color: #4ade80;
+        border-color: #2f6b47;
+      }
+
+      /* ---------- components ---------- */
+      .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--surface);
+        margin: 0 0 16px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14.5px;
+      }
+
+      th,
+      td {
+        text-align: left;
+        vertical-align: top;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      th {
+        background: var(--surface-2);
+        font-size: 13px;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      tr:last-child td {
+        border-bottom: 0;
+      }
+
+      td code {
+        white-space: nowrap;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 14px;
+        margin: 0 0 16px;
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 18px;
+        box-shadow: var(--shadow);
+      }
+
+      .card h3 {
+        margin: 0 0 6px;
+        font-size: 16px;
+      }
+
+      .card p {
+        color: var(--muted);
+        font-size: 14.5px;
+        margin: 0 0 10px;
+      }
+
+      .card p:last-child {
+        margin-bottom: 0;
+      }
+
+      .card--link {
+        cursor: pointer;
+        transition: border-color 0.15s;
+        border-top: 3px solid var(--card-color, var(--accent));
+      }
+
+      .card--link:hover {
+        border-color: var(--card-color, var(--accent));
+      }
+
+      .card__role {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--card-color, var(--accent));
+      }
+
+      .steps {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 16px;
+        counter-reset: step;
+      }
+
+      .steps > li {
+        position: relative;
+        padding: 0 0 18px 48px;
+        margin: 0;
+        counter-increment: step;
+      }
+
+      .steps > li::before {
+        content: counter(step);
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: var(--accent-soft);
+        color: var(--accent-text);
+        font-weight: 700;
+        font-size: 14px;
+      }
+
+      .steps > li::after {
+        content: '';
+        position: absolute;
+        left: 14px;
+        top: 34px;
+        bottom: 4px;
+        width: 2px;
+        background: var(--border);
+      }
+
+      .steps > li:last-child::after {
+        display: none;
+      }
+
+      .steps strong {
+        display: block;
+        margin-bottom: 2px;
+      }
+
+      .steps p {
+        color: var(--muted);
+        margin: 0 0 8px;
+      }
+
+      .steps .cmd {
+        margin-top: 6px;
+      }
+
+      .note {
+        border-radius: 10px;
+        padding: 12px 16px;
+        margin: 0 0 16px;
+        font-size: 15px;
+        background: var(--accent-soft);
+        border-left: 3px solid var(--accent);
+      }
+
+      .note--ok {
+        background: var(--ok-soft);
+        border-left-color: var(--ok);
+      }
+
+      .note--warn {
+        background: var(--warn-soft);
+        border-left-color: var(--warn);
+      }
+
+      .note p:last-child,
+      .note ul:last-child {
+        margin-bottom: 0;
+      }
+
+      .pill {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: 1px 9px;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      .tree {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px 16px;
+        font-size: 13.5px;
+        line-height: 1.6;
+        overflow-x: auto;
+        margin: 0 0 16px;
+        color: var(--text);
+      }
+
+      .tree .c {
+        color: var(--muted);
+      }
+
+      details.faq {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 0 16px;
+        margin-bottom: 10px;
+      }
+
+      details.faq summary {
+        cursor: pointer;
+        font-weight: 600;
+        padding: 12px 0;
+      }
+
+      details.faq[open] summary {
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 12px;
+      }
+
+      .footer {
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 14px;
+        padding-top: 18px;
+      }
+
+      @media (max-width: 900px) {
+        .panel {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 0;
+        }
+
+        .toc {
+          display: none;
+        }
+
+        .hero {
+          padding: 20px;
+        }
+
+        .brand small {
+          display: none;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .cmd pre {
+          padding: 40px 14px 14px;
+        }
+      }
+
+      @media print {
+        .topbar,
+        .toc,
+        .copy {
+          display: none;
+        }
+
+        .panel[hidden] {
+          display: block;
+        }
+      }
+
+      /* ---------- languages ---------- */
+      html[lang='en'] :is(l-ru, l-ro),
+      html[lang='ru'] :is(l-en, l-ro),
+      html[lang='ro'] :is(l-en, l-ru) {
+        display: none;
+      }
+
+      .lang-switch {
+        display: flex;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--surface);
+      }
+
+      .lang-switch button {
+        border: 0;
+        background: none;
+        color: var(--muted);
+        font: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 0 10px;
+        height: 32px;
+        cursor: pointer;
+      }
+
+      .lang-switch button + button {
+        border-left: 1px solid var(--border);
+      }
+
+      .lang-switch button[aria-pressed='true'] {
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .lang-switch button:focus-visible,
+      .icon-btn:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      .page-link {
+        display: inline-flex;
+        align-items: center;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+
+      @media (max-width: 600px) {
+        .page-link { display: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar__inner">
+        <div class="brand-row">
+          <a class="brand" href="#install">
+            <span class="brand__mark">WK</span>
+            <strong>WPAIKit</strong>
+            <small>CLI 1.0.0 · knowledge 2.0.0</small>
+          </a>
+          <a class="icon-btn page-link" href="./boilerplates.html">Boilerplates →</a>
+          <a class="icon-btn page-link" href="./changelog.html">Changelog</a>
+          <div class="lang-switch" role="group" data-i18n-aria="langGroup">
+            <button type="button" data-lang="en">EN</button>
+            <button type="button" data-lang="ru">RU</button>
+            <button type="button" data-lang="ro">RO</button>
+          </div>
+          <button class="icon-btn" type="button" id="theme-toggle" data-i18n-aria="theme">◐</button>
+        </div>
+        <nav class="tabs" role="tablist" data-i18n-aria="sections">
+          <button class="tab" role="tab" id="tab-install" data-tab="install" aria-controls="panel-install">
+            <span class="dot"></span><l-en>Installation</l-en><l-ru>Установка</l-ru><l-ro>Instalare</l-ro>
+          </button>
+          <button class="tab" role="tab" id="tab-design" data-tab="design" aria-controls="panel-design">
+            <span class="dot"></span>Design
+          </button>
+          <button class="tab" role="tab" id="tab-slicing" data-tab="slicing" aria-controls="panel-slicing">
+            <span class="dot"></span>Slicing
+          </button>
+          <button class="tab" role="tab" id="tab-wordpress" data-tab="wordpress" aria-controls="panel-wordpress">
+            <span class="dot"></span>WordPress
+          </button>
+          <button class="tab" role="tab" id="tab-woocommerce" data-tab="woocommerce" aria-controls="panel-woocommerce">
+            <span class="dot"></span>WooCommerce
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- =====================================================================
+           INSTALLATION
+           ===================================================================== -->
+      <div class="panel" id="panel-install" role="tabpanel" aria-labelledby="tab-install">
+        <nav class="toc" data-i18n-aria="onPage">
+          <p class="toc__title"><l-en>On this page</l-en><l-ru>На странице</l-ru><l-ro>Pe această pagină</l-ro></p>
+          <a href="#install-role"><l-en>Who are you?</l-en><l-ru>Кто вы?</l-ru><l-ro>Cine ești?</l-ro></a>
+          <a href="#install-requirements"><l-en>Requirements</l-en><l-ru>Требования</l-ru><l-ro>Cerințe</l-ro></a>
+          <a href="#install-cli"><l-en>Install the CLI</l-en><l-ru>Установка CLI</l-ru><l-ro>Instalarea CLI</l-ro></a>
+          <a href="#install-knowledge"><l-en>Install knowledge</l-en><l-ru>Установка knowledge</l-ru><l-ro>Instalarea knowledge</l-ro></a>
+          <a href="#install-files"><l-en>Files in your project</l-en><l-ru>Что появится в проекте</l-ru><l-ro>Fișiere în proiect</l-ro></a>
+          <a href="#install-update"><l-en>Updating</l-en><l-ru>Обновление</l-ru><l-ro>Actualizare</l-ro></a>
+          <a href="#install-faq">FAQ</a>
+        </nav>
+
+        <div class="content">
+          <div class="hero">
+            <p class="hero__eyebrow"><l-en>Getting started</l-en><l-ru>Начало работы</l-ru><l-ro>Primii pași</l-ro></p>
+            <h1><l-en>Installing WPAIKit</l-en><l-ru>Установка WPAIKit</l-ru><l-ro>Instalarea WPAIKit</l-ro></h1>
+            <p>
+              <l-en>WPAIKit is a CLI plus a set of instructions for AI assistants (Claude Code, Codex, Cursor). Each role installs only its own knowledge pack: designers get Design, slicers get Slicing, developers get WordPress or WooCommerce.</l-en>
+              <l-ru>WPAIKit — CLI и набор инструкций для AI-ассистентов (Claude Code, Codex, Cursor). Каждая роль ставит только свой набор knowledge: дизайнер — Design, верстальщик — Slicing, разработчик — WordPress или WooCommerce.</l-ru>
+              <l-ro>WPAIKit este un CLI și un set de instrucțiuni pentru asistenții AI (Claude Code, Codex, Cursor). Fiecare rol instalează doar pachetul său de knowledge: designerul — Design, integratorul — Slicing, dezvoltatorul — WordPress sau WooCommerce.</l-ro>
+            </p>
+            <div class="cmd"><pre><code>npm install -g @veaceslav-golden/wp-ai-kit</code></pre></div>
+          </div>
+
+          <section id="install-role">
+            <h2><a class="anchor" href="#install-role"><l-en>Who are you?</l-en><l-ru>Кто вы?</l-ru><l-ro>Cine ești?</l-ro></a></h2>
+            <p>
+              <l-en>Pick your role — each one has its own tab with a step-by-step process.</l-en>
+              <l-ru>Выберите роль — у каждой своя вкладка с пошаговым процессом.</l-ru>
+              <l-ro>Alege rolul — fiecare are propriul tab cu procesul pas cu pas.</l-ro>
+            </p>
+            <div class="grid">
+              <div class="card card--link" style="--card-color: var(--design)" data-goto="design" tabindex="0" role="link">
+                <span class="card__role"><l-en>Designer</l-en><l-ru>Дизайнер</l-ru><l-ro>Designer</l-ro></span>
+                <h3>Design</h3>
+                <p>
+                  <l-en>Figma audit, design system, components, handoff preparation, SEO.</l-en>
+                  <l-ru>Аудит Figma, дизайн-система, компоненты, подготовка макетов к разработке, SEO.</l-ru>
+                  <l-ro>Audit Figma, design system, componente, pregătirea machetelor pentru dezvoltare, SEO.</l-ro>
+                </p>
+                <p><code>--packs design</code></p>
+              </div>
+              <div class="card card--link" style="--card-color: var(--slicing)" data-goto="slicing" tabindex="0" role="link">
+                <span class="card__role"><l-en>Slicer</l-en><l-ru>Верстальщик</l-ru><l-ro>Integrator</l-ro></span>
+                <h3>Slicing</h3>
+                <p>
+                  <l-en>Figma → HTML + SCSS (Tailwind) + JS. No CMS, works in any project.</l-en>
+                  <l-ru>Figma → HTML + SCSS (Tailwind) + JS. Без CMS, работает в любом проекте.</l-ru>
+                  <l-ro>Figma → HTML + SCSS (Tailwind) + JS. Fără CMS, funcționează în orice proiect.</l-ro>
+                </p>
+                <p><code>--packs slicing</code></p>
+              </div>
+              <div class="card card--link" style="--card-color: var(--wordpress)" data-goto="wordpress" tabindex="0" role="link">
+                <span class="card__role"><l-en>WordPress developer</l-en><l-ru>WordPress-разработчик</l-ru><l-ro>Dezvoltator WordPress</l-ro></span>
+                <h3>WordPress</h3>
+                <p>
+                  <l-en>A new site from the boilerplate, ACF blocks from Figma, theme rules.</l-en>
+                  <l-ru>Новый сайт из boilerplate, ACF-блоки из Figma, правила темы.</l-ru>
+                  <l-ro>Un site nou din boilerplate, blocuri ACF din Figma, regulile temei.</l-ro>
+                </p>
+                <p><code>wpaikit init</code></p>
+              </div>
+              <div class="card card--link" style="--card-color: var(--woo)" data-goto="woocommerce" tabindex="0" role="link">
+                <span class="card__role">E-commerce</span>
+                <h3>WooCommerce</h3>
+                <p>
+                  <l-en>A store on the WooCommerce boilerplate: WPML, variations, XLSX catalog.</l-en>
+                  <l-ru>Магазин на WooCommerce-boilerplate: WPML, вариации, каталог XLSX.</l-ru>
+                  <l-ro>Un magazin pe boilerplate-ul WooCommerce: WPML, variații, catalog XLSX.</l-ro>
+                </p>
+                <p><code>wpaikit init --preset woo</code></p>
+              </div>
+            </div>
+          </section>
+
+          <section id="install-requirements">
+            <h2><a class="anchor" href="#install-requirements"><l-en>Requirements</l-en><l-ru>Требования</l-ru><l-ro>Cerințe</l-ro></a></h2>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th><l-en>Tool</l-en><l-ru>Инструмент</l-ru><l-ro>Instrument</l-ro></th>
+                    <th><l-en>Version</l-en><l-ru>Версия</l-ru><l-ro>Versiune</l-ro></th>
+                    <th><l-en>Needed by</l-en><l-ru>Кому нужен</l-ru><l-ro>Necesar pentru</l-ro></th>
+                    <th><l-en>Check</l-en><l-ru>Проверка</l-ru><l-ro>Verificare</l-ro></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Node.js + npm</td>
+                    <td>18+</td>
+                    <td><l-en>Everyone</l-en><l-ru>Всем</l-ru><l-ro>Toți</l-ro></td>
+                    <td><code>node --version</code></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>AI assistant</l-en><l-ru>AI-ассистент</l-ru><l-ro>Asistent AI</l-ro></td>
+                    <td>—</td>
+                    <td><l-en>Everyone</l-en><l-ru>Всем</l-ru><l-ro>Toți</l-ro></td>
+                    <td><l-en>Claude Code, Codex or Cursor</l-en><l-ru>Claude Code, Codex или Cursor</l-ru><l-ro>Claude Code, Codex sau Cursor</l-ro></td>
+                  </tr>
+                  <tr>
+                    <td>Figma MCP</td>
+                    <td>—</td>
+                    <td>Design, Slicing, WordPress</td>
+                    <td><l-en>Connected in the AI assistant</l-en><l-ru>Подключён в AI-ассистенте</l-ru><l-ro>Conectat în asistentul AI</l-ro></td>
+                  </tr>
+                  <tr>
+                    <td>Python + fonttools</td>
+                    <td>—</td>
+                    <td>Slicing, WordPress (<code>/setup-fonts</code>)</td>
+                    <td><code>pip install fonttools brotli</code></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>Git + SSH access to GitHub</l-en><l-ru>Git + SSH-доступ к GitHub</l-ru><l-ro>Git + acces SSH la GitHub</l-ro></td>
+                    <td>—</td>
+                    <td>WordPress, WooCommerce (<code>wpaikit init</code>)</td>
+                    <td><code>ssh -T git@github.com</code></td>
+                  </tr>
+                  <tr>
+                    <td>PHP + Composer</td>
+                    <td>PHP 8.2+</td>
+                    <td>WordPress, WooCommerce</td>
+                    <td><code>php --version</code></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              <l-en><code>wpaikit doctor</code> checks your environment and tells you how to fix anything that is missing.</l-en>
+              <l-ru>Команда <code>wpaikit doctor</code> проверяет окружение и подсказывает, как исправить то, чего не хватает.</l-ru>
+              <l-ro>Comanda <code>wpaikit doctor</code> verifică mediul și îți spune cum să rezolvi ce lipsește.</l-ro>
+            </p>
+          </section>
+
+          <section id="install-cli">
+            <h2><a class="anchor" href="#install-cli"><l-en>Install the CLI</l-en><l-ru>Установка CLI</l-ru><l-ro>Instalarea CLI</l-ro></a></h2>
+            <ol class="steps">
+              <li>
+                <strong><l-en>Install the package globally</l-en><l-ru>Установите пакет глобально</l-ru><l-ro>Instalează pachetul global</l-ro></strong>
+                <p>
+                  <l-en><code>@veaceslav-golden/wp-ai-kit-core</code> is installed automatically as a dependency.</l-en>
+                  <l-ru>Пакет <code>@veaceslav-golden/wp-ai-kit-core</code> поставится автоматически как зависимость.</l-ru>
+                  <l-ro><code>@veaceslav-golden/wp-ai-kit-core</code> se instalează automat ca dependență.</l-ro>
+                </p>
+                <div class="cmd"><pre><code>npm install -g @veaceslav-golden/wp-ai-kit</code></pre></div>
+              </li>
+              <li>
+                <strong><l-en>Check the version</l-en><l-ru>Проверьте версию</l-ru><l-ro>Verifică versiunea</l-ro></strong>
+                <div class="cmd"><pre><code>wpaikit --version</code></pre></div>
+              </li>
+              <li>
+                <strong><l-en>Check your environment</l-en><l-ru>Проверьте окружение</l-ru><l-ro>Verifică mediul</l-ro></strong>
+                <p>
+                  <l-en>Designers only need Node.js; the remaining checks matter for WordPress developers.</l-en>
+                  <l-ru>Для дизайнера достаточно Node.js; остальные проверки нужны WordPress-разработчику.</l-ru>
+                  <l-ro>Designerului îi ajunge Node.js; restul verificărilor contează pentru dezvoltatorii WordPress.</l-ro>
+                </p>
+                <div class="cmd"><pre><code>wpaikit doctor</code></pre></div>
+              </li>
+            </ol>
+          </section>
+
+          <section id="install-knowledge">
+            <h2><a class="anchor" href="#install-knowledge"><l-en>Install knowledge</l-en><l-ru>Установка knowledge</l-ru><l-ro>Instalarea knowledge</l-ro></a></h2>
+            <p>
+              <l-en>Knowledge is the set of slash commands, prompts, skills and rules that the AI assistant reads. It is installed into the current folder (or into the project root if a parent folder contains <code>.wpaikit.json</code>).</l-en>
+              <l-ru>Knowledge — это slash-команды, prompts, skills и правила, которые читает AI-ассистент. Ставятся в текущую папку (или в корень проекта, если выше есть <code>.wpaikit.json</code>).</l-ru>
+              <l-ro>Knowledge înseamnă comenzile slash, prompturile, skill-urile și regulile pe care le citește asistentul AI. Se instalează în folderul curent (sau în rădăcina proiectului, dacă un folder părinte conține <code>.wpaikit.json</code>).</l-ro>
+            </p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th><l-en>Pack</l-en><l-ru>Набор</l-ru><l-ro>Pachet</l-ro></th>
+                    <th><l-en>For</l-en><l-ru>Для кого</l-ru><l-ro>Pentru</l-ro></th>
+                    <th><l-en>Command</l-en><l-ru>Команда</l-ru><l-ro>Comandă</l-ro></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Design</strong></td>
+                    <td><l-en>Designer</l-en><l-ru>Дизайнер</l-ru><l-ro>Designer</l-ro></td>
+                    <td><code>wpaikit knowledge install --packs design</code></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Slicing</strong></td>
+                    <td><l-en>Slicer</l-en><l-ru>Верстальщик</l-ru><l-ro>Integrator</l-ro></td>
+                    <td><code>wpaikit knowledge install --packs slicing</code></td>
+                  </tr>
+                  <tr>
+                    <td><strong>WordPress</strong></td>
+                    <td><l-en>WP developer</l-en><l-ru>WP-разработчик</l-ru><l-ro>Dezvoltator WP</l-ro></td>
+                    <td><code>wpaikit knowledge install --packs wordpress --wp-profile standard</code></td>
+                  </tr>
+                  <tr>
+                    <td><strong>WooCommerce</strong></td>
+                    <td><l-en>Store developer</l-en><l-ru>Разработчик магазина</l-ru><l-ro>Dezvoltator de magazin</l-ro></td>
+                    <td><code>wpaikit knowledge install --packs wordpress --wp-profile woo</code></td>
+                  </tr>
+                  <tr>
+                    <td><strong><l-en>Everything</l-en><l-ru>Всё</l-ru><l-ro>Tot</l-ro></strong></td>
+                    <td>Full-stack</td>
+                    <td><code>wpaikit knowledge install --packs all</code></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3><l-en>How packs are selected</l-en><l-ru>Как выбираются наборы</l-ru><l-ro>Cum se aleg pachetele</l-ro></h3>
+            <ul>
+              <li>
+                <l-en>Without <code>--packs</code>, the first install asks: <em>All</em> or <em>Choose packs</em>. Without an interactive terminal (CI), everything is installed.</l-en>
+                <l-ru>Без <code>--packs</code> при первой установке CLI спросит: <em>All</em> или <em>Choose packs</em>. Без интерактивного терминала (CI) ставится всё.</l-ru>
+                <l-ro>Fără <code>--packs</code>, prima instalare întreabă: <em>All</em> sau <em>Choose packs</em>. Fără terminal interactiv (CI) se instalează tot.</l-ro>
+              </li>
+              <li>
+                <l-en>Running again without flags reuses the selection from <code>.wpaikit/knowledge-manifest.json</code> — that is how you update.</l-en>
+                <l-ru>Повторный запуск без флагов берёт выбор из <code>.wpaikit/knowledge-manifest.json</code> — это и есть обновление.</l-ru>
+                <l-ro>Rularea repetată fără flaguri folosește selecția din <code>.wpaikit/knowledge-manifest.json</code> — așa se face actualizarea.</l-ro>
+              </li>
+              <li>
+                <l-en>Packs can be combined: <code>--packs design,slicing</code>.</l-en>
+                <l-ru>Наборы комбинируются: <code>--packs design,slicing</code>.</l-ru>
+                <l-ro>Pachetele se pot combina: <code>--packs design,slicing</code>.</l-ro>
+              </li>
+              <li>
+                <l-en>The WordPress profile (<code>standard</code> / <code>woo</code>) is only asked for the WordPress pack. If the project has <code>.wpaikit.json</code>, the profile comes from there.</l-en>
+                <l-ru>Профиль WordPress (<code>standard</code> / <code>woo</code>) спрашивается только для набора WordPress. Если в проекте есть <code>.wpaikit.json</code>, профиль берётся оттуда.</l-ru>
+                <l-ro>Profilul WordPress (<code>standard</code> / <code>woo</code>) se cere doar pentru pachetul WordPress. Dacă proiectul are <code>.wpaikit.json</code>, profilul se ia de acolo.</l-ro>
+              </li>
+            </ul>
+
+            <h3><l-en>Flags</l-en><l-ru>Флаги</l-ru><l-ro>Flaguri</l-ro></h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th><l-en>Flag</l-en><l-ru>Флаг</l-ru><l-ro>Flag</l-ro></th>
+                    <th><l-en>What it does</l-en><l-ru>Что делает</l-ru><l-ro>Ce face</l-ro></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>--packs &lt;list&gt;</code></td>
+                    <td>
+                      <l-en><code>all</code> or a comma-separated list: <code>design</code>, <code>slicing</code>, <code>wordpress</code></l-en>
+                      <l-ru><code>all</code> или список через запятую: <code>design</code>, <code>slicing</code>, <code>wordpress</code></l-ru>
+                      <l-ro><code>all</code> sau o listă separată prin virgulă: <code>design</code>, <code>slicing</code>, <code>wordpress</code></l-ro>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>--wp-profile &lt;profile&gt;</code></td>
+                    <td>
+                      <l-en><code>standard</code> or <code>woo</code>; only together with the WordPress pack</l-en>
+                      <l-ru><code>standard</code> или <code>woo</code>; только вместе с набором WordPress</l-ru>
+                      <l-ro><code>standard</code> sau <code>woo</code>; doar împreună cu pachetul WordPress</l-ro>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>--dry-run</code></td>
+                    <td>
+                      <l-en>Show the changes (<code>+</code> add, <code>~</code> update, <code>-</code> remove) without writing anything</l-en>
+                      <l-ru>Показать изменения (<code>+</code> добавить, <code>~</code> обновить, <code>-</code> удалить), ничего не записывая</l-ru>
+                      <l-ro>Arată modificările (<code>+</code> adăugare, <code>~</code> actualizare, <code>-</code> ștergere) fără să scrie nimic</l-ro>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>--force</code></td>
+                    <td>
+                      <l-en>Overwrite WPAIKit files even if you changed them locally</l-en>
+                      <l-ru>Перезаписать файлы WPAIKit, даже если вы их меняли локально</l-ru>
+                      <l-ro>Suprascrie fișierele WPAIKit chiar dacă le-ai modificat local</l-ro>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="note">
+              <p>
+                <l-en><code>wpaikit knowledge update</code> is an alias of <code>wpaikit knowledge install</code>.</l-en>
+                <l-ru><code>wpaikit knowledge update</code> — синоним <code>wpaikit knowledge install</code>.</l-ru>
+                <l-ro><code>wpaikit knowledge update</code> este un alias pentru <code>wpaikit knowledge install</code>.</l-ro>
+              </p>
+            </div>
+          </section>
+
+          <section id="install-files">
+            <h2><a class="anchor" href="#install-files"><l-en>Files in your project</l-en><l-ru>Что появится в проекте</l-ru><l-ro>Fișiere în proiect</l-ro></a></h2>
+            <pre class="tree">AGENTS.md                   <span class="c">← <l-en>instructions for Codex / Cursor (for the selected packs)</l-en><l-ru>инструкции для Codex / Cursor (под выбранные наборы)</l-ru><l-ro>instrucțiuni pentru Codex / Cursor (pentru pachetele alese)</l-ro></span>
+CLAUDE.md                   <span class="c">← <l-en>loads AGENTS.md in Claude Code</l-en><l-ru>подключает AGENTS.md для Claude Code</l-ru><l-ro>încarcă AGENTS.md în Claude Code</l-ro></span>
+.claude/commands/           <span class="c">← <l-en>slash commands of the selected packs</l-en><l-ru>slash-команды выбранных наборов</l-ru><l-ro>comenzile slash ale pachetelor alese</l-ro></span>
+.wpaikit/
+  knowledge-manifest.json   <span class="c">← <l-en>packs, version and file checksums</l-en><l-ru>наборы, версия и контрольные суммы файлов</l-ru><l-ro>pachete, versiune și sumele de control ale fișierelor</l-ro></span>
+knowledge/
+  context.md                <span class="c">← <l-en>installed commands and rules</l-en><l-ru>список установленных команд и правил</l-ru><l-ro>comenzile și regulile instalate</l-ro></span>
+  design/                   <span class="c">← <l-en>Design pack</l-en><l-ru>набор Design</l-ru><l-ro>pachetul Design</l-ro></span>
+  slicing/                  <span class="c">← <l-en>Slicing pack</l-en><l-ru>набор Slicing</l-ru><l-ro>pachetul Slicing</l-ro></span>
+  wordpress/                <span class="c">← <l-en>WordPress pack</l-en><l-ru>набор WordPress</l-ru><l-ro>pachetul WordPress</l-ro></span>
+  woocommerce/              <span class="c">← <l-en>woo profile</l-en><l-ru>профиль woo</l-ru><l-ro>profilul woo</l-ro></span>
+  shared/                   <span class="c">← <l-en>shared rules and commands (/scan-project, /setup-fonts)</l-en><l-ru>общие правила и команды (/scan-project, /setup-fonts)</l-ru><l-ro>reguli și comenzi comune (/scan-project, /setup-fonts)</l-ro></span></pre>
+            <div class="note note--warn">
+              <p>
+                <l-en>Do not edit files in <code>knowledge/</code> — on update the CLI stops so it doesn't overwrite your changes. Put project-specific notes in <code>.wpaikit/project.md</code>.</l-en>
+                <l-ru>Не правьте файлы в <code>knowledge/</code> — при обновлении CLI остановится, чтобы не затереть изменения. Свои находки по проекту пишите в <code>.wpaikit/project.md</code>.</l-ru>
+                <l-ro>Nu edita fișierele din <code>knowledge/</code> — la actualizare CLI-ul se oprește ca să nu-ți suprascrie modificările. Notițele despre proiect pune-le în <code>.wpaikit/project.md</code>.</l-ro>
+              </p>
+            </div>
+          </section>
+
+          <section id="install-update">
+            <h2><a class="anchor" href="#install-update"><l-en>Updating</l-en><l-ru>Обновление</l-ru><l-ro>Actualizare</l-ro></a></h2>
+            <ol class="steps">
+              <li>
+                <strong><l-en>Update the CLI</l-en><l-ru>Обновите CLI</l-ru><l-ro>Actualizează CLI-ul</l-ro></strong>
+                <div class="cmd"><pre><code>npm install -g @veaceslav-golden/wp-ai-kit@latest</code></pre></div>
+              </li>
+              <li>
+                <strong><l-en>Preview what will change</l-en><l-ru>Посмотрите, что изменится</l-ru><l-ro>Vezi ce se va schimba</l-ro></strong>
+                <div class="cmd"><pre><code>wpaikit knowledge install --dry-run</code></pre></div>
+              </li>
+              <li>
+                <strong><l-en>Update knowledge in the project</l-en><l-ru>Обновите knowledge в проекте</l-ru><l-ro>Actualizează knowledge în proiect</l-ro></strong>
+                <p>
+                  <l-en>Packs are taken from the manifest — no questions asked.</l-en>
+                  <l-ru>Наборы берутся из manifest, вопросов не будет.</l-ru>
+                  <l-ro>Pachetele se iau din manifest — fără întrebări.</l-ro>
+                </p>
+                <div class="cmd"><pre><code>wpaikit knowledge install</code></pre></div>
+              </li>
+            </ol>
+            <div class="note">
+              <p>
+                <l-en><strong>Upgrading from 0.4.x.</strong> Knowledge 2.0.0 stores files in pack folders (<code>knowledge/wordpress/…</code> instead of <code>knowledge/prompts/…</code>). Old files are removed automatically and the project gets all packs with its previous profile. Commands work as before.</l-en>
+                <l-ru><strong>Переход с версии 0.4.x.</strong> Knowledge 2.0.0 хранит файлы в папках наборов (<code>knowledge/wordpress/…</code> вместо <code>knowledge/prompts/…</code>). Старые файлы удаляются автоматически, а проект получает все наборы с прежним профилем. Команды работают как раньше.</l-ru>
+                <l-ro><strong>Trecerea de la 0.4.x.</strong> Knowledge 2.0.0 păstrează fișierele în foldere de pachet (<code>knowledge/wordpress/…</code> în loc de <code>knowledge/prompts/…</code>). Fișierele vechi se șterg automat, iar proiectul primește toate pachetele cu profilul anterior. Comenzile funcționează ca înainte.</l-ro>
+              </p>
+            </div>
+          </section>
+
+          <section id="install-faq">
+            <h2><a class="anchor" href="#install-faq">FAQ</a></h2>
+            <details class="faq">
+              <summary>«Knowledge installation stopped to protect local files»</summary>
+              <p>
+                <l-en>WPAIKit files in the project were edited by hand. Move your edits into <code>.wpaikit/project.md</code> and run with <code>--force</code>, or delete the changed files — the CLI recreates them.</l-en>
+                <l-ru>Файлы WPAIKit в проекте менялись вручную. Перенесите свои правки в <code>.wpaikit/project.md</code> и запустите с <code>--force</code>, либо удалите изменённые файлы — CLI создаст их заново.</l-ru>
+                <l-ro>Fișierele WPAIKit din proiect au fost modificate manual. Mută modificările în <code>.wpaikit/project.md</code> și rulează cu <code>--force</code>, sau șterge fișierele modificate — CLI-ul le recreează.</l-ro>
+              </p>
+            </details>
+            <details class="faq">
+              <summary><l-en>How do I change packs?</l-en><l-ru>Как сменить набор?</l-ru><l-ro>Cum schimb pachetele?</l-ro></summary>
+              <p>
+                <l-en>Run install with the new list, e.g. <code>--packs design,slicing</code>. Files of removed packs are deleted. Check the list with <code>--dry-run</code> first.</l-en>
+                <l-ru>Запустите install с новым списком, например <code>--packs design,slicing</code>. Файлы снятых наборов будут удалены. Сначала проверьте список через <code>--dry-run</code>.</l-ru>
+                <l-ro>Rulează install cu lista nouă, de exemplu <code>--packs design,slicing</code>. Fișierele pachetelor scoase se șterg. Verifică întâi lista cu <code>--dry-run</code>.</l-ro>
+              </p>
+            </details>
+            <details class="faq">
+              <summary>«--wp-profile requires the WordPress pack»</summary>
+              <p>
+                <l-en>The WordPress profile only makes sense with the WordPress pack: add <code>wordpress</code> to <code>--packs</code>.</l-en>
+                <l-ru>Профиль WordPress имеет смысл только с набором WordPress: добавьте <code>wordpress</code> в <code>--packs</code>.</l-ru>
+                <l-ro>Profilul WordPress are sens doar cu pachetul WordPress: adaugă <code>wordpress</code> în <code>--packs</code>.</l-ro>
+              </p>
+            </details>
+            <details class="faq">
+              <summary>«does not match .wpaikit.json preset»</summary>
+              <p>
+                <l-en>The project already records a preset (<code>standard</code> or <code>woo</code>). Drop <code>--wp-profile</code> — the profile is read from <code>.wpaikit.json</code>.</l-en>
+                <l-ru>В проекте уже записан preset (<code>standard</code> или <code>woo</code>). Уберите <code>--wp-profile</code> — профиль возьмётся из <code>.wpaikit.json</code>.</l-ru>
+                <l-ro>Proiectul are deja un preset salvat (<code>standard</code> sau <code>woo</code>). Renunță la <code>--wp-profile</code> — profilul se citește din <code>.wpaikit.json</code>.</l-ro>
+              </p>
+            </details>
+            <details class="faq">
+              <summary><l-en>Slash commands don't show up in Claude Code</l-en><l-ru>Slash-команды не появились в Claude Code</l-ru><l-ro>Comenzile slash nu apar în Claude Code</l-ro></summary>
+              <p>
+                <l-en>Start Claude Code from the folder that contains <code>.claude/commands/</code> (the project root) and restart the session after installing.</l-en>
+                <l-ru>Запускайте Claude Code из папки, где лежит <code>.claude/commands/</code> (корень проекта), и перезапустите сессию после установки.</l-ru>
+                <l-ro>Pornește Claude Code din folderul care conține <code>.claude/commands/</code> (rădăcina proiectului) și repornește sesiunea după instalare.</l-ro>
+              </p>
+            </details>
+          </section>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           DESIGN
+           ===================================================================== -->
+      <div class="panel" id="panel-design" role="tabpanel" aria-labelledby="tab-design" hidden>
+        <nav class="toc" data-i18n-aria="onPage">
+          <p class="toc__title"><l-en>On this page</l-en><l-ru>На странице</l-ru><l-ro>Pe această pagină</l-ro></p>
+          <a href="#design-setup"><l-en>Setup</l-en><l-ru>Подготовка</l-ru><l-ro>Pregătire</l-ro></a>
+          <a href="#design-workflow"><l-en>Workflow</l-en><l-ru>Процесс</l-ru><l-ro>Flux de lucru</l-ro></a>
+          <a href="#design-first">Design-first</a>
+          <a href="#design-seo">SEO</a>
+          <a href="#design-commands"><l-en>All commands</l-en><l-ru>Все команды</l-ru><l-ro>Toate comenzile</l-ro></a>
+          <a href="#design-naming"><l-en>Block naming</l-en><l-ru>Именование блоков</l-ru><l-ro>Denumirea blocurilor</l-ro></a>
+          <a href="#design-handoff"><l-en>Handoff</l-en><l-ru>Передача в разработку</l-ru><l-ro>Predarea către dezvoltare</l-ro></a>
+        </nav>
+
+        <div class="content">
+          <div class="hero">
+            <p class="hero__eyebrow"><l-en>Design pack · designer</l-en><l-ru>Набор Design · дизайнер</l-ru><l-ro>Pachetul Design · designer</l-ro></p>
+            <h1><l-en>Figma design with AI</l-en><l-ru>Дизайн в Figma с AI</l-ru><l-ro>Design în Figma cu AI</l-ro></h1>
+            <p>
+              <l-en>Design audits, design system, components and handoff preparation. Figma only — no CMS rules and no code generation. The WordPress profile is never asked.</l-en>
+              <l-ru>Аудит макетов, дизайн-система, компоненты и подготовка к разработке. Только Figma — никаких правил CMS и генерации кода. Профиль WordPress не спрашивается.</l-ru>
+              <l-ro>Audit de machete, design system, componente și pregătire pentru dezvoltare. Doar Figma — fără reguli de CMS și fără generare de cod. Profilul WordPress nu se cere.</l-ro>
+            </p>
+            <div class="cmd"><pre><code>wpaikit knowledge install --packs design</code></pre></div>
+          </div>
+
+          <section id="design-setup">
+            <h2><a class="anchor" href="#design-setup"><l-en>Setup</l-en><l-ru>Подготовка</l-ru><l-ro>Pregătire</l-ro></a></h2>
+            <ol class="steps">
+              <li>
+                <strong><l-en>Create a working folder and install the pack</l-en><l-ru>Создайте рабочую папку и поставьте набор</l-ru><l-ro>Creează un folder de lucru și instalează pachetul</l-ro></strong>
+                <p>
+                  <l-en>The folder can be empty — there will be no code in it.</l-en>
+                  <l-ru>Папка может быть пустой — кода в ней не будет.</l-ru>
+                  <l-ro>Folderul poate fi gol — nu va conține cod.</l-ro>
+                </p>
+                <div class="cmd"><pre><code>mkdir my-design &amp;&amp; cd my-design
+wpaikit knowledge install --packs design</code></pre></div>
+              </li>
+              <li>
+                <strong><l-en>Connect Figma MCP in your AI assistant</l-en><l-ru>Подключите Figma MCP в AI-ассистенте</l-ru><l-ro>Conectează Figma MCP în asistentul AI</l-ro></strong>
+                <p>
+                  <l-en>Every Design command works with Figma through MCP.</l-en>
+                  <l-ru>Все команды Design работают с Figma через MCP.</l-ru>
+                  <l-ro>Toate comenzile Design lucrează cu Figma prin MCP.</l-ro>
+                </p>
+              </li>
+              <li>
+                <strong><l-en>Open the assistant in this folder</l-en><l-ru>Откройте ассистента в этой папке</l-ru><l-ro>Deschide asistentul în acest folder</l-ro></strong>
+                <p>
+                  <l-en>Claude Code will show 10 slash commands starting with <code>/</code>.</l-en>
+                  <l-ru>В Claude Code появятся 10 slash-команд, начинающихся с <code>/</code>.</l-ru>
+                  <l-ro>În Claude Code vor apărea 10 comenzi slash care încep cu <code>/</code>.</l-ro>
+                </p>
+              </li>
+            </ol>
+          </section>
+
+          <section id="design-workflow">
+            <h2><a class="anchor" href="#design-workflow"><l-en>Workflow: from mockup to Dev Ready</l-en><l-ru>Процесс: от макета к Dev Ready</l-ru><l-ro>Fluxul: de la machetă la Dev Ready</l-ro></a></h2>
+            <ol class="steps">
+              <li>
+                <strong><l-en>Audit the mockup</l-en><l-ru>Аудит макета</l-ru><l-ro>Auditul machetei</l-ro></strong>
+                <p>
+                  <l-en>Checks frame structure, Auto Layout, tokens, responsiveness and block readiness. Read-only.</l-en>
+                  <l-ru>Проверяет структуру фреймов, Auto Layout, токены, адаптив и готовность блоков. Только читает Figma.</l-ru>
+                  <l-ro>Verifică structura frame-urilor, Auto Layout, tokenii, responsive-ul și pregătirea blocurilor. Doar citește.</l-ro>
+                </p>
+                <div class="cmd"><pre><code>/analyze-figma &lt;figma-url&gt; --lang en</code></pre></div>
+              </li>
+              <li>
+                <strong><l-en>Design system</l-en><l-ru>Дизайн-система</l-ru><l-ro>Design system</l-ro></strong>
+                <p>
+                  <l-en>Extracts colors, typography, spacing and radii → Design System page, Variables, Text Styles and <code>.wpaikit/design-system.json</code>.</l-en>
+                  <l-ru>Извлекает цвета, типографику, отступы, радиусы → страница Design System, Variables, Text Styles и файл <code>.wpaikit/design-system.json</code>.</l-ru>
+                  <l-ro>Extrage culorile, tipografia, spațierile și razele → pagina Design System, Variables, Text Styles și <code>.wpaikit/design-system.json</code>.</l-ro>
+                </p>
+                <div class="cmd"><pre><code>/figma-design-system &lt;figma-url&gt;</code></pre></div>
+              </li>
+              <li>
+                <strong><l-en>Components</l-en><l-ru>Компоненты</l-ru><l-ro>Componente</l-ro></strong>
+                <p>
+                  <l-en>Creates Figma Components with variants from the detected patterns (buttons, badges, cards, inputs).</l-en>
+                  <l-ru>Создаёт Figma Components с вариантами из найденных паттернов (кнопки, бейджи, карточки, поля).</l-ru>
+                  <l-ro>Creează Figma Components cu variante din pattern-urile găsite (butoane, badge-uri, carduri, câmpuri).</l-ro>
+                </p>
+                <div class="cmd"><pre><code>/figma-components</code></pre></div>
+              </li>
+              <li>
+                <strong>Dev Ready</strong>
+                <p>
+                  <l-en>A copy of the page for development: split into blocks, semantic layer names, token bindings, Auto Layout. The original stays untouched.</l-en>
+                  <l-ru>Копия страницы для разработки: разбивка на блоки, семантичные имена слоёв, привязка к токенам, Auto Layout. Оригинал не меняется.</l-ru>
+                  <l-ro>O copie a paginii pentru dezvoltare: împărțire în blocuri, nume semantice de layere, legare la tokeni, Auto Layout. Originalul rămâne neschimbat.</l-ro>
+                </p>
+                <div class="cmd"><pre><code>/prep-figma &lt;figma-url&gt;</code></pre></div>
+              </li>
+            </ol>
+            <div class="note note--ok">
+              <p>
+                <l-en>Variables changed by hand — <code>/figma-sync-tokens</code>. New screens added — <code>/figma-update-design-system</code>.</l-en>
+                <l-ru>Дизайнер поменял Variables вручную — <code>/figma-sync-tokens</code>. Добавились новые экраны — <code>/figma-update-design-system</code>.</l-ru>
+                <l-ro>Variables modificate manual — <code>/figma-sync-tokens</code>. Ecrane noi adăugate — <code>/figma-update-design-system</code>.</l-ro>
+              </p>
+            </div>
+          </section>
+
+          <section id="design-first">
+            <h2><a class="anchor" href="#design-first"><l-en>Design-first: generating a design</l-en><l-ru>Design-first: генерация дизайна</l-ru><l-ro>Design-first: generarea unui design</l-ro></a></h2>
+            <p>
+              <l-en>No mockup yet? Start by generating one, then follow the regular workflow.</l-en>
+              <l-ru>Если макета ещё нет — начните с генерации, затем пройдите обычный процесс.</l-ru>
+              <l-ro>Nu ai încă machetă? Începe cu generarea, apoi urmează fluxul obișnuit.</l-ro>
+            </p>
+            <ol class="steps">
+              <li>
+                <strong><l-en>Generate a design</l-en><l-ru>Сгенерировать дизайн</l-ru><l-ro>Generează un design</l-ro></strong>
+                <p>
+                  <l-en>The assistant collects the brief, design system and references, then draws the page in Figma.</l-en>
+                  <l-ru>Ассистент соберёт бриф, дизайн-систему и референсы и нарисует страницу в Figma.</l-ru>
+                  <l-ro>Asistentul adună brief-ul, design system-ul și referințele, apoi desenează pagina în Figma.</l-ro>
+                </p>
+                <div class="cmd"><pre><code>/generate-design</code></pre></div>
+              </li>
+              <li>
+                <strong><l-en>Check the quality</l-en><l-ru>Проверить качество</l-ru><l-ro>Verifică calitatea</l-ro></strong>
+                <p>
+                  <l-en>Without a URL it reviews the brief; with a URL it reviews the finished design for typical "AI slop" issues.</l-en>
+                  <l-ru>Без URL проверяет бриф, с URL — готовый дизайн на типичные «AI slop» ошибки.</l-ru>
+                  <l-ro>Fără URL verifică brief-ul; cu URL verifică designul final pentru greșelile tipice de „AI slop”.</l-ro>
+                </p>
+                <div class="cmd"><pre><code>/design-quality-check &lt;figma-url&gt;</code></pre></div>
+              </li>
+            </ol>
+          </section>
+
+          <section id="design-seo">
+            <h2><a class="anchor" href="#design-seo"><l-en>SEO before development</l-en><l-ru>SEO до разработки</l-ru><l-ro>SEO înainte de dezvoltare</l-ro></a></h2>
+            <ol class="steps">
+              <li>
+                <strong><l-en>Page structure</l-en><l-ru>Структура страницы</l-ru><l-ro>Structura paginii</l-ro></strong>
+                <p>
+                  <l-en>Page type, internal linking, E-E-A-T, local SEO, schema. After you approve the plan it builds the missing blocks on a copy of the page.</l-en>
+                  <l-ru>Тип страницы, перелинковка, E-E-A-T, локальное SEO, schema. После одобрения плана достраивает недостающие блоки на копии страницы.</l-ru>
+                  <l-ro>Tipul paginii, linkuri interne, E-E-A-T, SEO local, schema. După aprobarea planului construiește blocurile lipsă pe o copie a paginii.</l-ro>
+                </p>
+                <div class="cmd"><pre><code>/figma-seo-structure &lt;figma-url&gt; --lang en</code></pre></div>
+              </li>
+              <li>
+                <strong><l-en>Copy</l-en><l-ru>Тексты</l-ru><l-ro>Texte</l-ro></strong>
+                <p>
+                  <l-en>Multilingual SEO copy for editorial blocks. Dynamic blocks are skipped.</l-en>
+                  <l-ru>Многоязычные SEO-тексты для редакционных блоков. Динамические блоки пропускает.</l-ru>
+                  <l-ro>Texte SEO multilingve pentru blocurile editoriale. Blocurile dinamice sunt omise.</l-ro>
+                </p>
+                <div class="cmd"><pre><code>/figma-seo-texts &lt;figma-url&gt;</code></pre></div>
+              </li>
+            </ol>
+          </section>
+
+          <section id="design-commands">
+            <h2><a class="anchor" href="#design-commands"><l-en>All commands</l-en><l-ru>Все команды</l-ru><l-ro>Toate comenzile</l-ro></a></h2>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th><l-en>Command</l-en><l-ru>Команда</l-ru><l-ro>Comandă</l-ro></th>
+                    <th><l-en>What it does</l-en><l-ru>Что делает</l-ru><l-ro>Ce face</l-ro></th>
+                    <th><l-en>Changes Figma?</l-en><l-ru>Меняет Figma?</l-ru><l-ro>Modifică Figma?</l-ro></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>/analyze-figma</code></td>
+                    <td><l-en>Frame readiness audit</l-en><l-ru>Аудит готовности фрейма к реализации</l-ru><l-ro>Auditul pregătirii frame-ului</l-ro></td>
+                    <td><span class="pill"><l-en>no</l-en><l-ru>нет</l-ru><l-ro>nu</l-ro></span></td>
+                  </tr>
+                  <tr>
+                    <td><code>/figma-design-system</code></td>
+                    <td><l-en>Tokens → Design System page, Variables, Text Styles</l-en><l-ru>Токены → страница Design System, Variables, Text Styles</l-ru><l-ro>Tokeni → pagina Design System, Variables, Text Styles</l-ro></td>
+                    <td><span class="pill"><l-en>new page</l-en><l-ru>новая страница</l-ru><l-ro>pagină nouă</l-ro></span></td>
+                  </tr>
+                  <tr>
+                    <td><code>/figma-components</code></td>
+                    <td><l-en>Components with variants from patterns</l-en><l-ru>Components с вариантами из паттернов</l-ru><l-ro>Componente cu variante din pattern-uri</l-ro></td>
+                    <td><span class="pill"><l-en>yes</l-en><l-ru>да</l-ru><l-ro>da</l-ro></span></td>
+                  </tr>
+                  <tr>
+                    <td><code>/prep-figma</code></td>
+                    <td><l-en>Dev Ready copy of the page</l-en><l-ru>Dev Ready копия страницы</l-ru><l-ro>Copie Dev Ready a paginii</l-ro></td>
+                    <td><span class="pill"><l-en>copy</l-en><l-ru>копия</l-ru><l-ro>copie</l-ro></span></td>
+                  </tr>
+                  <tr>
+                    <td><code>/figma-sync-tokens</code></td>
+                    <td><l-en>Sync <code>design-system.json</code> after manual edits</l-en><l-ru>Синхронизация <code>design-system.json</code> после ручных правок</l-ru><l-ro>Sincronizează <code>design-system.json</code> după editări manuale</l-ro></td>
+                    <td><span class="pill"><l-en>no</l-en><l-ru>нет</l-ru><l-ro>nu</l-ro></span></td>
+                  </tr>
+                  <tr>
+                    <td><code>/figma-update-design-system</code></td>
+                    <td><l-en>Add new frames to the design system</l-en><l-ru>Добавить новые фреймы в дизайн-систему</l-ru><l-ro>Adaugă frame-uri noi în design system</l-ro></td>
+                    <td><span class="pill"><l-en>yes</l-en><l-ru>да</l-ru><l-ro>da</l-ro></span></td>
+                  </tr>
+                  <tr>
+                    <td><code>/generate-design</code></td>
+                    <td><l-en>Generate a design from a brief</l-en><l-ru>Сгенерировать дизайн по брифу</l-ru><l-ro>Generează un design dintr-un brief</l-ro></td>
+                    <td><span class="pill"><l-en>target file</l-en><l-ru>целевой файл</l-ru><l-ro>fișierul țintă</l-ro></span></td>
+                  </tr>
+                  <tr>
+                    <td><code>/design-quality-check</code></td>
+                    <td><l-en>Brief or design audit</l-en><l-ru>Аудит брифа или дизайна</l-ru><l-ro>Audit de brief sau design</l-ro></td>
+                    <td><span class="pill"><l-en>after confirmation</l-en><l-ru>после подтверждения</l-ru><l-ro>după confirmare</l-ro></span></td>
+                  </tr>
+                  <tr>
+                    <td><code>/figma-seo-structure</code></td>
+                    <td><l-en>Structural SEO + missing blocks</l-en><l-ru>Структурное SEO + недостающие блоки</l-ru><l-ro>SEO structural + blocurile lipsă</l-ro></td>
+                    <td><span class="pill"><l-en>copy</l-en><l-ru>копия</l-ru><l-ro>copie</l-ro></span></td>
+                  </tr>
+                  <tr>
+                    <td><code>/figma-seo-texts</code></td>
+                    <td><l-en>Multilingual SEO copy</l-en><l-ru>Многоязычные SEO-тексты</l-ru><l-ro>Texte SEO multilingve</l-ro></td>
+                    <td><span class="pill"><l-en>no</l-en><l-ru>нет</l-ru><l-ro>nu</l-ro></span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="design-naming">
+            <h2><a class="anchor" href="#design-naming"><l-en>Block naming</l-en><l-ru>Именование блоков</l-ru><l-ro>Denumirea blocurilor</l-ro></a></h2>
+            <p>
+              <l-en>The rule <code>knowledge/shared/rules/figma-blocks.md</code> is the shared standard for design and development. The more precise the names, the less manual work during slicing.</l-en>
+              <l-ru>Правило <code>knowledge/shared/rules/figma-blocks.md</code> — общий стандарт для дизайна и разработки. Чем точнее имена, тем меньше ручной работы на вёрстке.</l-ru>
+              <l-ro>Regula <code>knowledge/shared/rules/figma-blocks.md</code> este standardul comun pentru design și dezvoltare. Cu cât numele sunt mai precise, cu atât mai puțină muncă manuală la integrare.</l-ro>
+            </p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th><l-en>Do</l-en><l-ru>Правильно</l-ru><l-ro>Corect</l-ro></th>
+                    <th><l-en>Don't</l-en><l-ru>Неправильно</l-ru><l-ro>Greșit</l-ro></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><l-en>One top-level frame = one block:</l-en><l-ru>Один верхний фрейм = один блок:</l-ru><l-ro>Un frame de nivel superior = un bloc:</l-ro> <code>HeroBlock</code>, <code>PricingBlock</code></td>
+                    <td><code>Frame 89</code>, <code>Desktop copy</code></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>Meaningful layers:</l-en><l-ru>Слои по смыслу:</l-ru><l-ro>Layere cu sens:</l-ro> <code>Heading</code>, <code>Description</code>, <code>CTA Button</code>, <code>Image</code></td>
+                    <td><code>Text 12</code>, <code>Rectangle 4</code></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>Repeats: an <code>Items</code> group → <code>Item</code> rows</l-en><l-ru>Повторы: группа <code>Items</code> → строки <code>Item</code></l-ru><l-ro>Repetiții: grupul <code>Items</code> → rânduri <code>Item</code></l-ro></td>
+                    <td><l-en>Loose copies without a wrapper</l-en><l-ru>Разрозненные копии без обёртки</l-ru><l-ro>Copii împrăștiate fără container</l-ro></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>Auto Layout on every container</l-en><l-ru>Auto Layout на каждом контейнере</l-ru><l-ro>Auto Layout pe fiecare container</l-ro></td>
+                    <td><l-en>Absolute positioning (except <code>Decoration/*</code>)</l-en><l-ru>Абсолютное позиционирование (кроме <code>Decoration/*</code>)</l-ru><l-ro>Poziționare absolută (în afară de <code>Decoration/*</code>)</l-ro></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>Colors, spacing, text via Variables and Text Styles</l-en><l-ru>Цвета, отступы, текст — через Variables и Text Styles</l-ru><l-ro>Culori, spațieri, text prin Variables și Text Styles</l-ro></td>
+                    <td><l-en>Raw hex and px</l-en><l-ru>Сырые hex и px</l-ru><l-ro>Valori hex și px brute</l-ro></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="design-handoff">
+            <h2><a class="anchor" href="#design-handoff"><l-en>Handoff to development</l-en><l-ru>Передача в разработку</l-ru><l-ro>Predarea către dezvoltare</l-ro></a></h2>
+            <ul>
+              <li>
+                <l-en>A link to the <strong>Dev Ready</strong> page (after <code>/prep-figma</code>).</l-en>
+                <l-ru>Ссылка на страницу <strong>Dev Ready</strong> (после <code>/prep-figma</code>).</l-ru>
+                <l-ro>Linkul către pagina <strong>Dev Ready</strong> (după <code>/prep-figma</code>).</l-ro>
+              </li>
+              <li>
+                <l-en>The <code>.wpaikit/design-system.json</code> file — the developer puts it into <code>.wpaikit/</code> of their project.</l-en>
+                <l-ru>Файл <code>.wpaikit/design-system.json</code> — разработчик кладёт его в <code>.wpaikit/</code> своего проекта.</l-ru>
+                <l-ro>Fișierul <code>.wpaikit/design-system.json</code> — dezvoltatorul îl pune în <code>.wpaikit/</code> al proiectului său.</l-ro>
+              </li>
+              <li>
+                <l-en>Next: slicer — <a href="#slicing" data-goto="slicing">Slicing</a>, WordPress — <a href="#wordpress" data-goto="wordpress">WordPress</a>.</l-en>
+                <l-ru>Дальше: верстальщик — <a href="#slicing" data-goto="slicing">Slicing</a>, WordPress — <a href="#wordpress" data-goto="wordpress">WordPress</a>.</l-ru>
+                <l-ro>Mai departe: integratorul — <a href="#slicing" data-goto="slicing">Slicing</a>, WordPress — <a href="#wordpress" data-goto="wordpress">WordPress</a>.</l-ro>
+              </li>
+            </ul>
+          </section>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           SLICING
+           ===================================================================== -->
+      <div class="panel" id="panel-slicing" role="tabpanel" aria-labelledby="tab-slicing" hidden>
+        <nav class="toc" data-i18n-aria="onPage">
+          <p class="toc__title"><l-en>On this page</l-en><l-ru>На странице</l-ru><l-ro>Pe această pagină</l-ro></p>
+          <a href="#slicing-setup"><l-en>Setup</l-en><l-ru>Подготовка</l-ru><l-ro>Pregătire</l-ro></a>
+          <a href="#slicing-workflow"><l-en>Workflow</l-en><l-ru>Процесс</l-ru><l-ro>Flux de lucru</l-ro></a>
+          <a href="#slicing-output"><l-en>What gets generated</l-en><l-ru>Что генерируется</l-ru><l-ro>Ce se generează</l-ro></a>
+          <a href="#slicing-structure"><l-en>Project structure</l-en><l-ru>Структура проекта</l-ru><l-ro>Structura proiectului</l-ro></a>
+          <a href="#slicing-rules"><l-en>Markup rules</l-en><l-ru>Правила вёрстки</l-ru><l-ro>Reguli de integrare</l-ro></a>
+          <a href="#slicing-commands"><l-en>All commands</l-en><l-ru>Все команды</l-ru><l-ro>Toate comenzile</l-ro></a>
+        </nav>
+
+        <div class="content">
+          <div class="hero">
+            <p class="hero__eyebrow"><l-en>Slicing pack · slicer</l-en><l-ru>Набор Slicing · верстальщик</l-ru><l-ro>Pachetul Slicing · integrator</l-ro></p>
+            <h1><l-en>Slicing Figma without a CMS</l-en><l-ru>Вёрстка из Figma без CMS</l-ru><l-ro>Integrare din Figma fără CMS</l-ro></h1>
+            <p>
+              <l-en>A Figma block becomes HTML + SCSS (Tailwind via <code>@apply</code>) + JS for interactivity. Works in any front-end project — no dedicated boilerplate needed.</l-en>
+              <l-ru>Блок из Figma превращается в HTML + SCSS (Tailwind через <code>@apply</code>) + JS для интерактива. Работает в любом front-end проекте — отдельный boilerplate не нужен.</l-ru>
+              <l-ro>Un bloc din Figma devine HTML + SCSS (Tailwind prin <code>@apply</code>) + JS pentru interactivitate. Funcționează în orice proiect front-end — nu e nevoie de un boilerplate separat.</l-ro>
+            </p>
+            <div class="cmd"><pre><code>wpaikit knowledge install --packs slicing</code></pre></div>
+          </div>
+
+          <section id="slicing-setup">
+            <h2><a class="anchor" href="#slicing-setup"><l-en>Setup</l-en><l-ru>Подготовка</l-ru><l-ro>Pregătire</l-ro></a></h2>
+            <ol class="steps">
+              <li>
+                <strong><l-en>Install the pack in the project root</l-en><l-ru>Поставьте набор в корень проекта</l-ru><l-ro>Instalează pachetul în rădăcina proiectului</l-ro></strong>
+                <div class="cmd"><pre><code>cd my-frontend-project
+wpaikit knowledge install --packs slicing</code></pre></div>
+              </li>
+              <li>
+                <strong><l-en>Get the tokens</l-en><l-ru>Получите токены</l-ru><l-ro>Obține tokenii</l-ro></strong>
+                <p>
+                  <l-en>Drop in <code>.wpaikit/design-system.json</code> from the designer. Without it, commands read Figma Variables directly through MCP.</l-en>
+                  <l-ru>Положите <code>.wpaikit/design-system.json</code> от дизайнера. Если файла нет, команды прочитают Figma Variables напрямую через MCP.</l-ru>
+                  <l-ro>Pune <code>.wpaikit/design-system.json</code> primit de la designer. Fără el, comenzile citesc Figma Variables direct prin MCP.</l-ro>
+                </p>
+              </li>
+              <li>
+                <strong><l-en>Check Tailwind</l-en><l-ru>Проверьте Tailwind</l-ru><l-ro>Verifică Tailwind</l-ro></strong>
+                <p>
+                  <l-en>You need <code>tailwind.config.js</code> with the tokens. If it is missing, the command offers to create it.</l-en>
+                  <l-ru>Нужен <code>tailwind.config.js</code> с токенами. Если его нет, команда предложит создать.</l-ru>
+                  <l-ro>Ai nevoie de <code>tailwind.config.js</code> cu tokenii. Dacă lipsește, comanda îți propune să-l creeze.</l-ro>
+                </p>
+              </li>
+            </ol>
+          </section>
+
+          <section id="slicing-workflow">
+            <h2><a class="anchor" href="#slicing-workflow"><l-en>Workflow</l-en><l-ru>Процесс</l-ru><l-ro>Flux de lucru</l-ro></a></h2>
+            <ol class="steps">
+              <li>
+                <strong><l-en>Describe the project</l-en><l-ru>Описать проект</l-ru><l-ro>Descrie proiectul</l-ro></strong>
+                <p>
+                  <l-en>Once: stack, folders, SCSS/JS entry points → <code>.wpaikit/project.md</code>. Every command uses these paths.</l-en>
+                  <l-ru>Один раз: стек, папки, точки входа SCSS/JS → <code>.wpaikit/project.md</code>. Пути оттуда используют все команды.</l-ru>
+                  <l-ro>O singură dată: stack, foldere, puncte de intrare SCSS/JS → <code>.wpaikit/project.md</code>. Toate comenzile folosesc aceste căi.</l-ro>
+                </p>
+                <div class="cmd"><pre><code>/scan-project</code></pre></div>
+              </li>
+              <li>
+                <strong><l-en>Fonts</l-en><l-ru>Шрифты</l-ru><l-ro>Fonturi</l-ro></strong>
+                <p>
+                  <l-en>Matches fonts with the design system, converts them to woff/woff2, generates <code>@font-face</code>.</l-en>
+                  <l-ru>Сверяет шрифты с дизайн-системой, конвертирует в woff/woff2, генерирует <code>@font-face</code>.</l-ru>
+                  <l-ro>Compară fonturile cu design system-ul, le convertește în woff/woff2, generează <code>@font-face</code>.</l-ro>
+                </p>
+                <div class="cmd"><pre><code>/setup-fonts</code></pre></div>
+              </li>
+              <li>
+                <strong><l-en>Slice a block</l-en><l-ru>Сверстать блок</l-ru><l-ro>Integrează un bloc</l-ro></strong>
+                <p>
+                  <l-en>Shows the content model, elements, container and behaviour — adjust with commands, then type <code>done</code>.</l-en>
+                  <l-ru>Покажет модель контента, элементы, контейнер и поведение — правите командами, затем <code>done</code>.</l-ru>
+                  <l-ro>Arată modelul de conținut, elementele, containerul și comportamentul — ajustezi prin comenzi, apoi <code>done</code>.</l-ro>
+                </p>
+                <div class="cmd"><pre><code>/figma-to-block-html &lt;desktop-url&gt; &lt;mobile-url&gt;</code></pre></div>
+              </li>
+            </ol>
+            <div class="note">
+              <p>
+                <l-en>The mobile URL is optional: without it, responsive styles use smart defaults (<code>flex-row</code> → <code>flex-col</code>, smaller spacing and font sizes).</l-en>
+                <l-ru>Mobile-URL необязателен: без него адаптив строится по умным значениям по умолчанию (<code>flex-row</code> → <code>flex-col</code>, уменьшенные отступы и кегли).</l-ru>
+                <l-ro>URL-ul pentru mobil este opțional: fără el, responsive-ul folosește valori implicite inteligente (<code>flex-row</code> → <code>flex-col</code>, spațieri și fonturi mai mici).</l-ro>
+              </p>
+            </div>
+          </section>
+
+          <section id="slicing-output">
+            <h2><a class="anchor" href="#slicing-output"><l-en>What gets generated</l-en><l-ru>Что генерируется</l-ru><l-ro>Ce se generează</l-ro></a></h2>
+            <div class="grid">
+              <div class="card">
+                <h3>HTML</h3>
+                <p>
+                  <l-en>Semantic markup with BEM classes and the real text from the mockup. The header lists the content fields for future integration.</l-en>
+                  <l-ru>Семантичная разметка с BEM-классами и реальным текстом из макета. В шапке — список полей контента для будущей интеграции.</l-ru>
+                  <l-ro>Markup semantic cu clase BEM și textul real din machetă. Antetul listează câmpurile de conținut pentru integrarea ulterioară.</l-ro>
+                </p>
+              </div>
+              <div class="card">
+                <h3>SCSS</h3>
+                <p>
+                  <l-en>One partial per block: Tailwind via <code>@apply</code>, mobile-first, tokens only. The import is added to the main SCSS.</l-en>
+                  <l-ru>Partial на блок: Tailwind через <code>@apply</code>, mobile-first, только токены. Импорт добавляется в главный SCSS.</l-ru>
+                  <l-ro>Un partial pe bloc: Tailwind prin <code>@apply</code>, mobile-first, doar tokeni. Importul se adaugă în SCSS-ul principal.</l-ro>
+                </p>
+              </div>
+              <div class="card">
+                <h3>JS</h3>
+                <p>
+                  <l-en>Only for sliders, tabs, accordions, modals. A vanilla ES module <code>init{Block}()</code> with ARIA state.</l-en>
+                  <l-ru>Только для слайдеров, табов, аккордеонов, модалок. Vanilla ES-модуль <code>init{Block}()</code>, ARIA-состояния.</l-ru>
+                  <l-ro>Doar pentru slidere, taburi, acordeoane, modale. Un modul ES vanilla <code>init{Block}()</code> cu stări ARIA.</l-ro>
+                </p>
+              </div>
+              <div class="card">
+                <h3>Assets</h3>
+                <p>
+                  <l-en>Images (WebP) and icons (SVG) are exported from Figma into the assets folder.</l-en>
+                  <l-ru>Изображения (WebP) и иконки (SVG) экспортируются из Figma в папку assets.</l-ru>
+                  <l-ro>Imaginile (WebP) și iconițele (SVG) se exportă din Figma în folderul assets.</l-ro>
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section id="slicing-structure">
+            <h2><a class="anchor" href="#slicing-structure"><l-en>Project structure</l-en><l-ru>Структура проекта</l-ru><l-ro>Structura proiectului</l-ro></a></h2>
+            <p>
+              <l-en>Paths come from <code>.wpaikit/project.md</code>, then from existing project folders. If there is nothing, the defaults are:</l-en>
+              <l-ru>Пути берутся из <code>.wpaikit/project.md</code>, затем из существующих папок проекта. Если ничего нет — по умолчанию:</l-ru>
+              <l-ro>Căile se iau din <code>.wpaikit/project.md</code>, apoi din folderele existente ale proiectului. Dacă nu există nimic, implicit:</l-ro>
+            </p>
+            <pre class="tree">src/
+  blocks/hero-block/hero-block.html
+  components/button.html
+  scss/
+    main.scss                    <span class="c">← <l-en>imports every partial</l-en><l-ru>импортирует все partials</l-ru><l-ro>importă toate partial-urile</l-ro></span>
+    blocks/_hero-block.scss
+    components/_button.scss
+  js/
+    main.js                      <span class="c">← <l-en>imports and initialises modules</l-en><l-ru>импортирует и инициализирует модули</l-ru><l-ro>importă și inițializează modulele</l-ro></span>
+    blocks/hero-block.js         <span class="c">← <l-en>interactive blocks only</l-en><l-ru>только для интерактивных блоков</l-ru><l-ro>doar pentru blocuri interactive</l-ro></span>
+  assets/images/ · assets/icons/
+tailwind.config.js</pre>
+          </section>
+
+          <section id="slicing-rules">
+            <h2><a class="anchor" href="#slicing-rules"><l-en>Markup rules</l-en><l-ru>Правила вёрстки</l-ru><l-ro>Reguli de integrare</l-ro></a></h2>
+            <p>
+              <l-en>Full version — <code>knowledge/slicing/rules/markup.md</code>. The essentials:</l-en>
+              <l-ru>Полностью — <code>knowledge/slicing/rules/markup.md</code>. Главное:</l-ru>
+              <l-ro>Versiunea completă — <code>knowledge/slicing/rules/markup.md</code>. Esențialul:</l-ro>
+            </p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th><l-en>Rule</l-en><l-ru>Правило</l-ru><l-ro>Regulă</l-ro></th>
+                    <th><l-en>Example</l-en><l-ru>Пример</l-ru><l-ro>Exemplu</l-ro></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><l-en>No Tailwind utilities in HTML — BEM only</l-en><l-ru>Никаких Tailwind-утилит в HTML — только BEM</l-ru><l-ro>Fără utilitare Tailwind în HTML — doar BEM</l-ro></td>
+                    <td><code>&lt;section class="hero-block"&gt;</code></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>Styles via <code>@apply</code> in SCSS</l-en><l-ru>Стили через <code>@apply</code> в SCSS</l-ru><l-ro>Stiluri prin <code>@apply</code> în SCSS</l-ro></td>
+                    <td><code>@apply flex flex-col gap-4;</code></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>Mobile-first, desktop inside <code>@screen md</code></l-en><l-ru>Mobile-first, desktop в <code>@screen md</code></l-ru><l-ro>Mobile-first, desktop în <code>@screen md</code></l-ro></td>
+                    <td><code>@screen md { @apply flex-row; }</code></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>Tokens only, no hex or px</l-en><l-ru>Только токены, без hex и px</l-ru><l-ro>Doar tokeni, fără hex sau px</l-ro></td>
+                    <td><l-en><code>text-primary</code>, not <code>#0f172a</code></l-en><l-ru><code>text-primary</code>, а не <code>#0f172a</code></l-ru><l-ro><code>text-primary</code>, nu <code>#0f172a</code></l-ro></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>Variants are BEM modifiers</l-en><l-ru>Варианты — BEM-модификаторы</l-ru><l-ro>Variantele sunt modificatori BEM</l-ro></td>
+                    <td><code>.btn--primary</code>, <code>.btn--sm</code></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>Container: <code>__inner container</code>, the section only gets <code>py-*</code></l-en><l-ru>Контейнер: <code>__inner container</code>, у секции только <code>py-*</code></l-ru><l-ro>Container: <code>__inner container</code>, secțiunea primește doar <code>py-*</code></l-ro></td>
+                    <td><code>&lt;div class="hero-block__inner container"&gt;</code></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>JS hooks via <code>data-*</code>, state via ARIA + modifier</l-en><l-ru>JS-хуки — <code>data-*</code>, состояние — ARIA + модификатор</l-ru><l-ro>Hook-uri JS prin <code>data-*</code>, starea prin ARIA + modificator</l-ro></td>
+                    <td><code>data-accordion-trigger</code>, <code>aria-expanded</code></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="slicing-commands">
+            <h2><a class="anchor" href="#slicing-commands"><l-en>All commands</l-en><l-ru>Все команды</l-ru><l-ro>Toate comenzile</l-ro></a></h2>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th><l-en>Command</l-en><l-ru>Команда</l-ru><l-ro>Comandă</l-ro></th>
+                    <th><l-en>What it does</l-en><l-ru>Что делает</l-ru><l-ro>Ce face</l-ro></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>/figma-to-block-html</code></td>
+                    <td><l-en>Figma block → HTML + SCSS + JS</l-en><l-ru>Блок из Figma → HTML + SCSS + JS</l-ru><l-ro>Bloc Figma → HTML + SCSS + JS</l-ro></td>
+                  </tr>
+                  <tr>
+                    <td><code>/scan-project</code></td>
+                    <td><l-en>Project description in <code>.wpaikit/project.md</code></l-en><l-ru>Описание проекта в <code>.wpaikit/project.md</code></l-ru><l-ro>Descrierea proiectului în <code>.wpaikit/project.md</code></l-ro></td>
+                  </tr>
+                  <tr>
+                    <td><code>/setup-fonts</code></td>
+                    <td><l-en>Font audit and setup</l-en><l-ru>Аудит и подключение шрифтов</l-ru><l-ro>Auditul și conectarea fonturilor</l-ro></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="note">
+              <p>
+                <l-en>New slicing commands will arrive in this pack with CLI updates — just run <code>wpaikit knowledge install</code>.</l-en>
+                <l-ru>Новые команды вёрстки будут приходить в этот набор с обновлениями CLI — достаточно <code>wpaikit knowledge install</code>.</l-ru>
+                <l-ro>Comenzile noi de integrare vor veni în acest pachet odată cu actualizările CLI — rulează doar <code>wpaikit knowledge install</code>.</l-ro>
+              </p>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           WORDPRESS
+           ===================================================================== -->
+      <div class="panel" id="panel-wordpress" role="tabpanel" aria-labelledby="tab-wordpress" hidden>
+        <nav class="toc" data-i18n-aria="onPage">
+          <p class="toc__title"><l-en>On this page</l-en><l-ru>На странице</l-ru><l-ro>Pe această pagină</l-ro></p>
+          <a href="#wordpress-init"><l-en>New project</l-en><l-ru>Новый проект</l-ru><l-ro>Proiect nou</l-ro></a>
+          <a href="#wordpress-after"><l-en>After init</l-en><l-ru>После init</l-ru><l-ro>După init</l-ro></a>
+          <a href="#wordpress-workflow"><l-en>Workflow</l-en><l-ru>Процесс</l-ru><l-ro>Flux de lucru</l-ro></a>
+          <a href="#wordpress-commands"><l-en>All commands</l-en><l-ru>Все команды</l-ru><l-ro>Toate comenzile</l-ro></a>
+          <a href="#wordpress-theme"><l-en>Theme</l-en><l-ru>Тема</l-ru><l-ro>Tema</l-ro></a>
+          <a href="#wordpress-rules"><l-en>Rules</l-en><l-ru>Правила</l-ru><l-ro>Reguli</l-ro></a>
+        </nav>
+
+        <div class="content">
+          <div class="hero">
+            <p class="hero__eyebrow"><l-en>Standard preset · WordPress developer</l-en><l-ru>Preset standard · WordPress-разработчик</l-ru><l-ro>Preset standard · dezvoltator WordPress</l-ro></p>
+            <h1><l-en>A WordPress site from the boilerplate</l-en><l-ru>WordPress-сайт из boilerplate</l-ru><l-ro>Un site WordPress din boilerplate</l-ro></h1>
+            <p>
+              <l-en>Timber + ACF + Vite + Tailwind. <code>wpaikit init</code> creates the project, and the WordPress pack generates ACF blocks (PHP + Twig + SCSS + ACF JSON) straight from Figma.</l-en>
+              <l-ru>Timber + ACF + Vite + Tailwind. <code>wpaikit init</code> создаёт проект, а набор WordPress генерирует ACF-блоки (PHP + Twig + SCSS + ACF JSON) прямо из Figma.</l-ru>
+              <l-ro>Timber + ACF + Vite + Tailwind. <code>wpaikit init</code> creează proiectul, iar pachetul WordPress generează blocuri ACF (PHP + Twig + SCSS + ACF JSON) direct din Figma.</l-ro>
+            </p>
+            <div class="cmd"><pre><code>wpaikit init --preset standard</code></pre></div>
+          </div>
+
+          <section id="wordpress-init">
+            <h2><a class="anchor" href="#wordpress-init"><l-en>New project</l-en><l-ru>Новый проект</l-ru><l-ro>Proiect nou</l-ro></a></h2>
+            <div class="cmd"><pre><code>wpaikit init</code></pre></div>
+            <p><l-en>The CLI asks:</l-en><l-ru>CLI спросит:</l-ru><l-ro>CLI-ul întreabă:</l-ro></p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th><l-en>Question</l-en><l-ru>Вопрос</l-ru><l-ro>Întrebare</l-ro></th>
+                    <th><l-en>Example</l-en><l-ru>Пример</l-ru><l-ro>Exemplu</l-ro></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><l-en>Where to create the project</l-en><l-ru>Где создать проект</l-ru><l-ro>Unde se creează proiectul</l-ro></td>
+                    <td><l-en>New folder (recommended) or the current one</l-en><l-ru>Новая папка (рекомендуется) или текущая</l-ru><l-ro>Folder nou (recomandat) sau cel curent</l-ro></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>Project name</l-en><l-ru>Название проекта</l-ru><l-ro>Numele proiectului</l-ro></td>
+                    <td><code>Salon Frumusete</code></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>Slug — theme folder and text domain</l-en><l-ru>Slug — папка темы и text domain</l-ru><l-ro>Slug — folderul temei și text domain</l-ro></td>
+                    <td><code>salon-frumusete</code></td>
+                  </tr>
+                  <tr>
+                    <td>PHP namespace</td>
+                    <td><code>SalonFrumusete</code></td>
+                  </tr>
+                  <tr>
+                    <td>Preset</td>
+                    <td><l-en><code>Standard</code> or <code>WooCommerce</code></l-en><l-ru><code>Standard</code> или <code>WooCommerce</code></l-ru><l-ro><code>Standard</code> sau <code>WooCommerce</code></l-ro></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p><l-en>What happens automatically:</l-en><l-ru>Что происходит автоматически:</l-ru><l-ro>Ce se întâmplă automat:</l-ro></p>
+            <ol>
+              <li><l-en>The latest WordPress is downloaded.</l-en><l-ru>Скачивается последняя версия WordPress.</l-ru><l-ro>Se descarcă ultima versiune WordPress.</l-ro></li>
+              <li><l-en>The boilerplate is cloned into <code>wp-content/</code>.</l-en><l-ru>Клонируется boilerplate в <code>wp-content/</code>.</l-ru><l-ro>Boilerplate-ul se clonează în <code>wp-content/</code>.</l-ro></li>
+              <li><l-en>The theme, PHP namespace and text domain are renamed everywhere.</l-en><l-ru>Тема, PHP namespace и text domain переименовываются везде.</l-ru><l-ro>Tema, namespace-ul PHP și text domain-ul se redenumesc peste tot.</l-ro></li>
+              <li><l-en><code>composer install</code>, <code>npm install</code> and a frontend build.</l-en><l-ru><code>composer install</code>, <code>npm install</code> и сборка frontend.</l-ru><l-ro><code>composer install</code>, <code>npm install</code> și build-ul frontend.</l-ro></li>
+              <li><l-en><code>.wpaikit.json</code> with project metadata is created.</l-en><l-ru>Создаётся <code>.wpaikit.json</code> с метаданными проекта.</l-ru><l-ro>Se creează <code>.wpaikit.json</code> cu metadatele proiectului.</l-ro></li>
+              <li><l-en>Knowledge is installed — all packs by default (Design + Slicing + WordPress).</l-en><l-ru>Ставится knowledge — по умолчанию все наборы (Design + Slicing + WordPress).</l-ru><l-ro>Se instalează knowledge — implicit toate pachetele (Design + Slicing + WordPress).</l-ro></li>
+            </ol>
+            <div class="note">
+              <p>
+                <l-en>A different knowledge selection: <code>wpaikit init --packs wordpress</code>. If any step fails, everything created is rolled back.</l-en>
+                <l-ru>Другой набор knowledge: <code>wpaikit init --packs wordpress</code>. При ошибке на любом шаге всё созданное откатывается.</l-ru>
+                <l-ro>Altă selecție de knowledge: <code>wpaikit init --packs wordpress</code>. Dacă un pas eșuează, tot ce s-a creat se anulează.</l-ro>
+              </p>
+            </div>
+          </section>
+
+          <section id="wordpress-after">
+            <h2><a class="anchor" href="#wordpress-after"><l-en>After init</l-en><l-ru>После init</l-ru><l-ro>După init</l-ro></a></h2>
+            <ol class="steps">
+              <li>
+                <strong><l-en>Create a local database</l-en><l-ru>Создайте локальную базу данных</l-ru><l-ro>Creează o bază de date locală</l-ro></strong>
+                <p><l-en>Herd, MAMP, TablePlus or the CLI.</l-en><l-ru>Herd, MAMP, TablePlus или CLI.</l-ru><l-ro>Herd, MAMP, TablePlus sau CLI.</l-ro></p>
+              </li>
+              <li>
+                <strong><l-en>Configure <code>wp-config.php</code></l-en><l-ru>Настройте <code>wp-config.php</code></l-ru><l-ro>Configurează <code>wp-config.php</code></l-ro></strong>
+                <div class="cmd"><pre><code>define('DB_NAME',     'salon_frumusete');
+define('DB_USER',     'root');
+define('DB_PASSWORD', '');
+define('DB_HOST',     'localhost');
+define('BOILERPLATE_DEV', true);  <span class="c">// <l-en>Vite dev server instead of built assets</l-en><l-ru>Vite dev-сервер вместо собранных файлов</l-ru><l-ro>serverul Vite dev în loc de fișierele compilate</l-ro></span></code></pre></div>
+              </li>
+              <li>
+                <strong><l-en>Install WordPress in the browser and activate the theme</l-en><l-ru>Установите WordPress в браузере и активируйте тему</l-ru><l-ro>Instalează WordPress în browser și activează tema</l-ro></strong>
+                <p>wp-admin → Appearance → Themes.</p>
+              </li>
+              <li>
+                <strong><l-en>Start the frontend</l-en><l-ru>Запустите frontend</l-ru><l-ro>Pornește frontend-ul</l-ro></strong>
+                <div class="cmd"><pre><code>cd wp-content/themes/salon-frumusete/frontend
+npm run dev</code></pre></div>
+              </li>
+            </ol>
+          </section>
+
+          <section id="wordpress-workflow">
+            <h2><a class="anchor" href="#wordpress-workflow"><l-en>Workflow: from Figma to ACF blocks</l-en><l-ru>Процесс: от Figma к ACF-блокам</l-ru><l-ro>Fluxul: din Figma în blocuri ACF</l-ro></a></h2>
+            <p>
+              <l-en>Run the commands in the AI assistant from the project root; block generation runs from the theme root.</l-en>
+              <l-ru>Команды запускаются в AI-ассистенте из корня проекта; генерация блоков — из корня темы.</l-ru>
+              <l-ro>Comenzile se rulează în asistentul AI din rădăcina proiectului; generarea blocurilor — din rădăcina temei.</l-ro>
+            </p>
+            <ol class="steps">
+              <li>
+                <strong><l-en>Describe the project</l-en><l-ru>Описать проект</l-ru><l-ro>Descrie proiectul</l-ro></strong>
+                <div class="cmd"><pre><code>/scan-project</code></pre></div>
+              </li>
+              <li>
+                <strong><l-en>Fonts</l-en><l-ru>Шрифты</l-ru><l-ro>Fonturi</l-ro></strong>
+                <div class="cmd"><pre><code>/setup-fonts</code></pre></div>
+              </li>
+              <li>
+                <strong><l-en>Design system to code</l-en><l-ru>Дизайн-система в код</l-ru><l-ro>Design system în cod</l-ro></strong>
+                <p>
+                  <l-en>Twig components, SCSS partials and <code>tailwind.config.js</code> from <code>design-system.json</code>.</l-en>
+                  <l-ru>Twig-компоненты, SCSS-partials и <code>tailwind.config.js</code> из <code>design-system.json</code>.</l-ru>
+                  <l-ro>Componente Twig, partial-uri SCSS și <code>tailwind.config.js</code> din <code>design-system.json</code>.</l-ro>
+                </p>
+                <div class="cmd"><pre><code>/design-system-to-code</code></pre></div>
+              </li>
+              <li>
+                <strong><l-en>Components registry</l-en><l-ru>Реестр компонентов</l-ru><l-ro>Registrul de componente</l-ro></strong>
+                <p>
+                  <l-en>So blocks reuse existing components instead of duplicating them.</l-en>
+                  <l-ru>Чтобы блоки переиспользовали существующие компоненты, а не дублировали их.</l-ru>
+                  <l-ro>Ca blocurile să refolosească componentele existente în loc să le dubleze.</l-ro>
+                </p>
+                <div class="cmd"><pre><code>/scan-components</code></pre></div>
+              </li>
+              <li>
+                <strong><l-en>Block from Figma</l-en><l-ru>Блок из Figma</l-ru><l-ro>Bloc din Figma</l-ro></strong>
+                <p>
+                  <l-en>PHP class, Twig, SCSS and ACF JSON. You can adjust the fields before generation.</l-en>
+                  <l-ru>PHP-класс, Twig, SCSS и ACF JSON. Поля можно поправить перед генерацией.</l-ru>
+                  <l-ro>Clasa PHP, Twig, SCSS și ACF JSON. Câmpurile se pot ajusta înainte de generare.</l-ro>
+                </p>
+                <div class="cmd"><pre><code>/figma-to-block &lt;desktop-url&gt; &lt;mobile-url&gt;</code></pre></div>
+              </li>
+              <li>
+                <strong><l-en>Code check</l-en><l-ru>Проверка кода</l-ru><l-ro>Verificarea codului</l-ro></strong>
+                <div class="cmd"><pre><code>/validate-code</code></pre></div>
+              </li>
+            </ol>
+            <div class="note note--ok">
+              <p>
+                <l-en>For review: <code>/get-comment-for-frontend &lt;url&gt;</code> lists every block on a page with Twig, SCSS and JS paths.</l-en>
+                <l-ru>Для ревью: <code>/get-comment-for-frontend &lt;url&gt;</code> — список всех блоков страницы с путями к Twig, SCSS и JS.</l-ru>
+                <l-ro>Pentru review: <code>/get-comment-for-frontend &lt;url&gt;</code> listează toate blocurile unei pagini cu căile Twig, SCSS și JS.</l-ro>
+              </p>
+            </div>
+          </section>
+
+          <section id="wordpress-commands">
+            <h2><a class="anchor" href="#wordpress-commands"><l-en>All commands</l-en><l-ru>Все команды</l-ru><l-ro>Toate comenzile</l-ro></a></h2>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th><l-en>Command</l-en><l-ru>Команда</l-ru><l-ro>Comandă</l-ro></th>
+                    <th><l-en>What it does</l-en><l-ru>Что делает</l-ru><l-ro>Ce face</l-ro></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>/figma-to-block</code></td>
+                    <td><l-en>PHP + Twig + SCSS + ACF JSON for a block</l-en><l-ru>PHP + Twig + SCSS + ACF JSON для блока</l-ru><l-ro>PHP + Twig + SCSS + ACF JSON pentru un bloc</l-ro></td>
+                  </tr>
+                  <tr>
+                    <td><code>/design-system-to-code</code></td>
+                    <td><l-en>Twig components + SCSS + <code>tailwind.config.js</code></l-en><l-ru>Twig-компоненты + SCSS + <code>tailwind.config.js</code></l-ru><l-ro>Componente Twig + SCSS + <code>tailwind.config.js</code></l-ro></td>
+                  </tr>
+                  <tr>
+                    <td><code>/scan-components</code></td>
+                    <td><l-en>Components registry <code>.wpaikit/components-registry.md</code></l-en><l-ru>Реестр компонентов <code>.wpaikit/components-registry.md</code></l-ru><l-ro>Registrul de componente <code>.wpaikit/components-registry.md</code></l-ro></td>
+                  </tr>
+                  <tr>
+                    <td><code>/validate-code</code></td>
+                    <td><l-en>Check SCSS, Twig, PHP against the rules and fix</l-en><l-ru>Проверка SCSS, Twig, PHP по правилам и исправление</l-ru><l-ro>Verifică SCSS, Twig, PHP după reguli și corectează</l-ro></td>
+                  </tr>
+                  <tr>
+                    <td><code>/get-comment-for-frontend</code></td>
+                    <td><l-en>Developer reference of a page's blocks</l-en><l-ru>Справка по блокам страницы для разработчика</l-ru><l-ro>Referință pentru dezvoltator cu blocurile paginii</l-ro></td>
+                  </tr>
+                  <tr>
+                    <td><code>/scan-project</code></td>
+                    <td><l-en>Project description in <code>.wpaikit/project.md</code></l-en><l-ru>Описание проекта в <code>.wpaikit/project.md</code></l-ru><l-ro>Descrierea proiectului în <code>.wpaikit/project.md</code></l-ro></td>
+                  </tr>
+                  <tr>
+                    <td><code>/setup-fonts</code></td>
+                    <td><l-en>Font audit and setup</l-en><l-ru>Аудит и подключение шрифтов</l-ru><l-ro>Auditul și conectarea fonturilor</l-ro></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              <l-en>With the Design pack (installed by <code>init</code> by default) every <a href="#design-commands" data-goto="design">Figma command</a> is available too.</l-en>
+              <l-ru>С набором Design (по умолчанию после <code>init</code>) доступны и все <a href="#design-commands" data-goto="design">Figma-команды</a>.</l-ru>
+              <l-ro>Cu pachetul Design (instalat implicit de <code>init</code>) sunt disponibile și toate <a href="#design-commands" data-goto="design">comenzile Figma</a>.</l-ro>
+            </p>
+          </section>
+
+          <section id="wordpress-theme">
+            <h2><a class="anchor" href="#wordpress-theme"><l-en>Theme</l-en><l-ru>Тема</l-ru><l-ro>Tema</l-ro></a></h2>
+            <pre class="tree">wp-content/themes/{slug}/
+  src/Theme/Controllers/   <span class="c">← <l-en>WP template rendering</l-en><l-ru>рендер шаблонов WP</l-ru><l-ro>randarea template-urilor WP</l-ro></span>
+  src/Theme/Services/      <span class="c">← <l-en>business logic, WP_Query, CPT</l-en><l-ru>бизнес-логика, WP_Query, CPT</l-ru><l-ro>logica de business, WP_Query, CPT</l-ro></span>
+  blocks/{Block}/          <span class="c">← <l-en>ACF block PHP classes</l-en><l-ru>PHP-классы ACF-блоков</l-ru><l-ro>clasele PHP ale blocurilor ACF</l-ro></span>
+  views/                   <span class="c">← Twig: layouts, partials, components, blocks</span>
+  acf-json/                <span class="c">← <l-en>ACF field groups</l-en><l-ru>группы полей ACF</l-ru><l-ro>grupurile de câmpuri ACF</l-ro></span>
+  frontend/src/            <span class="c">← SCSS, JS (Vite + Tailwind)</span></pre>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th><l-en>Command</l-en><l-ru>Команда</l-ru><l-ro>Comandă</l-ro></th>
+                    <th><l-en>Where to run</l-en><l-ru>Где запускать</l-ru><l-ro>Unde se rulează</l-ro></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>composer phpstan</code></td>
+                    <td><l-en>Theme root</l-en><l-ru>Корень темы</l-ru><l-ro>Rădăcina temei</l-ro></td>
+                  </tr>
+                  <tr>
+                    <td><code>npm run dev</code> — <l-en>Vite on port 3002</l-en><l-ru>Vite на порту 3002</l-ru><l-ro>Vite pe portul 3002</l-ro></td>
+                    <td><code>frontend/</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>npm run build</code></td>
+                    <td><code>frontend/</code></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="wordpress-rules">
+            <h2><a class="anchor" href="#wordpress-rules"><l-en>Rules</l-en><l-ru>Правила</l-ru><l-ro>Reguli</l-ro></a></h2>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th><l-en>Topic</l-en><l-ru>Тема</l-ru><l-ro>Subiect</l-ro></th>
+                    <th><l-en>File</l-en><l-ru>Файл</l-ru><l-ro>Fișier</l-ro></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><l-en>Architecture and structure</l-en><l-ru>Архитектура и структура</l-ru><l-ro>Arhitectură și structură</l-ro></td>
+                    <td><code>knowledge/wordpress/rules/boilerplate/architecture.md</code></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>PHP, services, blocks, CPT</l-en><l-ru>PHP, сервисы, блоки, CPT</l-ru><l-ro>PHP, servicii, blocuri, CPT</l-ro></td>
+                    <td><code>knowledge/wordpress/rules/boilerplate/php.md</code></td>
+                  </tr>
+                  <tr>
+                    <td>Twig autoescape</td>
+                    <td><code>knowledge/wordpress/rules/boilerplate/twig.md</code></td>
+                  </tr>
+                  <tr>
+                    <td>Frontend</td>
+                    <td><code>knowledge/wordpress/rules/boilerplate/frontend.md</code></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>Layouts and components</l-en><l-ru>Layouts и компоненты</l-ru><l-ro>Layout-uri și componente</l-ro></td>
+                    <td><code>knowledge/wordpress/rules/boilerplate/layout.md</code></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>Figma → code (BEM, SCSS, Twig, ACF)</l-en><l-ru>Figma → код (BEM, SCSS, Twig, ACF)</l-ru><l-ro>Figma → cod (BEM, SCSS, Twig, ACF)</l-ro></td>
+                    <td><code>knowledge/wordpress/rules/figma-to-code.md</code></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>Blocks in Figma</l-en><l-ru>Блоки в Figma</l-ru><l-ro>Blocuri în Figma</l-ro></td>
+                    <td><code>knowledge/shared/rules/figma-blocks.md</code></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           WOOCOMMERCE
+           ===================================================================== -->
+      <div class="panel" id="panel-woocommerce" role="tabpanel" aria-labelledby="tab-woocommerce" hidden>
+        <nav class="toc" data-i18n-aria="onPage">
+          <p class="toc__title"><l-en>On this page</l-en><l-ru>На странице</l-ru><l-ro>Pe această pagină</l-ro></p>
+          <a href="#woocommerce-init"><l-en>New store</l-en><l-ru>Новый магазин</l-ru><l-ro>Magazin nou</l-ro></a>
+          <a href="#woocommerce-plugins"><l-en>Plugins</l-en><l-ru>Плагины</l-ru><l-ro>Plugin-uri</l-ro></a>
+          <a href="#woocommerce-features"><l-en>Built in</l-en><l-ru>Что встроено</l-ru><l-ro>Ce este inclus</l-ro></a>
+          <a href="#woocommerce-catalog"><l-en>XLSX catalog</l-en><l-ru>Каталог XLSX</l-ru><l-ro>Catalog XLSX</l-ro></a>
+          <a href="#woocommerce-rules"><l-en>Rules</l-en><l-ru>Правила</l-ru><l-ro>Reguli</l-ro></a>
+        </nav>
+
+        <div class="content">
+          <div class="hero">
+            <p class="hero__eyebrow"><l-en>Woo preset · store</l-en><l-ru>Preset woo · магазин</l-ru><l-ro>Preset woo · magazin</l-ro></p>
+            <h1><l-en>A WooCommerce store</l-en><l-ru>Магазин на WooCommerce</l-ru><l-ro>Un magazin WooCommerce</l-ro></h1>
+            <p>
+              <l-en>Everything from the WordPress preset plus the WooCommerce boilerplate: custom variations, mini-cart, Twig checkout, WPML and catalog import/export. The Figma workflow is the same as in the <a href="#wordpress-workflow" data-goto="wordpress">WordPress</a> tab.</l-en>
+              <l-ru>Всё из WordPress-preset плюс WooCommerce-boilerplate: кастомные вариации, мини-корзина, Twig-checkout, WPML и импорт/экспорт каталога. Процесс работы с Figma — как во вкладке <a href="#wordpress-workflow" data-goto="wordpress">WordPress</a>.</l-ru>
+              <l-ro>Tot ce are preset-ul WordPress plus boilerplate-ul WooCommerce: variații personalizate, mini-coș, checkout Twig, WPML și import/export de catalog. Fluxul cu Figma este același ca în tabul <a href="#wordpress-workflow" data-goto="wordpress">WordPress</a>.</l-ro>
+            </p>
+            <div class="cmd"><pre><code>wpaikit init --preset woo</code></pre></div>
+          </div>
+
+          <section id="woocommerce-init">
+            <h2><a class="anchor" href="#woocommerce-init"><l-en>New store</l-en><l-ru>Новый магазин</l-ru><l-ro>Magazin nou</l-ro></a></h2>
+            <p>
+              <l-en>Interactively — pick <code>WooCommerce</code> in the Preset question. Or pass flags directly:</l-en>
+              <l-ru>Интерактивно — выберите <code>WooCommerce</code> в вопросе Preset. Или сразу с флагами:</l-ru>
+              <l-ro>Interactiv — alege <code>WooCommerce</code> la întrebarea Preset. Sau direct cu flaguri:</l-ro>
+            </p>
+            <div class="cmd"><pre><code>wpaikit init --preset woo --multilingual wpml --variant-catalog main-only --wishlist no</code></pre></div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th><l-en>Flag</l-en><l-ru>Флаг</l-ru><l-ro>Flag</l-ro></th>
+                    <th><l-en>Values</l-en><l-ru>Значения</l-ru><l-ro>Valori</l-ro></th>
+                    <th><l-en>Default</l-en><l-ru>По умолчанию</l-ru><l-ro>Implicit</l-ro></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>--multilingual</code></td>
+                    <td><l-en><code>wpml</code> — multilingual store; <code>none</code> — single language</l-en><l-ru><code>wpml</code> — многоязычный магазин; <code>none</code> — один язык</l-ru><l-ro><code>wpml</code> — magazin multilingv; <code>none</code> — o singură limbă</l-ro></td>
+                    <td><code>wpml</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>--variant-catalog</code></td>
+                    <td><l-en><code>main-only</code> — the catalog shows only the main variant; <code>all</code> — every variant</l-en><l-ru><code>main-only</code> — в каталоге только основной вариант; <code>all</code> — все</l-ru><l-ro><code>main-only</code> — catalogul arată doar varianta principală; <code>all</code> — toate</l-ro></td>
+                    <td><code>main-only</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>--wishlist</code></td>
+                    <td><code>yes</code> / <code>no</code></td>
+                    <td><code>no</code></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              <l-en>Then follow the same steps as <a href="#wordpress-after" data-goto="wordpress">after init in WordPress</a>. Knowledge is installed with the <code>woo</code> profile, which adds <code>knowledge/woocommerce/</code>.</l-en>
+              <l-ru>Дальше — те же шаги, что <a href="#wordpress-after" data-goto="wordpress">после init в WordPress</a>. Knowledge ставится с профилем <code>woo</code>: добавляется папка <code>knowledge/woocommerce/</code>.</l-ru>
+              <l-ro>Apoi urmează aceiași pași ca <a href="#wordpress-after" data-goto="wordpress">după init în WordPress</a>. Knowledge se instalează cu profilul <code>woo</code>, care adaugă <code>knowledge/woocommerce/</code>.</l-ro>
+            </p>
+          </section>
+
+          <section id="woocommerce-plugins">
+            <h2><a class="anchor" href="#woocommerce-plugins"><l-en>Plugins</l-en><l-ru>Плагины</l-ru><l-ro>Plugin-uri</l-ro></a></h2>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th><l-en>Plugin</l-en><l-ru>Плагин</l-ru><l-ro>Plugin</l-ro></th>
+                    <th><l-en>When needed</l-en><l-ru>Когда нужен</l-ru><l-ro>Când e necesar</l-ro></th>
+                    <th><l-en>Source</l-en><l-ru>Откуда</l-ru><l-ro>Sursă</l-ro></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>WooCommerce</td>
+                    <td><l-en>Always</l-en><l-ru>Всегда</l-ru><l-ro>Mereu</l-ro></td>
+                    <td>wordpress.org</td>
+                  </tr>
+                  <tr>
+                    <td>WPAIKit Product Catalog I/O</td>
+                    <td><l-en>Always</l-en><l-ru>Всегда</l-ru><l-ro>Mereu</l-ro></td>
+                    <td><l-en>Bundled with the boilerplate</l-en><l-ru>В комплекте с boilerplate</l-ru><l-ro>Inclus în boilerplate</l-ro></td>
+                  </tr>
+                  <tr>
+                    <td>WPML Multilingual CMS</td>
+                    <td><code>wpml</code></td>
+                    <td><l-en>WPML license</l-en><l-ru>Лицензия WPML</l-ru><l-ro>Licență WPML</l-ro></td>
+                  </tr>
+                  <tr>
+                    <td>WPML String Translation</td>
+                    <td><code>wpml</code></td>
+                    <td><l-en>WPML license</l-en><l-ru>Лицензия WPML</l-ru><l-ro>Licență WPML</l-ro></td>
+                  </tr>
+                  <tr>
+                    <td>Advanced Custom Fields Multilingual</td>
+                    <td><code>wpml</code></td>
+                    <td><l-en>WPML license</l-en><l-ru>Лицензия WPML</l-ru><l-ro>Licență WPML</l-ro></td>
+                  </tr>
+                  <tr>
+                    <td>WooCommerce Multilingual &amp; Multicurrency</td>
+                    <td><code>wpml</code></td>
+                    <td><l-en>WPML license</l-en><l-ru>Лицензия WPML</l-ru><l-ro>Licență WPML</l-ro></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <ol class="steps">
+              <li>
+                <strong><l-en>Install the plugins</l-en><l-ru>Установите плагины</l-ru><l-ro>Instalează plugin-urile</l-ro></strong>
+                <p>
+                  <l-en>After the database is configured. Licensed WPML packages are not part of the boilerplate.</l-en>
+                  <l-ru>После настройки базы данных. Лицензионные пакеты WPML не входят в boilerplate.</l-ru>
+                  <l-ro>După configurarea bazei de date. Pachetele WPML licențiate nu fac parte din boilerplate.</l-ro>
+                </p>
+              </li>
+              <li>
+                <strong><l-en>Check</l-en><l-ru>Проверьте</l-ru><l-ro>Verifică</l-ro></strong>
+                <p>
+                  <l-en>Doctor shows which plugins are missing, inactive or active.</l-en>
+                  <l-ru>Doctor покажет, какие плагины отсутствуют, не активированы или активны.</l-ru>
+                  <l-ro>Doctor arată ce plugin-uri lipsesc, sunt inactive sau active.</l-ro>
+                </p>
+                <div class="cmd"><pre><code>wpaikit doctor</code></pre></div>
+              </li>
+            </ol>
+          </section>
+
+          <section id="woocommerce-features">
+            <h2><a class="anchor" href="#woocommerce-features"><l-en>Built in</l-en><l-ru>Что встроено</l-ru><l-ro>Ce este inclus</l-ro></a></h2>
+            <div class="grid">
+              <div class="card">
+                <h3><l-en>Variations</l-en><l-ru>Вариации</l-ru><l-ro>Variații</l-ro></h3>
+                <p><l-en>Custom variations for simple products.</l-en><l-ru>Кастомные вариации простых товаров.</l-ru><l-ro>Variații personalizate pentru produse simple.</l-ro></p>
+              </div>
+              <div class="card">
+                <h3><l-en>Mini-cart</l-en><l-ru>Мини-корзина</l-ru><l-ro>Mini-coș</l-ro></h3>
+                <p><l-en>A custom mini-cart and badges.</l-en><l-ru>Своя мини-корзина и бейджи.</l-ru><l-ro>Mini-coș personalizat și badge-uri.</l-ro></p>
+              </div>
+              <div class="card">
+                <h3>Twig checkout</h3>
+                <p><l-en>Checkout built with Twig.</l-en><l-ru>Оформление заказа на Twig.</l-ru><l-ro>Checkout construit cu Twig.</l-ro></p>
+              </div>
+              <div class="card">
+                <h3><l-en>Storefront</l-en><l-ru>Витрина</l-ru><l-ro>Vitrina</l-ro></h3>
+                <p><l-en>Catalog and wishlist (if enabled).</l-en><l-ru>Каталог и wishlist (если включён).</l-ru><l-ro>Catalog și wishlist (dacă e activat).</l-ro></p>
+              </div>
+            </div>
+            <div class="note note--warn">
+              <p>
+                <l-en>WooCommerce, variations, the mini-cart and Twig checkout are mandatory — they have no switches. Product import lives in the Catalog I/O plugin, not in the theme.</l-en>
+                <l-ru>WooCommerce, вариации, мини-корзина и Twig-checkout обязательны — у них нет переключателей. Импорт товаров живёт в плагине Catalog I/O, а не в теме.</l-ru>
+                <l-ro>WooCommerce, variațiile, mini-coșul și checkout-ul Twig sunt obligatorii — nu au comutatoare. Importul de produse se află în plugin-ul Catalog I/O, nu în temă.</l-ro>
+              </p>
+            </div>
+          </section>
+
+          <section id="woocommerce-catalog">
+            <h2><a class="anchor" href="#woocommerce-catalog"><l-en>XLSX catalog</l-en><l-ru>Каталог XLSX</l-ru><l-ro>Catalog XLSX</l-ro></a></h2>
+            <p>
+              <l-en>Import templates live in <code>knowledge/woocommerce/templates/product-catalog-io/</code>:</l-en>
+              <l-ru>Шаблоны для импорта лежат в <code>knowledge/woocommerce/templates/product-catalog-io/</code>:</l-ru>
+              <l-ro>Șabloanele de import se află în <code>knowledge/woocommerce/templates/product-catalog-io/</code>:</l-ro>
+            </p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th><l-en>File</l-en><l-ru>Файл</l-ru><l-ro>Fișier</l-ro></th>
+                    <th><l-en>Purpose</l-en><l-ru>Для чего</l-ru><l-ro>Scop</l-ro></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>wpaikit-products-client-import.xlsx</code></td>
+                    <td><l-en>Simplified template for the client</l-en><l-ru>Упрощённый шаблон для клиента</l-ru><l-ro>Șablon simplificat pentru client</l-ro></td>
+                  </tr>
+                  <tr>
+                    <td><code>wpaikit-products-full-import.xlsx</code></td>
+                    <td><l-en>Full product import</l-en><l-ru>Полный импорт товаров</l-ru><l-ro>Import complet de produse</l-ro></td>
+                  </tr>
+                  <tr>
+                    <td><code>wpaikit-products-price-stock-import.xlsx</code></td>
+                    <td><l-en>Price and stock updates</l-en><l-ru>Обновление цен и остатков</l-ru><l-ro>Actualizarea prețurilor și stocurilor</l-ro></td>
+                  </tr>
+                  <tr>
+                    <td><code>wpaikit-product-terms-import.xlsx</code></td>
+                    <td><l-en>Categories and attributes</l-en><l-ru>Категории и атрибуты</l-ru><l-ro>Categorii și atribute</l-ro></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="woocommerce-rules">
+            <h2><a class="anchor" href="#woocommerce-rules"><l-en>Rules</l-en><l-ru>Правила</l-ru><l-ro>Reguli</l-ro></a></h2>
+            <p>
+              <l-en>In addition to the <a href="#wordpress-rules" data-goto="wordpress">WordPress rules</a>:</l-en>
+              <l-ru>В дополнение к <a href="#wordpress-rules" data-goto="wordpress">правилам WordPress</a>:</l-ru>
+              <l-ro>Pe lângă <a href="#wordpress-rules" data-goto="wordpress">regulile WordPress</a>:</l-ro>
+            </p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th><l-en>Topic</l-en><l-ru>Тема</l-ru><l-ro>Subiect</l-ro></th>
+                    <th><l-en>File</l-en><l-ru>Файл</l-ru><l-ro>Fișier</l-ro></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><l-en>Configuration</l-en><l-ru>Конфигурация</l-ru><l-ro>Configurare</l-ro></td>
+                    <td><code>knowledge/woocommerce/rules/configuration.md</code></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>XLSX catalog and project fields</l-en><l-ru>Каталог XLSX и поля проекта</l-ru><l-ro>Catalog XLSX și câmpurile proiectului</l-ro></td>
+                    <td><code>knowledge/woocommerce/rules/product-catalog-io.md</code></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>Variations</l-en><l-ru>Вариации</l-ru><l-ro>Variații</l-ro></td>
+                    <td><code>knowledge/woocommerce/rules/custom-variations.md</code></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>Store components</l-en><l-ru>Компоненты магазина</l-ru><l-ro>Componentele magazinului</l-ro></td>
+                    <td><code>knowledge/woocommerce/rules/components.md</code></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>Storefront, wishlist, mini-cart</l-en><l-ru>Витрина, wishlist, мини-корзина</l-ru><l-ro>Vitrina, wishlist, mini-coș</l-ro></td>
+                    <td><code>knowledge/woocommerce/rules/storefront.md</code></td>
+                  </tr>
+                  <tr>
+                    <td>Checkout</td>
+                    <td><code>knowledge/woocommerce/rules/checkout.md</code></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>Analytics and cookie consent</l-en><l-ru>Аналитика и cookie consent</l-ru><l-ro>Analytics și cookie consent</l-ro></td>
+                    <td><code>knowledge/woocommerce/rules/analytics.md</code>, <code>cookie-consent.md</code></td>
+                  </tr>
+                  <tr>
+                    <td><l-en>Post-launch check</l-en><l-ru>Проверка после запуска</l-ru><l-ro>Verificarea după lansare</l-ro></td>
+                    <td><code>knowledge/woocommerce/checklists/runtime-smoke.md</code></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <p class="footer">
+        WPAIKit · <code>@veaceslav-golden/wp-ai-kit</code> 1.0.0 ·
+        <a href="./changelog.html">Changelog</a> ·
+        <a href="https://github.com/GoldenCodesSlava/wpaikit">GitHub</a> ·
+        <a href="./boilerplates.html">Boilerplates</a> ·
+        <a href="./index.html"><l-en>Detailed workflow guide</l-en><l-ru>Подробный workflow-гайд</l-ru><l-ro>Ghid detaliat de workflow</l-ro></a>
+      </p>
+    </main>
+
+    <script>
+      ;(() => {
+        const LANGS = ['en', 'ru', 'ro']
+        const STRINGS = {
+          en: {
+            title: 'WPAIKit — documentation',
+            description: 'WPAIKit docs: installing the CLI and knowledge packs, workflows for designers, slicers, WordPress and WooCommerce developers.',
+            copy: 'Copy',
+            copied: 'Copied',
+            theme: 'Toggle theme',
+            langGroup: 'Language',
+            sections: 'Documentation sections',
+            onPage: 'On this page',
+          },
+          ru: {
+            title: 'WPAIKit — документация',
+            description: 'Документация WPAIKit: установка CLI и knowledge-наборов, работа дизайнера, верстальщика, WordPress и WooCommerce разработчика.',
+            copy: 'Копировать',
+            copied: 'Скопировано',
+            theme: 'Переключить тему',
+            langGroup: 'Язык',
+            sections: 'Разделы документации',
+            onPage: 'На этой странице',
+          },
+          ro: {
+            title: 'WPAIKit — documentație',
+            description: 'Documentația WPAIKit: instalarea CLI și a pachetelor knowledge, fluxurile pentru designeri, integratori, dezvoltatori WordPress și WooCommerce.',
+            copy: 'Copiază',
+            copied: 'Copiat',
+            theme: 'Schimbă tema',
+            langGroup: 'Limbă',
+            sections: 'Secțiunile documentației',
+            onPage: 'Pe această pagină',
+          },
+        }
+        const root = document.documentElement
+        const store = {
+          get(key) {
+            try {
+              return localStorage.getItem(key)
+            } catch {
+              return null
+            }
+          },
+          set(key, value) {
+            try {
+              localStorage.setItem(key, value)
+            } catch {}
+          },
+        }
+
+        // ---------- language ----------
+        let lang = 'en'
+        function applyLang(next) {
+          lang = LANGS.includes(next) ? next : 'en'
+          const t = STRINGS[lang]
+          root.lang = lang
+          document.title = t.title
+          document.querySelector('meta[name="description"]').content = t.description
+          document.querySelectorAll('[data-i18n-aria]').forEach((element) => {
+            element.setAttribute('aria-label', t[element.dataset.i18nAria])
+          })
+          document.querySelectorAll('.lang-switch button').forEach((button) => {
+            button.setAttribute('aria-pressed', String(button.dataset.lang === lang))
+          })
+          document.querySelectorAll('.copy:not(.is-done)').forEach((button) => {
+            button.textContent = t.copy
+          })
+          store.set('wpaikit-docs-lang', lang)
+        }
+        document.querySelectorAll('.lang-switch button').forEach((button) => {
+          button.addEventListener('click', () => applyLang(button.dataset.lang))
+        })
+
+        // ---------- tabs ----------
+        const TABS = ['install', 'design', 'slicing', 'wordpress', 'woocommerce']
+        const tabs = [...document.querySelectorAll('.tab')]
+        const panels = Object.fromEntries(TABS.map((id) => [id, document.getElementById(`panel-${id}`)]))
+
+        function tabFromHash(hash) {
+          const id = decodeURIComponent(hash.replace(/^#/, ''))
+          if (!id) return { tab: 'install', anchor: null }
+          if (TABS.includes(id)) return { tab: id, anchor: null }
+          const element = document.getElementById(id)
+          const panel = element && element.closest('.panel')
+          return panel ? { tab: panel.id.replace('panel-', ''), anchor: id } : { tab: 'install', anchor: null }
+        }
+
+        function activate(tab, { focus = false, anchor = null } = {}) {
+          tabs.forEach((button) => {
+            const selected = button.dataset.tab === tab
+            button.setAttribute('aria-selected', String(selected))
+            button.tabIndex = selected ? 0 : -1
+            if (selected && focus) button.focus()
+            if (selected) {
+              const strip = button.parentElement
+              const left = button.offsetLeft - strip.offsetLeft
+              if (left < strip.scrollLeft || left + button.offsetWidth > strip.scrollLeft + strip.clientWidth) {
+                strip.scrollLeft = left - 16
+              }
+            }
+          })
+          TABS.forEach((id) => {
+            panels[id].hidden = id !== tab
+          })
+          if (anchor) {
+            document.getElementById(anchor)?.scrollIntoView()
+          } else {
+            window.scrollTo({ top: 0, behavior: 'instant' })
+          }
+          updateToc()
+        }
+
+        function go(tab, anchor = null) {
+          const hash = `#${anchor || tab}`
+          if (location.hash !== hash) history.pushState(null, '', hash)
+          activate(tab, { anchor })
+        }
+
+        tabs.forEach((button, index) => {
+          button.addEventListener('click', () => go(button.dataset.tab))
+          button.addEventListener('keydown', (event) => {
+            const keys = { ArrowRight: 1, ArrowLeft: -1 }
+            if (event.key in keys) {
+              const next = tabs[(index + keys[event.key] + tabs.length) % tabs.length]
+              go(next.dataset.tab)
+              next.focus()
+              event.preventDefault()
+            }
+          })
+        })
+
+        document.addEventListener('click', (event) => {
+          const target = event.target.closest('[data-goto]')
+          if (!target) return
+          event.preventDefault()
+          const href = target.getAttribute('href')
+          const anchor = href && href.length > 1 && href.slice(1) !== target.dataset.goto ? href.slice(1) : null
+          go(target.dataset.goto, anchor)
+        })
+
+        document.addEventListener('keydown', (event) => {
+          const target = event.target.closest && event.target.closest('.card--link')
+          if (target && (event.key === 'Enter' || event.key === ' ')) {
+            event.preventDefault()
+            go(target.dataset.goto)
+          }
+        })
+
+        window.addEventListener('popstate', () => {
+          const { tab, anchor } = tabFromHash(location.hash)
+          activate(tab, { anchor })
+        })
+
+        // ---------- copy buttons ----------
+        document.querySelectorAll('.cmd').forEach((block) => {
+          const button = document.createElement('button')
+          button.type = 'button'
+          button.className = 'copy'
+          button.addEventListener('click', async () => {
+            const code = block.querySelector('pre').cloneNode(true)
+            code.querySelectorAll('.c').forEach((comment) => comment.remove())
+            const text = code.textContent.replace(/[ \t]+$/gm, '').trim()
+            try {
+              await navigator.clipboard.writeText(text)
+            } catch {
+              const area = document.createElement('textarea')
+              area.value = text
+              document.body.append(area)
+              area.select()
+              document.execCommand('copy')
+              area.remove()
+            }
+            button.textContent = STRINGS[lang].copied
+            button.classList.add('is-done')
+            setTimeout(() => {
+              button.classList.remove('is-done')
+              button.textContent = STRINGS[lang].copy
+            }, 1600)
+          })
+          block.append(button)
+        })
+
+        // ---------- active TOC link ----------
+        let tocLinks = []
+        function updateToc() {
+          const panel = document.querySelector('.panel:not([hidden])')
+          tocLinks = [...panel.querySelectorAll('.toc a')]
+          highlightToc()
+        }
+        function highlightToc() {
+          let current = null
+          for (const link of tocLinks) {
+            const section = document.getElementById(link.getAttribute('href').slice(1))
+            if (section && section.getBoundingClientRect().top < 180) current = link
+          }
+          tocLinks.forEach((link) => link.classList.toggle('is-active', link === (current || tocLinks[0])))
+        }
+        window.addEventListener('scroll', highlightToc, { passive: true })
+
+        // ---------- theme ----------
+        const savedTheme = store.get('wpaikit-docs-theme')
+        if (savedTheme) root.dataset.theme = savedTheme
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+          const dark = root.dataset.theme
+            ? root.dataset.theme === 'dark'
+            : matchMedia('(prefers-color-scheme: dark)').matches
+          root.dataset.theme = dark ? 'light' : 'dark'
+          store.set('wpaikit-docs-theme', root.dataset.theme)
+        })
+
+        // ---------- init ----------
+        const langParam = new URLSearchParams(location.search).get('lang')
+        applyLang(langParam || store.get('wpaikit-docs-lang') || 'en')
+        const initial = tabFromHash(location.hash)
+        activate(initial.tab, { anchor: initial.anchor })
+      })()
+    </script>
+  </body>
+</html>

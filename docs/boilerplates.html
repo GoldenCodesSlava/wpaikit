@@ -1,0 +1,1706 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="WPAIKit boilerplates: structure, commands and development rules of the Standard and WooCommerce starters."
+    />
+    <title>WPAIKit — boilerplates</title>
+    <style>
+      :root {
+        --bg: #f6f7f9;
+        --surface: #ffffff;
+        --surface-2: #f0f2f5;
+        --border: #e2e5ea;
+        --text: #16181d;
+        --muted: #5b6270;
+        --accent: #4f46e5;
+        --accent-soft: #eef0ff;
+        --accent-text: #3730a3;
+        --code-bg: #12141a;
+        --code-text: #e6e8ee;
+        --ok: #0f7b4b;
+        --ok-soft: #e7f6ee;
+        --warn: #9a5b00;
+        --warn-soft: #fff4e0;
+        --design: #db2777;
+        --slicing: #0891b2;
+        --wordpress: #2563eb;
+        --woo: #7c3aed;
+        --radius: 12px;
+        --shadow: 0 1px 2px rgb(16 24 40 / 6%), 0 4px 16px rgb(16 24 40 / 4%);
+        color-scheme: light;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) {
+          --bg: #0e1015;
+          --surface: #161920;
+          --surface-2: #1d2129;
+          --border: #2a2f3a;
+          --text: #e8eaf0;
+          --muted: #9aa1b0;
+          --accent: #8b85ff;
+          --accent-soft: #23233d;
+          --accent-text: #c7c4ff;
+          --code-bg: #0a0b0f;
+          --ok: #4ade80;
+          --ok-soft: #12291c;
+          --warn: #fbbf24;
+          --warn-soft: #2b2210;
+          --design: #f472b6;
+          --slicing: #22d3ee;
+          --wordpress: #60a5fa;
+          --woo: #a78bfa;
+          --shadow: none;
+          color-scheme: dark;
+        }
+      }
+
+      :root[data-theme='dark'] {
+        --bg: #0e1015;
+        --surface: #161920;
+        --surface-2: #1d2129;
+        --border: #2a2f3a;
+        --text: #e8eaf0;
+        --muted: #9aa1b0;
+        --accent: #8b85ff;
+        --accent-soft: #23233d;
+        --accent-text: #c7c4ff;
+        --code-bg: #0a0b0f;
+        --ok: #4ade80;
+        --ok-soft: #12291c;
+        --warn: #fbbf24;
+        --warn-soft: #2b2210;
+        --design: #f472b6;
+        --slicing: #22d3ee;
+        --wordpress: #60a5fa;
+        --woo: #a78bfa;
+        --shadow: none;
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 140px;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 16px/1.6 -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a {
+        color: var(--accent);
+      }
+
+      code,
+      pre,
+      kbd {
+        font-family: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+      }
+
+      :not(pre) > code {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 1px 6px;
+        font-size: 0.88em;
+        overflow-wrap: anywhere;
+      }
+
+      /* ---------- header ---------- */
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: color-mix(in srgb, var(--bg) 88%, transparent);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .topbar__inner {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 14px 16px 0;
+      }
+
+      .brand-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: var(--text);
+        margin-right: auto;
+      }
+
+      .brand__mark {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 700;
+        font-size: 14px;
+      }
+
+      .brand strong {
+        font-size: 17px;
+      }
+
+      .brand small {
+        color: var(--muted);
+        font-size: 13px;
+        margin-left: 6px;
+      }
+
+      .icon-btn {
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text);
+        border-radius: 8px;
+        height: 34px;
+        padding: 0 10px;
+        font: inherit;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .icon-btn:hover {
+        border-color: var(--accent);
+      }
+
+      .tabs {
+        display: flex;
+        gap: 4px;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .tabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      .tab {
+        flex: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 0;
+        background: none;
+        color: var(--muted);
+        font: inherit;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 10px 14px 12px;
+        border-bottom: 2px solid transparent;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .tab:hover {
+        color: var(--text);
+      }
+
+      .tab[aria-selected='true'] {
+        color: var(--text);
+        border-bottom-color: var(--tab-color, var(--accent));
+      }
+
+      .tab:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: -2px;
+        border-radius: 6px;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--tab-color, var(--accent));
+      }
+
+      .tab[data-tab='install'] {
+        --tab-color: var(--accent);
+      }
+      .tab[data-tab='design'] {
+        --tab-color: var(--design);
+      }
+      .tab[data-tab='slicing'] {
+        --tab-color: var(--slicing);
+      }
+      .tab[data-tab='wordpress'] {
+        --tab-color: var(--wordpress);
+      }
+      .tab[data-tab='woocommerce'] {
+        --tab-color: var(--woo);
+      }
+
+      /* ---------- layout ---------- */
+      main {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 28px 16px 80px;
+      }
+
+      .panel {
+        display: grid;
+        grid-template-columns: 220px minmax(0, 1fr);
+        gap: 40px;
+      }
+
+      .panel[hidden] {
+        display: none;
+      }
+
+      .toc {
+        position: sticky;
+        top: 140px;
+        align-self: start;
+        font-size: 14px;
+      }
+
+      .toc__title {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+        margin: 0 0 8px;
+      }
+
+      .toc a {
+        display: block;
+        padding: 5px 10px;
+        border-left: 2px solid var(--border);
+        color: var(--muted);
+        text-decoration: none;
+      }
+
+      .toc a:hover,
+      .toc a.is-active {
+        color: var(--text);
+        border-left-color: var(--accent);
+      }
+
+      .content {
+        min-width: 0;
+      }
+
+      .hero {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 28px;
+        margin-bottom: 28px;
+        border-top: 4px solid var(--panel-color, var(--accent));
+      }
+
+      .hero__eyebrow {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--panel-color, var(--accent));
+        margin: 0 0 6px;
+      }
+
+      .hero h1 {
+        font-size: clamp(26px, 4vw, 34px);
+        line-height: 1.2;
+        margin: 0 0 10px;
+      }
+
+      .hero p {
+        color: var(--muted);
+        margin: 0;
+        max-width: 760px;
+      }
+
+      .hero .cmd {
+        margin-top: 18px;
+      }
+
+      #panel-design {
+        --panel-color: var(--design);
+      }
+      #panel-slicing {
+        --panel-color: var(--slicing);
+      }
+      #panel-wordpress {
+        --panel-color: var(--wordpress);
+      }
+      #panel-woocommerce {
+        --panel-color: var(--woo);
+      }
+
+      section {
+        margin-bottom: 44px;
+      }
+
+      h2 {
+        font-size: 22px;
+        line-height: 1.3;
+        margin: 0 0 14px;
+      }
+
+      h3 {
+        font-size: 17px;
+        margin: 24px 0 10px;
+      }
+
+      p {
+        margin: 0 0 14px;
+      }
+
+      ul,
+      ol {
+        padding-left: 22px;
+        margin: 0 0 14px;
+      }
+
+      li + li {
+        margin-top: 4px;
+      }
+
+      .anchor {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .anchor:hover::after {
+        content: ' #';
+        color: var(--muted);
+      }
+
+      /* ---------- code ---------- */
+      .cmd {
+        position: relative;
+        margin: 0 0 14px;
+      }
+
+      .cmd pre {
+        margin: 0;
+        background: var(--code-bg);
+        color: var(--code-text);
+        border-radius: 10px;
+        padding: 14px 92px 14px 16px;
+        overflow-x: auto;
+        font-size: 14px;
+        line-height: 1.55;
+      }
+
+      .cmd pre .c {
+        color: #8b93a7;
+      }
+
+      .copy {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        border: 1px solid #33384a;
+        background: #1d2130;
+        color: #cfd4e2;
+        border-radius: 6px;
+        font: inherit;
+        font-size: 12px;
+        padding: 4px 10px;
+        cursor: pointer;
+      }
+
+      .copy:hover {
+        background: #282d40;
+      }
+
+      .copy.is-done {
+        color: #4ade80;
+        border-color: #2f6b47;
+      }
+
+      /* ---------- components ---------- */
+      .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--surface);
+        margin: 0 0 16px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14.5px;
+      }
+
+      th,
+      td {
+        text-align: left;
+        vertical-align: top;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      th {
+        background: var(--surface-2);
+        font-size: 13px;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      tr:last-child td {
+        border-bottom: 0;
+      }
+
+      td code {
+        white-space: nowrap;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 14px;
+        margin: 0 0 16px;
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 18px;
+        box-shadow: var(--shadow);
+      }
+
+      .card h3 {
+        margin: 0 0 6px;
+        font-size: 16px;
+      }
+
+      .card p {
+        color: var(--muted);
+        font-size: 14.5px;
+        margin: 0 0 10px;
+      }
+
+      .card p:last-child {
+        margin-bottom: 0;
+      }
+
+      .card--link {
+        cursor: pointer;
+        transition: border-color 0.15s;
+        border-top: 3px solid var(--card-color, var(--accent));
+      }
+
+      .card--link:hover {
+        border-color: var(--card-color, var(--accent));
+      }
+
+      .card__role {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--card-color, var(--accent));
+      }
+
+      .steps {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 16px;
+        counter-reset: step;
+      }
+
+      .steps > li {
+        position: relative;
+        padding: 0 0 18px 48px;
+        margin: 0;
+        counter-increment: step;
+      }
+
+      .steps > li::before {
+        content: counter(step);
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: var(--accent-soft);
+        color: var(--accent-text);
+        font-weight: 700;
+        font-size: 14px;
+      }
+
+      .steps > li::after {
+        content: '';
+        position: absolute;
+        left: 14px;
+        top: 34px;
+        bottom: 4px;
+        width: 2px;
+        background: var(--border);
+      }
+
+      .steps > li:last-child::after {
+        display: none;
+      }
+
+      .steps strong {
+        display: block;
+        margin-bottom: 2px;
+      }
+
+      .steps p {
+        color: var(--muted);
+        margin: 0 0 8px;
+      }
+
+      .steps .cmd {
+        margin-top: 6px;
+      }
+
+      .note {
+        border-radius: 10px;
+        padding: 12px 16px;
+        margin: 0 0 16px;
+        font-size: 15px;
+        background: var(--accent-soft);
+        border-left: 3px solid var(--accent);
+      }
+
+      .note--ok {
+        background: var(--ok-soft);
+        border-left-color: var(--ok);
+      }
+
+      .note--warn {
+        background: var(--warn-soft);
+        border-left-color: var(--warn);
+      }
+
+      .note p:last-child,
+      .note ul:last-child {
+        margin-bottom: 0;
+      }
+
+      .pill {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: 1px 9px;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      .tree {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px 16px;
+        font-size: 13.5px;
+        line-height: 1.6;
+        overflow-x: auto;
+        margin: 0 0 16px;
+        color: var(--text);
+      }
+
+      .tree .c {
+        color: var(--muted);
+      }
+
+      details.faq {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 0 16px;
+        margin-bottom: 10px;
+      }
+
+      details.faq summary {
+        cursor: pointer;
+        font-weight: 600;
+        padding: 12px 0;
+      }
+
+      details.faq[open] summary {
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 12px;
+      }
+
+      .footer {
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 14px;
+        padding-top: 18px;
+      }
+
+      @media (max-width: 900px) {
+        .panel {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 0;
+        }
+
+        .toc {
+          display: none;
+        }
+
+        .hero {
+          padding: 20px;
+        }
+
+        .brand small {
+          display: none;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .cmd pre {
+          padding: 40px 14px 14px;
+        }
+      }
+
+      @media print {
+        .topbar,
+        .toc,
+        .copy {
+          display: none;
+        }
+
+        .panel[hidden] {
+          display: block;
+        }
+      }
+
+      /* ---------- languages ---------- */
+      html[lang='en'] :is(l-ru, l-ro),
+      html[lang='ru'] :is(l-en, l-ro),
+      html[lang='ro'] :is(l-en, l-ru) {
+        display: none;
+      }
+
+      .lang-switch {
+        display: flex;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--surface);
+      }
+
+      .lang-switch button {
+        border: 0;
+        background: none;
+        color: var(--muted);
+        font: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 0 10px;
+        height: 32px;
+        cursor: pointer;
+      }
+
+      .lang-switch button + button {
+        border-left: 1px solid var(--border);
+      }
+
+      .lang-switch button[aria-pressed='true'] {
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .lang-switch button:focus-visible,
+      .icon-btn:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      .page-link {
+        display: inline-flex;
+        align-items: center;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+
+      .tab[data-tab='overview'] { --tab-color: var(--accent); }
+      .tab[data-tab='structure'] { --tab-color: var(--slicing); }
+      .tab[data-tab='commands'] { --tab-color: var(--design); }
+      .tab[data-tab='develop'] { --tab-color: var(--wordpress); }
+      .tab[data-tab='modules'] { --tab-color: var(--ok); }
+      .tab[data-tab='woo'] { --tab-color: var(--woo); }
+      #panel-structure { --panel-color: var(--slicing); }
+      #panel-commands { --panel-color: var(--design); }
+      #panel-develop { --panel-color: var(--wordpress); }
+      #panel-modules { --panel-color: var(--ok); }
+      #panel-woo { --panel-color: var(--woo); }
+
+      @media (max-width: 600px) {
+        .page-link { display: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar__inner">
+        <div class="brand-row">
+          <a class="brand" href="#overview">
+            <span class="brand__mark">WK</span>
+            <strong>Boilerplates</strong>
+            <small>Standard · WooCommerce</small>
+          </a>
+          <a class="icon-btn page-link" href="./guide.html"><l-en>← WPAIKit guide</l-en><l-ru>← Гайд WPAIKit</l-ru><l-ro>← Ghid WPAIKit</l-ro></a>
+          <a class="icon-btn page-link" href="./changelog.html">Changelog</a>
+          <div class="lang-switch" role="group" data-i18n-aria="langGroup">
+            <button type="button" data-lang="en">EN</button>
+            <button type="button" data-lang="ru">RU</button>
+            <button type="button" data-lang="ro">RO</button>
+          </div>
+          <button class="icon-btn" type="button" id="theme-toggle" data-i18n-aria="theme">◐</button>
+        </div>
+        <nav class="tabs" role="tablist" data-i18n-aria="sections">
+          <button class="tab" role="tab" id="tab-overview" data-tab="overview" aria-controls="panel-overview"><span class="dot"></span><l-en>Overview</l-en><l-ru>Обзор</l-ru><l-ro>Prezentare</l-ro></button>
+          <button class="tab" role="tab" id="tab-structure" data-tab="structure" aria-controls="panel-structure"><span class="dot"></span><l-en>Structure</l-en><l-ru>Структура</l-ru><l-ro>Structură</l-ro></button>
+          <button class="tab" role="tab" id="tab-commands" data-tab="commands" aria-controls="panel-commands"><span class="dot"></span><l-en>Commands</l-en><l-ru>Команды</l-ru><l-ro>Comenzi</l-ro></button>
+          <button class="tab" role="tab" id="tab-develop" data-tab="develop" aria-controls="panel-develop"><span class="dot"></span><l-en>Development</l-en><l-ru>Разработка</l-ru><l-ro>Dezvoltare</l-ro></button>
+          <button class="tab" role="tab" id="tab-modules" data-tab="modules" aria-controls="panel-modules"><span class="dot"></span><l-en>Modules</l-en><l-ru>Модули</l-ru><l-ro>Module</l-ro></button>
+          <button class="tab" role="tab" id="tab-woo" data-tab="woo" aria-controls="panel-woo"><span class="dot"></span>WooCommerce</button>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- ===================================================================== OVERVIEW -->
+      <div class="panel" id="panel-overview" role="tabpanel" aria-labelledby="tab-overview">
+        <nav class="toc" data-i18n-aria="onPage">
+          <p class="toc__title"><l-en>On this page</l-en><l-ru>На странице</l-ru><l-ro>Pe această pagină</l-ro></p>
+          <a href="#overview-what"><l-en>What they are</l-en><l-ru>Что это</l-ru><l-ro>Ce sunt</l-ro></a>
+          <a href="#overview-compare"><l-en>Comparison</l-en><l-ru>Сравнение</l-ru><l-ro>Comparație</l-ro></a>
+          <a href="#overview-stack"><l-en>Stack</l-en><l-ru>Стек</l-ru><l-ro>Stack</l-ro></a>
+          <a href="#overview-start"><l-en>Getting a project</l-en><l-ru>Как получить проект</l-ru><l-ro>Cum obții un proiect</l-ro></a>
+          <a href="#overview-principles"><l-en>Principles</l-en><l-ru>Принципы</l-ru><l-ro>Principii</l-ro></a>
+        </nav>
+        <div class="content">
+          <div class="hero">
+            <p class="hero__eyebrow"><l-en>Boilerplates</l-en><l-ru>Boilerplates</l-ru><l-ro>Boilerplate-uri</l-ro></p>
+            <h1><l-en>WordPress starters for WPAIKit</l-en><l-ru>WordPress-стартеры WPAIKit</l-ru><l-ro>Starterele WordPress ale WPAIKit</l-ro></h1>
+            <p><l-en>Two starter projects that <code>wpaikit init</code> turns into a ready site: <strong>Standard</strong> for regular sites and <strong>WooCommerce</strong> for stores. Both share one architecture — learn it once.</l-en><l-ru>Два стартовых проекта, из которых <code>wpaikit init</code> собирает готовый сайт: <strong>Standard</strong> для обычных сайтов и <strong>WooCommerce</strong> для магазинов. Архитектура общая — достаточно изучить один раз.</l-ru><l-ro>Două proiecte de start din care <code>wpaikit init</code> construiește un site gata: <strong>Standard</strong> pentru site-uri obișnuite și <strong>WooCommerce</strong> pentru magazine. Arhitectura e comună — o înveți o singură dată.</l-ro></p>
+          </div>
+
+          <section id="overview-what">
+            <h2><a class="anchor" href="#overview-what"><l-en>What they are</l-en><l-ru>Что это</l-ru><l-ro>Ce sunt</l-ro></a></h2>
+            <div class="grid">
+              <div class="card" style="--card-color: var(--wordpress)">
+                <span class="card__role">preset standard</span>
+                <h3>boilerplate-wp-standard</h3>
+                <p><l-en>Timber/Twig theme with ACF blocks, Vite + Tailwind, built-in SEO, cookie consent, analytics and Theme Settings. WordPress core is committed in the repository.</l-en><l-ru>Тема на Timber/Twig с ACF-блоками, Vite + Tailwind, встроенным SEO, cookie consent, аналитикой и Theme Settings. Ядро WordPress лежит в репозитории.</l-ru><l-ro>Temă Timber/Twig cu blocuri ACF, Vite + Tailwind, SEO integrat, cookie consent, analytics și Theme Settings. Nucleul WordPress e inclus în repository.</l-ro></p>
+                <p><code>git@github.com:GoldenCodesSlava/boilerplate-wp-standard.git</code></p>
+              </div>
+              <div class="card" style="--card-color: var(--woo)">
+                <span class="card__role">preset woo</span>
+                <h3>boilerplate-wp-woocommerce</h3>
+                <p><l-en>The same architecture plus a storefront: custom variations, mini-cart, Twig checkout, wishlist, WPML and the Catalog I/O plugin. Only <code>wp-content/</code> is versioned.</l-en><l-ru>Та же архитектура плюс магазин: кастомные вариации, мини-корзина, Twig-checkout, wishlist, WPML и плагин Catalog I/O. В репозитории только <code>wp-content/</code>.</l-ru><l-ro>Aceeași arhitectură plus magazin: variații personalizate, mini-coș, checkout Twig, wishlist, WPML și plugin-ul Catalog I/O. În repository e doar <code>wp-content/</code>.</l-ro></p>
+                <p><code>git@github.com:GoldenCodesSlava/WP-Boilerplate-Woocommerce.git</code></p>
+              </div>
+            </div>
+          </section>
+
+          <section id="overview-compare">
+            <h2><a class="anchor" href="#overview-compare"><l-en>Comparison</l-en><l-ru>Сравнение</l-ru><l-ro>Comparație</l-ro></a></h2>
+            <div class="table-wrap"><table>
+              <thead><tr><th></th><th>Standard</th><th>WooCommerce</th></tr></thead>
+              <tbody>
+                <tr><td><l-en>WordPress core in repo</l-en><l-ru>Ядро WordPress в репозитории</l-ru><l-ro>Nucleul WordPress în repo</l-ro></td><td><l-en>yes</l-en><l-ru>да</l-ru><l-ro>da</l-ro></td><td><l-en>no — downloaded by <code>wpaikit init</code></l-en><l-ru>нет — скачивает <code>wpaikit init</code></l-ru><l-ro>nu — îl descarcă <code>wpaikit init</code></l-ro></td></tr>
+                <tr><td><l-en>Bundled ACF blocks</l-en><l-ru>ACF-блоки в комплекте</l-ru><l-ro>Blocuri ACF incluse</l-ro></td><td><code>ExampleBlock</code></td><td><code>ExampleBlock</code>, <code>ProductsListingBlock</code></td></tr>
+                <tr><td><l-en>Controllers</l-en><l-ru>Контроллеры</l-ru><l-ro>Controllere</l-ro></td><td>6</td><td><l-en>12 (+ product, archive, cart, checkout, account, wishlist)</l-en><l-ru>12 (+ товар, каталог, корзина, checkout, аккаунт, wishlist)</l-ru><l-ro>12 (+ produs, catalog, coș, checkout, cont, wishlist)</l-ro></td></tr>
+                <tr><td><l-en>Configuration</l-en><l-ru>Настройка</l-ru><l-ro>Configurare</l-ro></td><td><code>wp-config.php</code></td><td><code>wp-config.php</code> + <code>php bin/configure.php</code></td></tr>
+                <tr><td><l-en>Multilingual</l-en><l-ru>Мультиязычность</l-ru><l-ro>Multilingv</l-ro></td><td><l-en>via WPML if installed</l-en><l-ru>через WPML, если установлен</l-ru><l-ro>prin WPML, dacă e instalat</l-ro></td><td><l-en>profile <code>wpml</code> (default) or <code>none</code></l-en><l-ru>профиль <code>wpml</code> (по умолчанию) или <code>none</code></l-ru><l-ro>profil <code>wpml</code> (implicit) sau <code>none</code></l-ro></td></tr>
+                <tr><td><l-en>Plugins in repo</l-en><l-ru>Плагины в репозитории</l-ru><l-ro>Plugin-uri în repo</l-ro></td><td><l-en>none</l-en><l-ru>нет</l-ru><l-ro>niciunul</l-ro></td><td><code>wpaikit-product-catalog-io</code></td></tr>
+                <tr><td>PHP</td><td>8.1+</td><td>8.2+</td></tr>
+                <tr><td>Node.js</td><td>18+</td><td>20+ / npm 10</td></tr>
+                <tr><td>swiper</td><td><l-en>included</l-en><l-ru>в комплекте</l-ru><l-ro>inclus</l-ro></td><td>—</td></tr>
+              </tbody>
+            </table></div>
+          </section>
+
+          <section id="overview-stack">
+            <h2><a class="anchor" href="#overview-stack"><l-en>Stack</l-en><l-ru>Стек</l-ru><l-ro>Stack</l-ro></a></h2>
+            <div class="table-wrap"><table>
+              <thead><tr><th><l-en>Layer</l-en><l-ru>Слой</l-ru><l-ro>Strat</l-ro></th><th><l-en>Technology</l-en><l-ru>Технология</l-ru><l-ro>Tehnologie</l-ro></th></tr></thead>
+              <tbody>
+                <tr><td><l-en>Templates</l-en><l-ru>Шаблоны</l-ru><l-ro>Template-uri</l-ro></td><td>Timber 2 + Twig (<code>Timber::$autoescape = true</code>)</td></tr>
+                <tr><td><l-en>Fields and blocks</l-en><l-ru>Поля и блоки</l-ru><l-ro>Câmpuri și blocuri</l-ro></td><td><l-en>ACF Pro (bundled in <code>inc/dependencies/acf/</code>), local JSON in <code>acf-json/</code></l-en><l-ru>ACF Pro (в комплекте, <code>inc/dependencies/acf/</code>), local JSON в <code>acf-json/</code></l-ru><l-ro>ACF Pro (inclus în <code>inc/dependencies/acf/</code>), local JSON în <code>acf-json/</code></l-ro></td></tr>
+                <tr><td>PHP</td><td><l-en>PSR-4 <code>Boilerplate\</code> → <code>src/</code>, <code>declare(strict_types=1)</code>, PHPStan level 5</l-en><l-ru>PSR-4 <code>Boilerplate\</code> → <code>src/</code>, <code>declare(strict_types=1)</code>, PHPStan level 5</l-ru><l-ro>PSR-4 <code>Boilerplate\</code> → <code>src/</code>, <code>declare(strict_types=1)</code>, PHPStan nivel 5</l-ro></td></tr>
+                <tr><td>Frontend</td><td>Vite 5, Tailwind 3, SCSS (sass-embedded, modern API), vanilla JS</td></tr>
+                <tr><td><l-en>Quality</l-en><l-ru>Качество</l-ru><l-ro>Calitate</l-ro></td><td>ESLint, Prettier, node:test, Playwright, <l-en>PHP test scripts</l-en><l-ru>PHP-скрипты тестов</l-ru><l-ro>scripturi de test PHP</l-ro></td></tr>
+              </tbody>
+            </table></div>
+          </section>
+
+          <section id="overview-start">
+            <h2><a class="anchor" href="#overview-start"><l-en>Getting a project</l-en><l-ru>Как получить проект</l-ru><l-ro>Cum obții un proiect</l-ro></a></h2>
+            <p><l-en>Don't clone the boilerplates by hand — <code>wpaikit init</code> downloads WordPress, clones the theme, renames the theme folder, namespace and text domain, installs dependencies and builds assets.</l-en><l-ru>Не клонируйте boilerplate вручную — <code>wpaikit init</code> скачает WordPress, склонирует тему, переименует папку темы, namespace и text domain, поставит зависимости и соберёт assets.</l-ru><l-ro>Nu clona boilerplate-urile manual — <code>wpaikit init</code> descarcă WordPress, clonează tema, redenumește folderul temei, namespace-ul și text domain-ul, instalează dependențele și construiește asset-urile.</l-ro></p>
+            <div class="cmd"><pre><code>wpaikit init --preset standard</code></pre></div>
+            <div class="cmd"><pre><code>wpaikit init --preset woo</code></pre></div>
+            <p><l-en>Step by step — in the <a href="./guide.html#wordpress-init">WPAIKit guide</a>.</l-en><l-ru>Пошагово — в <a href="./guide.html#wordpress-init">гайде WPAIKit</a>.</l-ru><l-ro>Pas cu pas — în <a href="./guide.html#wordpress-init">ghidul WPAIKit</a>.</l-ro></p>
+            <div class="note">
+              <p><l-en>After renaming, <code>boilerplate</code> becomes your slug: the theme lives in <code>wp-content/themes/{slug}/</code> and the namespace is <code>{Namespace}\Theme</code>. Paths on this page use the original names.</l-en><l-ru>После переименования <code>boilerplate</code> заменяется вашим slug: тема лежит в <code>wp-content/themes/{slug}/</code>, namespace — <code>{Namespace}\Theme</code>. На этой странице пути даны с исходными именами.</l-ru><l-ro>După redenumire, <code>boilerplate</code> devine slug-ul tău: tema e în <code>wp-content/themes/{slug}/</code>, iar namespace-ul este <code>{Namespace}\Theme</code>. Pe această pagină căile folosesc numele originale.</l-ro></p>
+            </div>
+          </section>
+
+          <section id="overview-principles">
+            <h2><a class="anchor" href="#overview-principles"><l-en>Principles</l-en><l-ru>Принципы</l-ru><l-ro>Principii</l-ro></a></h2>
+            <ul>
+              <li><l-en>All custom code lives in the theme. Core and third-party plugins are not edited.</l-en><l-ru>Весь свой код — только в теме. Ядро и сторонние плагины не правятся.</l-ru><l-ro>Tot codul propriu stă în temă. Nucleul și plugin-urile terțe nu se modifică.</l-ro></li>
+              <li><l-en>Controllers render routes, services hold logic, Twig only displays.</l-en><l-ru>Контроллеры рендерят маршруты, сервисы держат логику, Twig только отображает.</l-ru><l-ro>Controllerele randează rutele, serviciile țin logica, Twig doar afișează.</l-ro></li>
+              <li><l-en>No queries or formatting in Twig; Twig autoescape stays on.</l-en><l-ru>Никаких запросов и форматирования в Twig; autoescape Twig всегда включён.</l-ru><l-ro>Fără interogări sau formatare în Twig; autoescape-ul Twig rămâne activ.</l-ro></li>
+              <li><l-en>Every block is a triplet: PHP class + Twig view + ACF JSON.</l-en><l-ru>Каждый блок — тройка: PHP-класс + Twig-шаблон + ACF JSON.</l-ru><l-ro>Fiecare bloc este un triplet: clasă PHP + view Twig + ACF JSON.</l-ro></li>
+              <li><l-en>Styles are BEM + Tailwind via <code>@apply</code>, mobile-first.</l-en><l-ru>Стили — BEM + Tailwind через <code>@apply</code>, mobile-first.</l-ru><l-ro>Stilurile sunt BEM + Tailwind prin <code>@apply</code>, mobile-first.</l-ro></li>
+              <li><l-en>Local state goes into <code>wp-config.php</code>, never into theme files.</l-en><l-ru>Локальные настройки — в <code>wp-config.php</code>, а не в файлах темы.</l-ru><l-ro>Starea locală merge în <code>wp-config.php</code>, nu în fișierele temei.</l-ro></li>
+            </ul>
+          </section>
+        </div>
+      </div>
+
+      <!-- ===================================================================== STRUCTURE -->
+      <div class="panel" id="panel-structure" role="tabpanel" aria-labelledby="tab-structure" hidden>
+        <nav class="toc" data-i18n-aria="onPage">
+          <p class="toc__title"><l-en>On this page</l-en><l-ru>На странице</l-ru><l-ro>Pe această pagină</l-ro></p>
+          <a href="#structure-repo"><l-en>Repository</l-en><l-ru>Репозиторий</l-ru><l-ro>Repository</l-ro></a>
+          <a href="#structure-theme"><l-en>Theme</l-en><l-ru>Тема</l-ru><l-ro>Tema</l-ro></a>
+          <a href="#structure-routing"><l-en>Request flow</l-en><l-ru>Как рендерится страница</l-ru><l-ro>Fluxul unei cereri</l-ro></a>
+          <a href="#structure-php"><l-en>PHP layer</l-en><l-ru>PHP-слой</l-ru><l-ro>Stratul PHP</l-ro></a>
+          <a href="#structure-views"><l-en>Twig views</l-en><l-ru>Twig-шаблоны</l-ru><l-ro>View-uri Twig</l-ro></a>
+          <a href="#structure-frontend">Frontend</a>
+        </nav>
+        <div class="content">
+          <div class="hero">
+            <p class="hero__eyebrow"><l-en>Structure</l-en><l-ru>Структура</l-ru><l-ro>Structură</l-ro></p>
+            <h1><l-en>Where everything lives</l-en><l-ru>Где что лежит</l-ru><l-ro>Unde se află totul</l-ro></h1>
+            <p><l-en>Both boilerplates use the same folder model. WooCommerce only adds commerce folders on top.</l-en><l-ru>В обоих boilerplate одна и та же модель папок. WooCommerce только добавляет папки магазина поверх.</l-ru><l-ro>Ambele boilerplate-uri folosesc același model de foldere. WooCommerce doar adaugă foldere de magazin.</l-ro></p>
+          </div>
+
+          <section id="structure-repo">
+            <h2><a class="anchor" href="#structure-repo"><l-en>Repository</l-en><l-ru>Репозиторий</l-ru><l-ro>Repository</l-ro></a></h2>
+            <pre class="tree">wp-admin/ · wp-includes/ · wp-*.php   <span class="c">← <l-en>WordPress core (Standard only)</l-en><l-ru>ядро WordPress (только Standard)</l-ru><l-ro>nucleul WordPress (doar Standard)</l-ro></span>
+wp-config.php                         <span class="c">← <l-en>local, not committed</l-en><l-ru>локальный, не коммитится</l-ru><l-ro>local, nu se versionează</l-ro></span>
+wp-content/
+  themes/boilerplate/                 <span class="c">← <l-en>all project code</l-en><l-ru>весь код проекта</l-ru><l-ro>tot codul proiectului</l-ro></span>
+  plugins/                            <span class="c">← <l-en>installed per project</l-en><l-ru>ставятся под проект</l-ru><l-ro>se instalează per proiect</l-ro></span>
+    wpaikit-product-catalog-io/       <span class="c">← <l-en>WooCommerce only</l-en><l-ru>только WooCommerce</l-ru><l-ro>doar WooCommerce</l-ro></span>
+  uploads/                            <span class="c">← <l-en>not committed</l-en><l-ru>не коммитится</l-ru><l-ro>nu se versionează</l-ro></span></pre>
+          </section>
+
+          <section id="structure-theme">
+            <h2><a class="anchor" href="#structure-theme"><l-en>Theme</l-en><l-ru>Тема</l-ru><l-ro>Tema</l-ro></a></h2>
+            <pre class="tree">wp-content/themes/boilerplate/
+  functions.php            <span class="c">← <l-en>autoload + ThemeSetup + TimberService</l-en><l-ru>autoload + ThemeSetup + TimberService</l-ru><l-ro>autoload + ThemeSetup + TimberService</l-ro></span>
+  style.css                <span class="c">← <l-en>theme header</l-en><l-ru>заголовок темы</l-ru><l-ro>antetul temei</l-ro></span>
+  index.php, page.php, single.php, archive.php, category.php,
+  tag.php, author.php, date.php, search.php, 404.php
+                           <span class="c">← <l-en>WP template files → controllers</l-en><l-ru>файлы шаблонов WP → контроллеры</l-ru><l-ro>fișiere template WP → controllere</l-ro></span>
+  src/Theme/
+    ThemeSetup.php         <span class="c">← <l-en>creates services, theme supports, menus, image sizes</l-en><l-ru>создаёт сервисы, theme supports, меню, размеры изображений</l-ru><l-ro>creează serviciile, theme supports, meniuri, dimensiuni de imagini</l-ro></span>
+    Controllers/           <span class="c">← <l-en>route-level rendering</l-en><l-ru>рендер маршрутов</l-ru><l-ro>randarea rutelor</l-ro></span>
+    Services/              <span class="c">← <l-en>logic, WP_Query, CPT, settings</l-en><l-ru>логика, WP_Query, CPT, настройки</l-ru><l-ro>logică, WP_Query, CPT, setări</l-ro></span>
+    Seo/                   <span class="c">← <l-en>built-in SEO module</l-en><l-ru>встроенный SEO-модуль</l-ru><l-ro>modulul SEO integrat</l-ro></span>
+    Blocks/AbstractBlock.php
+    Config/                <span class="c">← <l-en>constants, cookie/analytics config, UI strings</l-en><l-ru>константы, конфиг cookie/аналитики, UI-строки</l-ru><l-ro>constante, config cookie/analytics, șiruri UI</l-ro></span>
+  blocks/{Block}/{Block}.php   <span class="c">← <l-en>ACF block classes</l-en><l-ru>классы ACF-блоков</l-ru><l-ro>clasele blocurilor ACF</l-ro></span>
+  acf-json/                <span class="c">← <l-en>ACF field groups (local JSON)</l-en><l-ru>группы полей ACF (local JSON)</l-ru><l-ro>grupurile de câmpuri ACF (local JSON)</l-ro></span>
+  views/                   <span class="c">← <l-en>Twig</l-en><l-ru>Twig</l-ru><l-ro>Twig</l-ro></span>
+  frontend/                <span class="c">← Vite, Tailwind, SCSS, JS</span>
+  inc/dependencies/        <span class="c">← <l-en>bundled ACF Pro and Timber — do not edit</l-en><l-ru>ACF Pro и Timber в комплекте — не править</l-ru><l-ro>ACF Pro și Timber incluse — nu modifica</l-ro></span>
+  phpstan-stubs/ · phpstan.neon
+  tests/                   <span class="c">← <l-en>PHP test scripts</l-en><l-ru>PHP-скрипты тестов</l-ru><l-ro>scripturi de test PHP</l-ro></span>
+  composer.json · composer.lock</pre>
+          </section>
+
+          <section id="structure-routing">
+            <h2><a class="anchor" href="#structure-routing"><l-en>Request flow</l-en><l-ru>Как рендерится страница</l-ru><l-ro>Fluxul unei cereri</l-ro></a></h2>
+            <ol class="steps">
+              <li><strong><l-en>WordPress picks a template file</l-en><l-ru>WordPress выбирает файл шаблона</l-ru><l-ro>WordPress alege fișierul template</l-ro></strong><p><l-en>For example <code>page.php</code> for a page.</l-en><l-ru>Например, <code>page.php</code> для страницы.</l-ru><l-ro>De exemplu <code>page.php</code> pentru o pagină.</l-ro></p></li>
+              <li><strong><l-en>The file calls a controller</l-en><l-ru>Файл вызывает контроллер</l-ru><l-ro>Fișierul apelează un controller</l-ro></strong><p><l-en><code>PageController</code> builds the context: menus, Theme Settings, ACF fields, data from services.</l-en><l-ru><code>PageController</code> собирает контекст: меню, Theme Settings, ACF-поля, данные из сервисов.</l-ru><l-ro><code>PageController</code> construiește contextul: meniuri, Theme Settings, câmpuri ACF, date din servicii.</l-ro></p></li>
+              <li><strong><l-en>Twig renders the view</l-en><l-ru>Twig рендерит шаблон</l-ru><l-ro>Twig randează view-ul</l-ro></strong><p><l-en><code>views/page.twig</code> extends <code>layouts/base.twig</code>; Gutenberg ACF blocks render through their own classes.</l-en><l-ru><code>views/page.twig</code> наследует <code>layouts/base.twig</code>; ACF-блоки Gutenberg рендерятся своими классами.</l-ru><l-ro><code>views/page.twig</code> extinde <code>layouts/base.twig</code>; blocurile ACF Gutenberg se randează prin propriile clase.</l-ro></p></li>
+            </ol>
+          </section>
+
+          <section id="structure-php">
+            <h2><a class="anchor" href="#structure-php"><l-en>PHP layer</l-en><l-ru>PHP-слой</l-ru><l-ro>Stratul PHP</l-ro></a></h2>
+            <h3><l-en>Controllers</l-en><l-ru>Контроллеры</l-ru><l-ro>Controllere</l-ro></h3>
+            <div class="table-wrap"><table>
+              <thead><tr><th><l-en>Class</l-en><l-ru>Класс</l-ru><l-ro>Clasă</l-ro></th><th><l-en>Renders</l-en><l-ru>Что рендерит</l-ru><l-ro>Ce randează</l-ro></th></tr></thead>
+              <tbody>
+                <tr><td><code>BaseController</code></td><td><l-en>Shared context (menus, settings), base for all controllers</l-en><l-ru>Общий контекст (меню, настройки), база для всех контроллеров</l-ru><l-ro>Context comun (meniuri, setări), baza tuturor controllerelor</l-ro></td></tr>
+                <tr><td><code>PageController</code></td><td><l-en>Pages</l-en><l-ru>Страницы</l-ru><l-ro>Pagini</l-ro></td></tr>
+                <tr><td><code>SingleController</code></td><td><l-en>Single posts and CPT entries</l-en><l-ru>Записи и элементы CPT</l-ru><l-ro>Articole și intrări CPT</l-ro></td></tr>
+                <tr><td><code>ArchiveController</code></td><td><l-en>Archives, categories, tags, authors, dates</l-en><l-ru>Архивы, категории, теги, авторы, даты</l-ru><l-ro>Arhive, categorii, etichete, autori, date</l-ro></td></tr>
+                <tr><td><code>SearchController</code></td><td><l-en>Search results</l-en><l-ru>Результаты поиска</l-ru><l-ro>Rezultatele căutării</l-ro></td></tr>
+                <tr><td><code>ErrorController</code></td><td>404</td></tr>
+              </tbody>
+            </table></div>
+            <h3><l-en>Services</l-en><l-ru>Сервисы</l-ru><l-ro>Servicii</l-ro></h3>
+            <div class="table-wrap"><table>
+              <thead><tr><th><l-en>Service</l-en><l-ru>Сервис</l-ru><l-ro>Serviciu</l-ro></th><th><l-en>Responsibility</l-en><l-ru>Ответственность</l-ru><l-ro>Responsabilitate</l-ro></th></tr></thead>
+              <tbody>
+                <tr><td><code>AssetService</code></td><td><l-en>Enqueues Vite assets (dev server or <code>dist/</code>)</l-en><l-ru>Подключает Vite-assets (dev-сервер или <code>dist/</code>)</l-ru><l-ro>Încarcă asset-urile Vite (dev server sau <code>dist/</code>)</l-ro></td></tr>
+                <tr><td><code>BlocksService</code></td><td><l-en>Auto-loads every block class, block category, rendering</l-en><l-ru>Автозагрузка классов блоков, категория блоков, рендер</l-ru><l-ro>Încarcă automat clasele de blocuri, categoria, randarea</l-ro></td></tr>
+                <tr><td><code>AcfService</code></td><td><l-en>ACF JSON load/save sync, WYSIWYG toolbars</l-en><l-ru>Синхронизация ACF JSON, панели WYSIWYG</l-ru><l-ro>Sincronizarea ACF JSON, toolbar-uri WYSIWYG</l-ro></td></tr>
+                <tr><td><code>PostTypesService</code></td><td><l-en>The only place to register CPTs</l-en><l-ru>Единственное место регистрации CPT</l-ru><l-ro>Singurul loc unde se înregistrează CPT</l-ro></td></tr>
+                <tr><td><code>ExamplePostService</code></td><td><l-en>Template for CPT query services</l-en><l-ru>Шаблон сервиса запросов для CPT</l-ru><l-ro>Șablon pentru serviciile de interogare CPT</l-ro></td></tr>
+                <tr><td><code>ThemeSettingsService</code></td><td><l-en>Settings → Theme Settings, <code>theme.themeSettings</code> in Twig</l-en><l-ru>Settings → Theme Settings, <code>theme.themeSettings</code> в Twig</l-ru><l-ro>Settings → Theme Settings, <code>theme.themeSettings</code> în Twig</l-ro></td></tr>
+                <tr><td><code>ImageService</code></td><td><l-en>Image normalization, srcset, sizes</l-en><l-ru>Нормализация изображений, srcset, sizes</l-ru><l-ro>Normalizarea imaginilor, srcset, sizes</l-ro></td></tr>
+                <tr><td><code>SystemPagesService</code></td><td><l-en>Maintenance (503), system error, missing translation</l-en><l-ru>Maintenance (503), системная ошибка, нет перевода</l-ru><l-ro>Mentenanță (503), eroare de sistem, traducere lipsă</l-ro></td></tr>
+                <tr><td><code>CookieConsentService</code></td><td><l-en>Consent banner, Settings → Cookies Banner</l-en><l-ru>Баннер согласия, Settings → Cookies Banner</l-ru><l-ro>Bannerul de consimțământ, Settings → Cookies Banner</l-ro></td></tr>
+                <tr><td><code>AnalyticsService</code></td><td><l-en>GTM / GA4 / Meta Pixel with consent, Settings → Analytics</l-en><l-ru>GTM / GA4 / Meta Pixel с учётом согласия, Settings → Analytics</l-ru><l-ro>GTM / GA4 / Meta Pixel cu consimțământ, Settings → Analytics</l-ro></td></tr>
+                <tr><td><code>ThemeColorsService</code></td><td><l-en>Theme color choices for ACF fields</l-en><l-ru>Цвета темы для ACF-полей</l-ru><l-ro>Culorile temei pentru câmpurile ACF</l-ro></td></tr>
+                <tr><td><code>TimberService</code></td><td><l-en>Timber configuration and checks</l-en><l-ru>Настройка и проверки Timber</l-ru><l-ro>Configurarea și verificările Timber</l-ro></td></tr>
+              </tbody>
+            </table></div>
+            <p><l-en>SEO services live in <code>src/Theme/Seo/</code> — see <a href="#modules-seo" data-goto="modules">Modules → SEO</a>.</l-en><l-ru>SEO-сервисы — в <code>src/Theme/Seo/</code>, см. <a href="#modules-seo" data-goto="modules">Модули → SEO</a>.</l-ru><l-ro>Serviciile SEO sunt în <code>src/Theme/Seo/</code> — vezi <a href="#modules-seo" data-goto="modules">Module → SEO</a>.</l-ro></p>
+          </section>
+
+          <section id="structure-views">
+            <h2><a class="anchor" href="#structure-views"><l-en>Twig views</l-en><l-ru>Twig-шаблоны</l-ru><l-ro>View-uri Twig</l-ro></a></h2>
+            <pre class="tree">views/
+  layouts/base.twig        <span class="c">← <l-en>HTML skeleton, head, header/footer</l-en><l-ru>каркас HTML, head, header/footer</l-ru><l-ro>scheletul HTML, head, header/footer</l-ro></span>
+  page.twig · single.twig · archive.twig · search.twig · 404.twig
+  partials/                <span class="c">← header, footer, search-form, seo/head</span>
+  components/              <span class="c">← button, image, video, play-button, load-more-button,
+                             feedback/empty-state, cookie-consent/banner, analytics/config</span>
+  blocks/{Block}/{Block}.twig
+  system/                  <span class="c">← error, maintenance, missing-translation</span></pre>
+            <div class="note">
+              <p><l-en>Every image goes through <code>components/image.twig</code> — direct <code>&lt;img&gt;</code> elsewhere is forbidden.</l-en><l-ru>Все изображения — только через <code>components/image.twig</code>; прямой <code>&lt;img&gt;</code> в других местах запрещён.</l-ru><l-ro>Orice imagine trece prin <code>components/image.twig</code> — <code>&lt;img&gt;</code> direct în altă parte este interzis.</l-ro></p>
+            </div>
+          </section>
+
+          <section id="structure-frontend">
+            <h2><a class="anchor" href="#structure-frontend">Frontend</a></h2>
+            <pre class="tree">frontend/
+  vite.config.mjs          <span class="c">← <l-en>dev server :3002, build → dist/</l-en><l-ru>dev-сервер :3002, сборка → dist/</l-ru><l-ro>dev server :3002, build → dist/</l-ro></span>
+  tailwind.config.js       <span class="c">← <l-en>tokens: colors, fonts, container</l-en><l-ru>токены: цвета, шрифты, container</l-ru><l-ro>tokeni: culori, fonturi, container</l-ro></span>
+  postcss.config.js · .eslintrc.cjs · .prettierrc · playwright.config.cjs
+  src/
+    css/main.scss          <span class="c">← <l-en>entry: Tailwind + partials</l-en><l-ru>точка входа: Tailwind + partials</l-ru><l-ro>intrare: Tailwind + partial-uri</l-ro></span>
+    css/base/              <span class="c">← grid, typography, buttons</span>
+    css/components/        <span class="c">← accordion, checkbox, forms, modal, video, cookie-consent</span>
+    js/main.js             <span class="c">← <l-en>entry: imports and initialises components</l-en><l-ru>точка входа: импорт и инициализация компонентов</l-ru><l-ro>intrare: importă și inițializează componentele</l-ro></span>
+    js/components/         <span class="c">← accordion, tabs, modal, video, countdown, load-more,
+                             smooth-scroll, sticky-on-scroll, cookie-consent, analytics</span>
+    js/analytics/providers.js
+    assets/                <span class="c">← <l-en>images and fonts (Vite publicDir)</l-en><l-ru>изображения и шрифты (Vite publicDir)</l-ru><l-ro>imagini și fonturi (Vite publicDir)</l-ro></span>
+  tests/                   <span class="c">← <l-en>node:test unit tests, Playwright e2e</l-en><l-ru>unit-тесты node:test, e2e Playwright</l-ru><l-ro>teste unit node:test, e2e Playwright</l-ro></span>
+  dist/                    <span class="c">← <l-en>build output, not committed</l-en><l-ru>результат сборки, не коммитится</l-ru><l-ro>rezultatul build-ului, nu se versionează</l-ro></span></pre>
+            <p><l-en>Build output: <code>dist/js/main.js</code>, <code>dist/css/main.css</code>, <code>dist/images/</code>, <code>dist/fonts/</code>.</l-en><l-ru>Результат сборки: <code>dist/js/main.js</code>, <code>dist/css/main.css</code>, <code>dist/images/</code>, <code>dist/fonts/</code>.</l-ru><l-ro>Rezultatul build-ului: <code>dist/js/main.js</code>, <code>dist/css/main.css</code>, <code>dist/images/</code>, <code>dist/fonts/</code>.</l-ro></p>
+          </section>
+        </div>
+      </div>
+
+      <!-- ===================================================================== COMMANDS -->
+      <div class="panel" id="panel-commands" role="tabpanel" aria-labelledby="tab-commands" hidden>
+        <nav class="toc" data-i18n-aria="onPage">
+          <p class="toc__title"><l-en>On this page</l-en><l-ru>На странице</l-ru><l-ro>Pe această pagină</l-ro></p>
+          <a href="#commands-setup"><l-en>First setup</l-en><l-ru>Первая настройка</l-ru><l-ro>Prima configurare</l-ro></a>
+          <a href="#commands-daily"><l-en>Daily work</l-en><l-ru>Ежедневная работа</l-ru><l-ro>Lucrul zilnic</l-ro></a>
+          <a href="#commands-composer">Composer</a>
+          <a href="#commands-npm">npm</a>
+          <a href="#commands-gates"><l-en>Before a commit</l-en><l-ru>Перед коммитом</l-ru><l-ro>Înainte de commit</l-ro></a>
+          <a href="#commands-commit"><l-en>What not to commit</l-en><l-ru>Что не коммитить</l-ru><l-ro>Ce nu se versionează</l-ro></a>
+        </nav>
+        <div class="content">
+          <div class="hero">
+            <p class="hero__eyebrow"><l-en>Commands</l-en><l-ru>Команды</l-ru><l-ro>Comenzi</l-ro></p>
+            <h1><l-en>Commands cheat sheet</l-en><l-ru>Шпаргалка по командам</l-ru><l-ro>Fișă de comenzi</l-ro></h1>
+            <p><l-en>PHP commands run from the theme root, frontend commands from <code>frontend/</code>.</l-en><l-ru>PHP-команды — из корня темы, frontend-команды — из <code>frontend/</code>.</l-ru><l-ro>Comenzile PHP se rulează din rădăcina temei, cele frontend din <code>frontend/</code>.</l-ro></p>
+          </div>
+
+          <section id="commands-setup">
+            <h2><a class="anchor" href="#commands-setup"><l-en>First setup (without wpaikit init)</l-en><l-ru>Первая настройка (без wpaikit init)</l-ru><l-ro>Prima configurare (fără wpaikit init)</l-ro></a></h2>
+            <ol class="steps">
+              <li><strong><l-en>Configure WordPress</l-en><l-ru>Настройте WordPress</l-ru><l-ro>Configurează WordPress</l-ro></strong>
+                <div class="cmd"><pre><code>cp wp-config-sample.php wp-config.php</code></pre></div>
+                <div class="cmd"><pre><code>define('BOILERPLATE_DEV', true);  <span class="c">// <l-en>Vite dev assets; remove in production</l-en><l-ru>Vite dev-assets; убрать на проде</l-ru><l-ro>asset-uri Vite dev; elimină în producție</l-ro></span></code></pre></div></li>
+              <li><strong><l-en>PHP dependencies</l-en><l-ru>PHP-зависимости</l-ru><l-ro>Dependențe PHP</l-ro></strong>
+                <div class="cmd"><pre><code>cd wp-content/themes/boilerplate
+composer install</code></pre></div></li>
+              <li><strong><l-en>WooCommerce only: store profile</l-en><l-ru>Только WooCommerce: профиль магазина</l-ru><l-ro>Doar WooCommerce: profilul magazinului</l-ro></strong>
+                <div class="cmd"><pre><code>php bin/configure.php</code></pre></div></li>
+              <li><strong><l-en>Frontend</l-en><l-ru>Frontend</l-ru><l-ro>Frontend</l-ro></strong>
+                <div class="cmd"><pre><code>cd frontend
+npm ci
+npm run build</code></pre></div></li>
+              <li><strong><l-en>WooCommerce only: catalog plugin</l-en><l-ru>Только WooCommerce: плагин каталога</l-ru><l-ro>Doar WooCommerce: plugin-ul de catalog</l-ro></strong>
+                <div class="cmd"><pre><code>cd wp-content/plugins/wpaikit-product-catalog-io
+composer install</code></pre></div></li>
+            </ol>
+          </section>
+
+          <section id="commands-daily">
+            <h2><a class="anchor" href="#commands-daily"><l-en>Daily work</l-en><l-ru>Ежедневная работа</l-ru><l-ro>Lucrul zilnic</l-ro></a></h2>
+            <div class="cmd"><pre><code>cd wp-content/themes/boilerplate/frontend
+npm run dev     <span class="c"># <l-en>Vite on http://localhost:3002 with BOILERPLATE_DEV=true</l-en><l-ru>Vite на http://localhost:3002 при BOILERPLATE_DEV=true</l-ru><l-ro>Vite pe http://localhost:3002 cu BOILERPLATE_DEV=true</l-ro></span></code></pre></div>
+            <div class="note note--warn"><p><l-en>Toggle dev assets only through <code>BOILERPLATE_DEV</code> in <code>wp-config.php</code>. Never edit <code>Config/Constants.php</code> for local state.</l-en><l-ru>Dev-assets переключаются только через <code>BOILERPLATE_DEV</code> в <code>wp-config.php</code>. Не правьте <code>Config/Constants.php</code> под локальную среду.</l-ru><l-ro>Asset-urile dev se comută doar prin <code>BOILERPLATE_DEV</code> în <code>wp-config.php</code>. Nu modifica <code>Config/Constants.php</code> pentru mediul local.</l-ro></p></div>
+          </section>
+
+          <section id="commands-composer">
+            <h2><a class="anchor" href="#commands-composer">Composer</a> <span class="pill"><l-en>theme root</l-en><l-ru>корень темы</l-ru><l-ro>rădăcina temei</l-ro></span></h2>
+            <div class="table-wrap"><table>
+              <thead><tr><th><l-en>Command</l-en><l-ru>Команда</l-ru><l-ro>Comandă</l-ro></th><th><l-en>What it does</l-en><l-ru>Что делает</l-ru><l-ro>Ce face</l-ro></th></tr></thead>
+              <tbody>
+                <tr><td><code>composer install</code></td><td><l-en>Timber + dev tools (PHPStan)</l-en><l-ru>Timber + dev-инструменты (PHPStan)</l-ru><l-ro>Timber + instrumente dev (PHPStan)</l-ro></td></tr>
+                <tr><td><code>composer phpstan</code></td><td><l-en>Static analysis, level 5, <code>src/</code> and <code>blocks/</code></l-en><l-ru>Статический анализ, level 5, <code>src/</code> и <code>blocks/</code></l-ru><l-ro>Analiză statică, nivel 5, <code>src/</code> și <code>blocks/</code></l-ro></td></tr>
+                <tr><td><code>composer test:theme-foundation</code></td><td><l-en>Theme Settings, images, system states</l-en><l-ru>Theme Settings, изображения, системные состояния</l-ru><l-ro>Theme Settings, imagini, stări de sistem</l-ro></td></tr>
+                <tr><td><code>composer test:cookie-consent</code></td><td><l-en>Defaults, languages, evidence, services, security, source audit</l-en><l-ru>Значения по умолчанию, языки, журнал, сервисы, безопасность, аудит кода</l-ru><l-ro>Valori implicite, limbi, evidență, servicii, securitate, audit de cod</l-ro></td></tr>
+                <tr><td><code>composer test:analytics</code></td><td><l-en>Analytics identifier validation</l-en><l-ru>Проверка идентификаторов аналитики</l-ru><l-ro>Validarea identificatorilor de analytics</l-ro></td></tr>
+                <tr><td><code>composer test:seo</code></td><td><l-en>SEO module</l-en><l-ru>SEO-модуль</l-ru><l-ro>Modulul SEO</l-ro></td></tr>
+                <tr><td><code>composer test:storefront</code></td><td><l-en>Storefront features (WooCommerce only)</l-en><l-ru>Функции магазина (только WooCommerce)</l-ru><l-ro>Funcțiile magazinului (doar WooCommerce)</l-ro></td></tr>
+              </tbody>
+            </table></div>
+          </section>
+
+          <section id="commands-npm">
+            <h2><a class="anchor" href="#commands-npm">npm</a> <span class="pill">frontend/</span></h2>
+            <div class="table-wrap"><table>
+              <thead><tr><th><l-en>Command</l-en><l-ru>Команда</l-ru><l-ro>Comandă</l-ro></th><th><l-en>What it does</l-en><l-ru>Что делает</l-ru><l-ro>Ce face</l-ro></th></tr></thead>
+              <tbody>
+                <tr><td><code>npm run dev</code></td><td><l-en>Vite dev server on port 3002</l-en><l-ru>Vite dev-сервер на порту 3002</l-ru><l-ro>Vite dev server pe portul 3002</l-ro></td></tr>
+                <tr><td><code>npm run build</code></td><td><l-en>Production build into <code>dist/</code></l-en><l-ru>Production-сборка в <code>dist/</code></l-ru><l-ro>Build de producție în <code>dist/</code></l-ro></td></tr>
+                <tr><td><code>npm run preview</code></td><td><l-en>Preview the build</l-en><l-ru>Просмотр сборки</l-ru><l-ro>Previzualizarea build-ului</l-ro></td></tr>
+                <tr><td><code>npm run lint</code> / <code>lint:fix</code></td><td>ESLint</td></tr>
+                <tr><td><code>npm run format</code></td><td>Prettier</td></tr>
+                <tr><td><code>npm run test:consent</code></td><td><l-en>Unit tests (consent state, analytics providers)</l-en><l-ru>Unit-тесты (состояние согласия, провайдеры аналитики)</l-ru><l-ro>Teste unit (starea consimțământului, providerii de analytics)</l-ro></td></tr>
+                <tr><td><code>npm run test:e2e</code></td><td><l-en>Playwright cookie-consent scenario</l-en><l-ru>Сценарий cookie-consent в Playwright</l-ru><l-ro>Scenariul cookie-consent în Playwright</l-ro></td></tr>
+              </tbody>
+            </table></div>
+          </section>
+
+          <section id="commands-gates">
+            <h2><a class="anchor" href="#commands-gates"><l-en>Before a commit</l-en><l-ru>Перед коммитом</l-ru><l-ro>Înainte de commit</l-ro></a></h2>
+            <div class="cmd"><pre><code>composer validate --strict
+composer phpstan
+find src blocks -type f -name '*.php' -print0 | xargs -0 -n1 php -l</code></pre></div>
+            <div class="cmd"><pre><code>cd frontend
+npm run lint
+npx prettier --check .
+npm run build</code></pre></div>
+          </section>
+
+          <section id="commands-commit">
+            <h2><a class="anchor" href="#commands-commit"><l-en>What not to commit</l-en><l-ru>Что не коммитить</l-ru><l-ro>Ce nu se versionează</l-ro></a></h2>
+            <div class="grid">
+              <div class="card"><h3><l-en>Never</l-en><l-ru>Никогда</l-ru><l-ro>Niciodată</l-ro></h3><p><code>wp-config.php</code>, <code>.env</code>, uploads, <l-en>backups, debug logs</l-en><l-ru>бэкапы, debug-логи</l-ru><l-ro>backup-uri, loguri debug</l-ro>, <code>vendor/</code>, <code>node_modules/</code>, <code>frontend/dist/</code>, <l-en>third-party plugins</l-en><l-ru>сторонние плагины</l-ru><l-ro>plugin-uri terțe</l-ro></p></div>
+              <div class="card"><h3><l-en>Always</l-en><l-ru>Всегда</l-ru><l-ro>Întotdeauna</l-ro></h3><p><code>composer.lock</code>, <code>frontend/package-lock.json</code>, <code>acf-json/*.json</code></p></div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- ===================================================================== DEVELOPMENT -->
+      <div class="panel" id="panel-develop" role="tabpanel" aria-labelledby="tab-develop" hidden>
+        <nav class="toc" data-i18n-aria="onPage">
+          <p class="toc__title"><l-en>On this page</l-en><l-ru>На странице</l-ru><l-ro>Pe această pagină</l-ro></p>
+          <a href="#develop-block"><l-en>Adding a block</l-en><l-ru>Новый блок</l-ru><l-ro>Bloc nou</l-ro></a>
+          <a href="#develop-cpt"><l-en>Adding a CPT</l-en><l-ru>Новый CPT</l-ru><l-ro>CPT nou</l-ro></a>
+          <a href="#develop-services"><l-en>Services pattern</l-en><l-ru>Паттерн сервисов</l-ru><l-ro>Pattern-ul serviciilor</l-ro></a>
+          <a href="#develop-twig"><l-en>Twig autoescape</l-en><l-ru>Twig autoescape</l-ru><l-ro>Twig autoescape</l-ro></a>
+          <a href="#develop-images"><l-en>Images</l-en><l-ru>Изображения</l-ru><l-ro>Imagini</l-ro></a>
+          <a href="#develop-settings">Theme Settings</a>
+          <a href="#develop-frontend"><l-en>Styles and JS</l-en><l-ru>Стили и JS</l-ru><l-ro>Stiluri și JS</l-ro></a>
+          <a href="#develop-php"><l-en>PHP conventions</l-en><l-ru>Соглашения PHP</l-ru><l-ro>Convenții PHP</l-ro></a>
+        </nav>
+        <div class="content">
+          <div class="hero">
+            <p class="hero__eyebrow"><l-en>Development</l-en><l-ru>Разработка</l-ru><l-ro>Dezvoltare</l-ro></p>
+            <h1><l-en>How to extend the theme</l-en><l-ru>Как развивать тему</l-ru><l-ro>Cum extinzi tema</l-ro></h1>
+            <p><l-en>Recipes for the most common tasks. The AI commands in the WordPress pack follow the same rules.</l-en><l-ru>Рецепты для самых частых задач. AI-команды набора WordPress следуют тем же правилам.</l-ru><l-ro>Rețete pentru cele mai frecvente sarcini. Comenzile AI din pachetul WordPress urmează aceleași reguli.</l-ro></p>
+          </div>
+
+          <section id="develop-block">
+            <h2><a class="anchor" href="#develop-block"><l-en>Adding an ACF block</l-en><l-ru>Новый ACF-блок</l-ru><l-ro>Un bloc ACF nou</l-ro></a></h2>
+            <p><l-en>Copy <code>ExampleBlock</code> and create the matching triplet. <code>BlocksService</code> loads the class automatically.</l-en><l-ru>Скопируйте <code>ExampleBlock</code> и создайте тройку файлов. <code>BlocksService</code> подхватит класс автоматически.</l-ru><l-ro>Copiază <code>ExampleBlock</code> și creează tripletul. <code>BlocksService</code> încarcă automat clasa.</l-ro></p>
+            <pre class="tree">blocks/HeroBlock/HeroBlock.php              <span class="c">← namespace Boilerplate\Theme\Blocks\HeroBlock</span>
+views/blocks/HeroBlock/HeroBlock.twig
+acf-json/group_hero_block.json</pre>
+            <div class="table-wrap"><table>
+              <thead><tr><th><l-en>Method</l-en><l-ru>Метод</l-ru><l-ro>Metodă</l-ro></th><th><l-en>Purpose</l-en><l-ru>Назначение</l-ru><l-ro>Scop</l-ro></th></tr></thead>
+              <tbody>
+                <tr><td><code>init()</code></td><td><l-en>Name, title, description, keywords, icon</l-en><l-ru>Имя, заголовок, описание, ключевые слова, иконка</l-ru><l-ro>Nume, titlu, descriere, cuvinte cheie, iconiță</l-ro></td></tr>
+                <tr><td><code>getContext()</code></td><td><l-en>Read fields with <code>$this->getField()</code> and normalize them</l-en><l-ru>Читает поля через <code>$this->getField()</code> и нормализует</l-ru><l-ro>Citește câmpurile cu <code>$this->getField()</code> și le normalizează</l-ro></td></tr>
+                <tr><td><code>sanitizeContext()</code></td><td><l-en><code>sanitizeText</code>, <code>sanitizeHtml</code>, <code>sanitizeChoice</code>, <code>sanitizeImage</code>, <code>sanitizeLink</code>, <code>sanitizeAttribute</code></l-en><l-ru><code>sanitizeText</code>, <code>sanitizeHtml</code>, <code>sanitizeChoice</code>, <code>sanitizeImage</code>, <code>sanitizeLink</code>, <code>sanitizeAttribute</code></l-ru><l-ro><code>sanitizeText</code>, <code>sanitizeHtml</code>, <code>sanitizeChoice</code>, <code>sanitizeImage</code>, <code>sanitizeLink</code>, <code>sanitizeAttribute</code></l-ro></td></tr>
+                <tr><td><code>getExample()</code></td><td><l-en>Neutral preview data for the editor</l-en><l-ru>Нейтральные данные для превью в редакторе</l-ru><l-ro>Date neutre de preview pentru editor</l-ro></td></tr>
+              </tbody>
+            </table></div>
+            <ul>
+              <li><l-en>Every block has a <code>Settings</code> tab with <code>is_active</code> (hides the block on the frontend) and <code>block_custom_id</code> (anchor).</l-en><l-ru>У каждого блока есть вкладка <code>Settings</code> с <code>is_active</code> (скрывает блок на сайте) и <code>block_custom_id</code> (якорь).</l-ru><l-ro>Fiecare bloc are tabul <code>Settings</code> cu <code>is_active</code> (ascunde blocul pe site) și <code>block_custom_id</code> (ancoră).</l-ro></li>
+              <li><l-en>ACF JSON is saved automatically into <code>acf-json/</code> when you edit the group in wp-admin — commit it.</l-en><l-ru>ACF JSON автоматически сохраняется в <code>acf-json/</code> при правке группы в wp-admin — коммитьте его.</l-ru><l-ro>ACF JSON se salvează automat în <code>acf-json/</code> când editezi grupul în wp-admin — versionează-l.</l-ro></li>
+              <li><l-en>Faster: <code>/figma-to-block</code> generates all three files from Figma.</l-en><l-ru>Быстрее: <code>/figma-to-block</code> генерирует все три файла из Figma.</l-ru><l-ro>Mai rapid: <code>/figma-to-block</code> generează toate trei fișierele din Figma.</l-ro></li>
+            </ul>
+          </section>
+
+          <section id="develop-cpt">
+            <h2><a class="anchor" href="#develop-cpt"><l-en>Adding a custom post type</l-en><l-ru>Новый тип записей (CPT)</l-ru><l-ro>Un tip de conținut nou (CPT)</l-ro></a></h2>
+            <ol class="steps">
+              <li><strong><l-en>Register it in <code>PostTypesService</code> only</l-en><l-ru>Зарегистрируйте только в <code>PostTypesService</code></l-ru><l-ro>Înregistrează-l doar în <code>PostTypesService</code></l-ro></strong></li>
+              <li><strong><l-en>Copy <code>ExamplePostService.php</code> → <code>{Entity}Service.php</code></l-en><l-ru>Скопируйте <code>ExamplePostService.php</code> → <code>{Entity}Service.php</code></l-ru><l-ro>Copiază <code>ExamplePostService.php</code> → <code>{Entity}Service.php</code></l-ro></strong><p><l-en>Change <code>POST_TYPE</code> and expose focused query methods.</l-en><l-ru>Поменяйте <code>POST_TYPE</code> и добавьте узкие методы запросов.</l-ru><l-ro>Schimbă <code>POST_TYPE</code> și expune metode de interogare specifice.</l-ro></p></li>
+              <li><strong><l-en>Use <code>'no_found_rows' =&gt; true</code></l-en><l-ru>Используйте <code>'no_found_rows' =&gt; true</code></l-ru><l-ro>Folosește <code>'no_found_rows' =&gt; true</code></l-ro></strong><p><l-en>In every <code>WP_Query</code> that doesn't need pagination.</l-en><l-ru>В каждом <code>WP_Query</code>, где не нужна пагинация.</l-ru><l-ro>În fiecare <code>WP_Query</code> care nu are nevoie de paginare.</l-ro></p></li>
+            </ol>
+          </section>
+
+          <section id="develop-services">
+            <h2><a class="anchor" href="#develop-services"><l-en>Services pattern</l-en><l-ru>Паттерн сервисов</l-ru><l-ro>Pattern-ul serviciilor</l-ro></a></h2>
+            <div class="cmd"><pre><code>final class TeamService
+{
+    private string $postType;
+
+    public function __construct()
+    {
+        $this->postType = 'team_member';   <span class="c">// <l-en>properties only</l-en><l-ru>только свойства</l-ru><l-ro>doar proprietăți</l-ro></span>
+    }
+
+    public function init(): void            <span class="c">// <l-en>hooks here, called from ThemeSetup</l-en><l-ru>хуки здесь, вызывается из ThemeSetup</l-ru><l-ro>hook-urile aici, apelat din ThemeSetup</l-ro></span>
+    {
+        add_action('init', [$this, 'register']);
+    }
+}</code></pre></div>
+            <p><l-en>The constructor only sets properties. Hooks are registered in <code>init()</code>, which <code>ThemeSetup</code> calls. Never call <code>$this-&gt;init()</code> from the constructor.</l-en><l-ru>Конструктор только задаёт свойства. Хуки регистрируются в <code>init()</code>, который вызывает <code>ThemeSetup</code>. Никогда не вызывайте <code>$this-&gt;init()</code> из конструктора.</l-ru><l-ro>Constructorul doar setează proprietăți. Hook-urile se înregistrează în <code>init()</code>, apelat de <code>ThemeSetup</code>. Nu apela niciodată <code>$this-&gt;init()</code> din constructor.</l-ro></p>
+          </section>
+
+          <section id="develop-twig">
+            <h2><a class="anchor" href="#develop-twig">Twig autoescape</a></h2>
+            <p><l-en><code>Timber::$autoescape = true</code> — every <code>{{ value }}</code> is HTML-encoded.</l-en><l-ru><code>Timber::$autoescape = true</code> — любой <code>{{ value }}</code> экранируется.</l-ru><l-ro><code>Timber::$autoescape = true</code> — orice <code>{{ value }}</code> este codificat HTML.</l-ro></p>
+            <div class="table-wrap"><table>
+              <thead><tr><th><l-en>Data</l-en><l-ru>Данные</l-ru><l-ro>Date</l-ro></th><th>PHP</th><th>Twig</th></tr></thead>
+              <tbody>
+                <tr><td><l-en>Plain text</l-en><l-ru>Обычный текст</l-ru><l-ro>Text simplu</l-ro></td><td><l-en>pass raw, no <code>esc_html()</code></l-en><l-ru>как есть, без <code>esc_html()</code></l-ru><l-ro>brut, fără <code>esc_html()</code></l-ro></td><td><code>{{ value }}</code></td></tr>
+                <tr><td><l-en>HTML content</l-en><l-ru>HTML-контент</l-ru><l-ro>Conținut HTML</l-ro></td><td><code>wp_kses_post()</code></td><td><code>{{ value|raw }}</code></td></tr>
+                <tr><td><l-en>Pre-sanitized URL</l-en><l-ru>Очищенный URL</l-ru><l-ro>URL deja curățat</l-ro></td><td><code>esc_url()</code></td><td><code>{{ url|raw }}</code></td></tr>
+                <tr><td><l-en>Raw URL</l-en><l-ru>Сырой URL</l-ru><l-ro>URL brut</l-ro></td><td><l-en>pass raw</l-en><l-ru>как есть</l-ru><l-ro>brut</l-ro></td><td><code>{{ url }}</code></td></tr>
+                <tr><td><l-en>WP hook output</l-en><l-ru>Вывод WP-хуков</l-ru><l-ro>Output de hook WP</l-ro></td><td>—</td><td><code>{{ function("wp_head")|raw }}</code></td></tr>
+              </tbody>
+            </table></div>
+          </section>
+
+          <section id="develop-images">
+            <h2><a class="anchor" href="#develop-images"><l-en>Images</l-en><l-ru>Изображения</l-ru><l-ro>Imagini</l-ro></a></h2>
+            <div class="cmd"><pre><code>{% include 'components/image.twig' with {
+  image: post.thumbnail,
+  size: 'boilerplate-large',
+  alt: post.title,
+  loading: 'eager',
+  fetchpriority: 'high',
+  image_class: 'hero__image'
+} only %}</code></pre></div>
+            <ul>
+              <li><l-en>Accepts attachment IDs, ACF image arrays and Timber images; outputs srcset, sizes and dimensions.</l-en><l-ru>Принимает ID вложений, ACF-массивы и Timber-изображения; выдаёт srcset, sizes и размеры.</l-ru><l-ro>Acceptă ID-uri de atașamente, array-uri ACF și imagini Timber; generează srcset, sizes și dimensiuni.</l-ro></li>
+              <li><l-en>Sizes: <code>boilerplate-thumbnail</code> 350×250, <code>boilerplate-medium</code> 768, <code>boilerplate-large</code> 1200.</l-en><l-ru>Размеры: <code>boilerplate-thumbnail</code> 350×250, <code>boilerplate-medium</code> 768, <code>boilerplate-large</code> 1200.</l-ru><l-ro>Dimensiuni: <code>boilerplate-thumbnail</code> 350×250, <code>boilerplate-medium</code> 768, <code>boilerplate-large</code> 1200.</l-ro></li>
+              <li><l-en>The first visible image is <code>eager</code> + <code>fetchpriority: 'high'</code>, the rest stay lazy.</l-en><l-ru>Первое видимое изображение — <code>eager</code> + <code>fetchpriority: 'high'</code>, остальные lazy.</l-ru><l-ro>Prima imagine vizibilă e <code>eager</code> + <code>fetchpriority: 'high'</code>, restul rămân lazy.</l-ro></li>
+            </ul>
+          </section>
+
+          <section id="develop-settings">
+            <h2><a class="anchor" href="#develop-settings">Theme Settings</a></h2>
+            <p><l-en>Global project data lives in <strong>Settings → Theme Settings</strong>. In Twig, read <code>theme.themeSettings</code> — never call <code>get_field()</code> in templates.</l-en><l-ru>Общие данные проекта — в <strong>Settings → Theme Settings</strong>. В Twig читайте <code>theme.themeSettings</code> — не вызывайте <code>get_field()</code> в шаблонах.</l-ru><l-ro>Datele globale ale proiectului sunt în <strong>Settings → Theme Settings</strong>. În Twig citește <code>theme.themeSettings</code> — nu apela <code>get_field()</code> în template-uri.</l-ro></p>
+            <div class="table-wrap"><table>
+              <thead><tr><th><l-en>Tab</l-en><l-ru>Вкладка</l-ru><l-ro>Tab</l-ro></th><th><l-en>Contents</l-en><l-ru>Содержимое</l-ru><l-ro>Conținut</l-ro></th></tr></thead>
+              <tbody>
+                <tr><td>Branding</td><td><l-en>Logos, site icon (synced to WordPress)</l-en><l-ru>Логотипы, иконка сайта (синхронизируется с WordPress)</l-ru><l-ro>Logo-uri, iconița site-ului (sincronizată cu WordPress)</l-ro></td></tr>
+                <tr><td>Contact details</td><td><l-en>Address, phone (+ normalized <code>phone_url</code>), email</l-en><l-ru>Адрес, телефон (+ нормализованный <code>phone_url</code>), email</l-ru><l-ro>Adresă, telefon (+ <code>phone_url</code> normalizat), email</l-ro></td></tr>
+                <tr><td>Social links</td><td><l-en>Social networks</l-en><l-ru>Соцсети</l-ru><l-ro>Rețele sociale</l-ro></td></tr>
+                <tr><td>Legal pages</td><td><l-en>Privacy, terms (translated through WPML)</l-en><l-ru>Политика, условия (переводятся через WPML)</l-ru><l-ro>Confidențialitate, termeni (traduse prin WPML)</l-ro></td></tr>
+                <tr><td>Footer</td><td><l-en>Copyright, <code>{year}</code> is replaced automatically</l-en><l-ru>Копирайт, <code>{year}</code> подставляется автоматически</l-ru><l-ro>Copyright, <code>{year}</code> se înlocuiește automat</l-ro></td></tr>
+                <tr><td>System pages</td><td><l-en>Maintenance mode and its text</l-en><l-ru>Режим обслуживания и его текст</l-ru><l-ro>Modul de mentenanță și textul lui</l-ro></td></tr>
+              </tbody>
+            </table></div>
+          </section>
+
+          <section id="develop-frontend">
+            <h2><a class="anchor" href="#develop-frontend"><l-en>Styles and JS</l-en><l-ru>Стили и JS</l-ru><l-ro>Stiluri și JS</l-ro></a></h2>
+            <ul>
+              <li><l-en>BEM classes in Twig, Tailwind only via <code>@apply</code> in SCSS (exception: <code>container</code>).</l-en><l-ru>BEM-классы в Twig, Tailwind только через <code>@apply</code> в SCSS (исключение — <code>container</code>).</l-ru><l-ro>Clase BEM în Twig, Tailwind doar prin <code>@apply</code> în SCSS (excepție: <code>container</code>).</l-ro></li>
+              <li><l-en>Tokens live in <code>tailwind.config.js</code> (<code>brand</code>, <code>text</code>, <code>bg</code>, <code>border</code>, <code>utility</code>); container widths 1024 / 1180 / 1280.</l-en><l-ru>Токены — в <code>tailwind.config.js</code> (<code>brand</code>, <code>text</code>, <code>bg</code>, <code>border</code>, <code>utility</code>); ширины container 1024 / 1180 / 1280.</l-ru><l-ro>Tokenii sunt în <code>tailwind.config.js</code> (<code>brand</code>, <code>text</code>, <code>bg</code>, <code>border</code>, <code>utility</code>); lățimi container 1024 / 1180 / 1280.</l-ro></li>
+              <li><l-en>New SCSS partial → add it to <code>css/main.scss</code> with <code>meta.load-css</code>.</l-en><l-ru>Новый SCSS-partial → добавьте в <code>css/main.scss</code> через <code>meta.load-css</code>.</l-ru><l-ro>Partial SCSS nou → adaugă-l în <code>css/main.scss</code> cu <code>meta.load-css</code>.</l-ro></li>
+              <li><l-en>New JS component → import and initialise it in <code>js/main.js</code>.</l-en><l-ru>Новый JS-компонент → импорт и инициализация в <code>js/main.js</code>.</l-ru><l-ro>Componentă JS nouă → import și inițializare în <code>js/main.js</code>.</l-ro></li>
+              <li><l-en>Tailwind scans <code>src/js</code>, <code>views/**/*.twig</code> and <code>blocks/**/*.php</code>.</l-en><l-ru>Tailwind сканирует <code>src/js</code>, <code>views/**/*.twig</code> и <code>blocks/**/*.php</code>.</l-ru><l-ro>Tailwind scanează <code>src/js</code>, <code>views/**/*.twig</code> și <code>blocks/**/*.php</code>.</l-ro></li>
+            </ul>
+          </section>
+
+          <section id="develop-php">
+            <h2><a class="anchor" href="#develop-php"><l-en>PHP conventions</l-en><l-ru>Соглашения PHP</l-ru><l-ro>Convenții PHP</l-ro></a></h2>
+            <ul>
+              <li><l-en><code>declare(strict_types=1)</code> in every file.</l-en><l-ru><code>declare(strict_types=1)</code> в каждом файле.</l-ru><l-ro><code>declare(strict_types=1)</code> în fiecare fișier.</l-ro></li>
+              <li><l-en>Namespace <code>Boilerplate\</code>, typed properties.</l-en><l-ru>Namespace <code>Boilerplate\</code>, типизированные свойства.</l-ru><l-ro>Namespace <code>Boilerplate\</code>, proprietăți tipizate.</l-ro></li>
+              <li><l-en>No queries or formatting in Twig.</l-en><l-ru>Никаких запросов и форматирования в Twig.</l-ru><l-ro>Fără interogări sau formatare în Twig.</l-ro></li>
+              <li><l-en>Don't touch <code>inc/dependencies/</code> unless you are updating ACF or Timber on purpose.</l-en><l-ru>Не трогайте <code>inc/dependencies/</code>, если не обновляете ACF или Timber намеренно.</l-ru><l-ro>Nu modifica <code>inc/dependencies/</code> decât dacă actualizezi intenționat ACF sau Timber.</l-ro></li>
+            </ul>
+          </section>
+        </div>
+      </div>
+
+      <!-- ===================================================================== MODULES -->
+      <div class="panel" id="panel-modules" role="tabpanel" aria-labelledby="tab-modules" hidden>
+        <nav class="toc" data-i18n-aria="onPage">
+          <p class="toc__title"><l-en>On this page</l-en><l-ru>На странице</l-ru><l-ro>Pe această pagină</l-ro></p>
+          <a href="#modules-admin"><l-en>Admin screens</l-en><l-ru>Экраны админки</l-ru><l-ro>Ecrane de admin</l-ro></a>
+          <a href="#modules-seo">SEO</a>
+          <a href="#modules-cookies">Cookie consent</a>
+          <a href="#modules-analytics"><l-en>Analytics</l-en><l-ru>Аналитика</l-ru><l-ro>Analytics</l-ro></a>
+          <a href="#modules-system"><l-en>System states</l-en><l-ru>Системные состояния</l-ru><l-ro>Stări de sistem</l-ro></a>
+          <a href="#modules-menus"><l-en>Menus</l-en><l-ru>Меню</l-ru><l-ro>Meniuri</l-ro></a>
+        </nav>
+        <div class="content">
+          <div class="hero">
+            <p class="hero__eyebrow"><l-en>Modules</l-en><l-ru>Модули</l-ru><l-ro>Module</l-ro></p>
+            <h1><l-en>What is built in</l-en><l-ru>Что встроено</l-ru><l-ro>Ce este integrat</l-ro></h1>
+            <p><l-en>Both boilerplates ship SEO, GDPR-compliant cookie consent, analytics and system pages — no extra plugins needed.</l-en><l-ru>Оба boilerplate включают SEO, cookie consent по GDPR, аналитику и системные страницы — без дополнительных плагинов.</l-ru><l-ro>Ambele boilerplate-uri includ SEO, cookie consent conform GDPR, analytics și pagini de sistem — fără plugin-uri suplimentare.</l-ro></p>
+          </div>
+
+          <section id="modules-admin">
+            <h2><a class="anchor" href="#modules-admin"><l-en>Admin screens</l-en><l-ru>Экраны админки</l-ru><l-ro>Ecrane de admin</l-ro></a></h2>
+            <div class="table-wrap"><table>
+              <thead><tr><th><l-en>Menu</l-en><l-ru>Меню</l-ru><l-ro>Meniu</l-ro></th><th><l-en>What it configures</l-en><l-ru>Что настраивает</l-ru><l-ro>Ce configurează</l-ro></th></tr></thead>
+              <tbody>
+                <tr><td>Settings → Theme Settings</td><td><l-en>Branding, contacts, social, legal pages, footer, maintenance</l-en><l-ru>Брендинг, контакты, соцсети, юр. страницы, футер, обслуживание</l-ru><l-ro>Branding, contacte, rețele sociale, pagini legale, footer, mentenanță</l-ro></td></tr>
+                <tr><td>Settings → SEO</td><td><l-en>Titles, social sharing, schema, indexing, verification, sitemap, redirects</l-en><l-ru>Заголовки, соцсети, schema, индексация, верификация, sitemap, редиректы</l-ru><l-ro>Titluri, partajare socială, schema, indexare, verificare, sitemap, redirecționări</l-ro></td></tr>
+                <tr><td>Settings → Cookies Banner</td><td><l-en>Banner texts per language, policy, services</l-en><l-ru>Тексты баннера по языкам, политика, сервисы</l-ru><l-ro>Textele bannerului pe limbi, politică, servicii</l-ro></td></tr>
+                <tr><td>Settings → Analytics</td><td><l-en>GTM or direct GA4 / Google Ads / Meta Pixel, GTM consent audit</l-en><l-ru>GTM или напрямую GA4 / Google Ads / Meta Pixel, аудит согласия GTM</l-ru><l-ro>GTM sau direct GA4 / Google Ads / Meta Pixel, auditul consimțământului GTM</l-ro></td></tr>
+                <tr><td><l-en>Post / term editor → SEO</l-en><l-ru>Редактор записи / термина → SEO</l-ru><l-ro>Editorul de articol / termen → SEO</l-ro></td><td><l-en>Meta title, description, canonical, indexing, share image</l-en><l-ru>Meta title, description, canonical, индексация, картинка для соцсетей</l-ru><l-ro>Meta title, description, canonical, indexare, imagine de partajare</l-ro></td></tr>
+              </tbody>
+            </table></div>
+          </section>
+
+          <section id="modules-seo">
+            <h2><a class="anchor" href="#modules-seo">SEO</a></h2>
+            <ul>
+              <li><l-en>Code: <code>src/Theme/Seo/</code> (entry point <code>SeoModule</code>), head markup in <code>views/partials/seo/head.twig</code>.</l-en><l-ru>Код: <code>src/Theme/Seo/</code> (точка входа <code>SeoModule</code>), разметка head — <code>views/partials/seo/head.twig</code>.</l-ru><l-ro>Cod: <code>src/Theme/Seo/</code> (punct de intrare <code>SeoModule</code>), markup-ul head în <code>views/partials/seo/head.twig</code>.</l-ro></li>
+              <li><l-en>Title, canonical, Open Graph, Organization JSON-LD, robots, verification tags.</l-en><l-ru>Title, canonical, Open Graph, JSON-LD Organization, robots, теги верификации.</l-ru><l-ro>Title, canonical, Open Graph, JSON-LD Organization, robots, tag-uri de verificare.</l-ro></li>
+              <li><l-en>Uses the core WordPress sitemap, excluding noindexed posts and terms and chosen post types.</l-en><l-ru>Использует sitemap ядра WordPress, исключая noindex-записи, термины и выбранные типы записей.</l-ru><l-ro>Folosește sitemap-ul nucleului WordPress, excluzând articolele și termenii noindex și tipurile alese.</l-ro></li>
+              <li><l-en>Redirects table with source path, destination and type.</l-en><l-ru>Таблица редиректов: исходный путь, назначение, тип.</l-ru><l-ro>Tabel de redirecționări: cale sursă, destinație, tip.</l-ro></li>
+              <li><l-en>Turns itself off when Yoast, Rank Math, SEOPress or AIOSEO is active — no duplicate tags. Force it with the <code>boilerplate/seo/enabled</code> filter.</l-en><l-ru>Сам отключается при активном Yoast, Rank Math, SEOPress или AIOSEO — теги не дублируются. Принудительно — фильтр <code>boilerplate/seo/enabled</code>.</l-ru><l-ro>Se dezactivează singur când Yoast, Rank Math, SEOPress sau AIOSEO sunt active — fără tag-uri duplicate. Forțează cu filtrul <code>boilerplate/seo/enabled</code>.</l-ro></li>
+              <li><l-en>WooCommerce adds <code>WooCommerceSeoService</code> for product and catalog pages.</l-en><l-ru>WooCommerce добавляет <code>WooCommerceSeoService</code> для товаров и каталога.</l-ru><l-ro>WooCommerce adaugă <code>WooCommerceSeoService</code> pentru produse și catalog.</l-ro></li>
+            </ul>
+          </section>
+
+          <section id="modules-cookies">
+            <h2><a class="anchor" href="#modules-cookies">Cookie consent</a></h2>
+            <ul>
+              <li><l-en>Categories: <code>necessary</code> (always on), <code>preferences</code>, <code>analytics</code>, <code>marketing</code>, <code>external_media</code> (off by default).</l-en><l-ru>Категории: <code>necessary</code> (всегда включена), <code>preferences</code>, <code>analytics</code>, <code>marketing</code>, <code>external_media</code> (выключены по умолчанию).</l-ru><l-ro>Categorii: <code>necessary</code> (mereu activă), <code>preferences</code>, <code>analytics</code>, <code>marketing</code>, <code>external_media</code> (dezactivate implicit).</l-ro></li>
+              <li><l-en>No optional script or iframe makes a request before consent.</l-en><l-ru>Ни один необязательный скрипт или iframe не делает запрос до согласия.</l-ru><l-ro>Niciun script sau iframe opțional nu face cereri înainte de consimțământ.</l-ro></li>
+              <li><l-en>Reject all, Save selection and Accept all are equally visible; a persistent control reopens the settings.</l-en><l-ru>Кнопки «Отклонить всё», «Сохранить выбор» и «Принять всё» одинаково заметны; постоянная кнопка снова открывает настройки.</l-ru><l-ro>Butoanele Respinge tot, Salvează selecția și Acceptă tot sunt la fel de vizibile; un control permanent redeschide setările.</l-ro></li>
+              <li><l-en>Built-in RU, RO and EN texts; consent is versioned and expires; optional anonymous receipt log.</l-en><l-ru>Встроенные тексты RU, RO, EN; согласие версионируется и истекает; опциональный анонимный журнал согласий.</l-ru><l-ro>Texte RU, RO, EN incluse; consimțământul e versionat și expiră; jurnal anonim opțional.</l-ro></li>
+              <li><l-en>New third-party service → register it through <code>theme_cookie_consent_register_services</code>.</l-en><l-ru>Новый сторонний сервис → регистрируйте через <code>theme_cookie_consent_register_services</code>.</l-ru><l-ro>Serviciu terț nou → înregistrează-l prin <code>theme_cookie_consent_register_services</code>.</l-ro></li>
+            </ul>
+          </section>
+
+          <section id="modules-analytics">
+            <h2><a class="anchor" href="#modules-analytics"><l-en>Analytics</l-en><l-ru>Аналитика</l-ru><l-ro>Analytics</l-ro></a></h2>
+            <ul>
+              <li><l-en>Either one GTM container or direct Google Tag (GA4 / Google Ads) and Meta Pixel.</l-en><l-ru>Либо один контейнер GTM, либо напрямую Google Tag (GA4 / Google Ads) и Meta Pixel.</l-ru><l-ro>Fie un container GTM, fie direct Google Tag (GA4 / Google Ads) și Meta Pixel.</l-ro></li>
+              <li><l-en>Google Consent Mode: everything denied until consent; updates immediately on change.</l-en><l-ru>Google Consent Mode: всё запрещено до согласия; обновляется сразу при изменении.</l-ru><l-ro>Google Consent Mode: totul refuzat până la consimțământ; se actualizează imediat la schimbare.</l-ro></li>
+              <li><l-en>One JS event API for all providers; new providers implement <code>id</code>, <code>isAllowed</code>, <code>setConsent</code>, <code>activate</code>, <code>track</code>.</l-en><l-ru>Единый JS API событий для всех провайдеров; новый провайдер реализует <code>id</code>, <code>isAllowed</code>, <code>setConsent</code>, <code>activate</code>, <code>track</code>.</l-ru><l-ro>Un singur API JS de evenimente; providerii noi implementează <code>id</code>, <code>isAllowed</code>, <code>setConsent</code>, <code>activate</code>, <code>track</code>.</l-ro></li>
+              <li><l-en>WooCommerce adds e-commerce events (<code>WooCommerceAnalyticsService</code>).</l-en><l-ru>WooCommerce добавляет e-commerce события (<code>WooCommerceAnalyticsService</code>).</l-ru><l-ro>WooCommerce adaugă evenimente e-commerce (<code>WooCommerceAnalyticsService</code>).</l-ro></li>
+            </ul>
+          </section>
+
+          <section id="modules-system">
+            <h2><a class="anchor" href="#modules-system"><l-en>System states</l-en><l-ru>Системные состояния</l-ru><l-ro>Stări de sistem</l-ro></a></h2>
+            <div class="table-wrap"><table>
+              <thead><tr><th><l-en>State</l-en><l-ru>Состояние</l-ru><l-ro>Stare</l-ro></th><th><l-en>Behaviour</l-en><l-ru>Поведение</l-ru><l-ro>Comportament</l-ro></th></tr></thead>
+              <tbody>
+                <tr><td>404 / <l-en>empty results</l-en><l-ru>пустые результаты</l-ru><l-ro>rezultate goale</l-ro></td><td><code>components/feedback/empty-state.twig</code></td></tr>
+                <tr><td><l-en>Maintenance</l-en><l-ru>Обслуживание</l-ru><l-ro>Mentenanță</l-ro></td><td><l-en>HTTP 503 + <code>Retry-After</code>, no analytics or cookies; admins, AJAX, cron, login and WP-CLI pass through</l-en><l-ru>HTTP 503 + <code>Retry-After</code>, без аналитики и cookie; админы, AJAX, cron, логин и WP-CLI проходят</l-ru><l-ro>HTTP 503 + <code>Retry-After</code>, fără analytics sau cookie; administratorii, AJAX, cron, login și WP-CLI trec</l-ro></td></tr>
+                <tr><td><l-en>System error</l-en><l-ru>Системная ошибка</l-ru><l-ro>Eroare de sistem</l-ro></td><td><code>do_action('boilerplate_render_system_error', $title, $message, $status)</code></td></tr>
+                <tr><td><l-en>Missing translation</l-en><l-ru>Нет перевода</l-ru><l-ro>Traducere lipsă</l-ro></td><td><code>do_action('boilerplate_render_missing_translation', $returnUrl)</code></td></tr>
+              </tbody>
+            </table></div>
+          </section>
+
+          <section id="modules-menus">
+            <h2><a class="anchor" href="#modules-menus"><l-en>Menus and theme supports</l-en><l-ru>Меню и возможности темы</l-ru><l-ro>Meniuri și funcționalități</l-ro></a></h2>
+            <ul>
+              <li><l-en>Menus: <code>main-menu</code>, <code>footer-menu</code>, <code>footer-bottom-menu</code>.</l-en><l-ru>Меню: <code>main-menu</code>, <code>footer-menu</code>, <code>footer-bottom-menu</code>.</l-ru><l-ro>Meniuri: <code>main-menu</code>, <code>footer-menu</code>, <code>footer-bottom-menu</code>.</l-ro></li>
+              <li><l-en>ACF fields named <code>menu_select</code> / <code>submenu_select</code> automatically list the site menus.</l-en><l-ru>ACF-поля с именем <code>menu_select</code> / <code>submenu_select</code> автоматически показывают меню сайта.</l-ru><l-ro>Câmpurile ACF numite <code>menu_select</code> / <code>submenu_select</code> listează automat meniurile site-ului.</l-ro></li>
+              <li><l-en>Theme supports: thumbnails, title-tag, HTML5, custom logo, responsive embeds, wide alignment, editor styles.</l-en><l-ru>Поддержка: миниатюры, title-tag, HTML5, кастомный логотип, адаптивные embed, wide-выравнивание, стили редактора.</l-ru><l-ro>Suport: miniaturi, title-tag, HTML5, logo personalizat, embed-uri responsive, aliniere wide, stiluri de editor.</l-ro></li>
+            </ul>
+          </section>
+        </div>
+      </div>
+
+      <!-- ===================================================================== WOOCOMMERCE -->
+      <div class="panel" id="panel-woo" role="tabpanel" aria-labelledby="tab-woo" hidden>
+        <nav class="toc" data-i18n-aria="onPage">
+          <p class="toc__title"><l-en>On this page</l-en><l-ru>На странице</l-ru><l-ro>Pe această pagină</l-ro></p>
+          <a href="#woo-requirements"><l-en>Requirements</l-en><l-ru>Требования</l-ru><l-ro>Cerințe</l-ro></a>
+          <a href="#woo-configure"><l-en>Profile</l-en><l-ru>Профиль</l-ru><l-ro>Profil</l-ro></a>
+          <a href="#woo-structure"><l-en>Extra structure</l-en><l-ru>Дополнительная структура</l-ru><l-ro>Structură suplimentară</l-ro></a>
+          <a href="#woo-variations"><l-en>Variations</l-en><l-ru>Вариации</l-ru><l-ro>Variații</l-ro></a>
+          <a href="#woo-cart"><l-en>Cart and checkout</l-en><l-ru>Корзина и checkout</l-ru><l-ro>Coș și checkout</l-ro></a>
+          <a href="#woo-features"><l-en>Storefront</l-en><l-ru>Витрина</l-ru><l-ro>Vitrina</l-ro></a>
+          <a href="#woo-services"><l-en>Services</l-en><l-ru>Сервисы</l-ru><l-ro>Servicii</l-ro></a>
+          <a href="#woo-catalog">Catalog I/O</a>
+        </nav>
+        <div class="content">
+          <div class="hero">
+            <p class="hero__eyebrow">boilerplate-wp-woocommerce</p>
+            <h1><l-en>What WooCommerce adds</l-en><l-ru>Что добавляет WooCommerce</l-ru><l-ro>Ce adaugă WooCommerce</l-ro></h1>
+            <p><l-en>Everything from Standard stays the same. Below is only what the store adds on top.</l-en><l-ru>Всё из Standard остаётся как есть. Ниже — только то, что добавляет магазин.</l-ru><l-ro>Tot ce are Standard rămâne la fel. Mai jos e doar ce adaugă magazinul.</l-ro></p>
+          </div>
+
+          <section id="woo-requirements">
+            <h2><a class="anchor" href="#woo-requirements"><l-en>Requirements</l-en><l-ru>Требования</l-ru><l-ro>Cerințe</l-ro></a></h2>
+            <ul>
+              <li><l-en>PHP 8.2+, Composer 2, Node.js 20+ and npm 10.</l-en><l-ru>PHP 8.2+, Composer 2, Node.js 20+ и npm 10.</l-ru><l-ro>PHP 8.2+, Composer 2, Node.js 20+ și npm 10.</l-ro></li>
+              <li><l-en>WordPress 7.0 baseline, WooCommerce 10.0+ (validated on 10.8).</l-en><l-ru>Базовая версия WordPress 7.0, WooCommerce 10.0+ (проверено на 10.8).</l-ru><l-ro>WordPress 7.0 ca bază, WooCommerce 10.0+ (validat pe 10.8).</l-ro></li>
+              <li><l-en>For <code>wpml</code>: WPML CMS, String Translation, ACFML, WooCommerce Multilingual.</l-en><l-ru>Для <code>wpml</code>: WPML CMS, String Translation, ACFML, WooCommerce Multilingual.</l-ru><l-ro>Pentru <code>wpml</code>: WPML CMS, String Translation, ACFML, WooCommerce Multilingual.</l-ro></li>
+              <li><l-en>Assign Shop, Cart, Checkout and My Account pages — the admin notice reports what is missing.</l-en><l-ru>Назначьте страницы Shop, Cart, Checkout и My Account — уведомление в админке покажет, чего не хватает.</l-ru><l-ro>Atribuie paginile Shop, Cart, Checkout și My Account — notificarea din admin arată ce lipsește.</l-ro></li>
+            </ul>
+          </section>
+
+          <section id="woo-configure">
+            <h2><a class="anchor" href="#woo-configure"><l-en>Store profile</l-en><l-ru>Профиль магазина</l-ru><l-ro>Profilul magazinului</l-ro></a></h2>
+            <p><l-en><code>wpaikit init --preset woo</code> runs it for you. Manually, from the theme root:</l-en><l-ru><code>wpaikit init --preset woo</code> запускает это сам. Вручную — из корня темы:</l-ru><l-ro><code>wpaikit init --preset woo</code> o rulează automat. Manual, din rădăcina temei:</l-ro></p>
+            <div class="cmd"><pre><code>php bin/configure.php --multilingual=wpml --variant-catalog=main-only --wishlist=no</code></pre></div>
+            <p><l-en>Values are written to <code>boilerplate-config.php</code> (versioned, no secrets):</l-en><l-ru>Значения записываются в <code>boilerplate-config.php</code> (в git, без секретов):</l-ru><l-ro>Valorile se scriu în <code>boilerplate-config.php</code> (versionat, fără secrete):</l-ro></p>
+            <div class="table-wrap"><table>
+              <thead><tr><th><l-en>Constant</l-en><l-ru>Константа</l-ru><l-ro>Constantă</l-ro></th><th><l-en>Values</l-en><l-ru>Значения</l-ru><l-ro>Valori</l-ro></th></tr></thead>
+              <tbody>
+                <tr><td><code>BOILERPLATE_MULTILINGUAL</code></td><td><code>wpml</code> <l-en>(default)</l-en><l-ru>(по умолчанию)</l-ru><l-ro>(implicit)</l-ro> · <code>none</code></td></tr>
+                <tr><td><code>BOILERPLATE_VARIANT_CATALOG</code></td><td><code>main-only</code> <l-en>(default)</l-en><l-ru>(по умолчанию)</l-ru><l-ro>(implicit)</l-ro> · <code>all</code></td></tr>
+                <tr><td><code>BOILERPLATE_WISHLIST</code></td><td><code>false</code> <l-en>(default)</l-en><l-ru>(по умолчанию)</l-ru><l-ro>(implicit)</l-ro> · <code>true</code></td></tr>
+              </tbody>
+            </table></div>
+            <p><l-en>Read them in code through <code>Config\Features</code>. There are no switches for WooCommerce, variations, mini-cart or checkout — they are always on.</l-en><l-ru>В коде читайте их через <code>Config\Features</code>. Переключателей для WooCommerce, вариаций, мини-корзины и checkout нет — они всегда включены.</l-ru><l-ro>În cod citește-le prin <code>Config\Features</code>. Nu există comutatoare pentru WooCommerce, variații, mini-coș sau checkout — sunt mereu active.</l-ro></p>
+          </section>
+
+          <section id="woo-structure">
+            <h2><a class="anchor" href="#woo-structure"><l-en>Extra structure</l-en><l-ru>Дополнительная структура</l-ru><l-ro>Structură suplimentară</l-ro></a></h2>
+            <pre class="tree">archive-product.php · single-product.php · cart.php · checkout.php · my-account.php · wishlist.php
+boilerplate-config.php          <span class="c">← <l-en>store profile</l-en><l-ru>профиль магазина</l-ru><l-ro>profilul magazinului</l-ro></span>
+bin/configure.php
+src/Theme/Checkout/             <span class="c">← <l-en>delivery policy contract</l-en><l-ru>контракт политики доставки</l-ru><l-ro>contractul politicii de livrare</l-ro></span>
+src/Theme/Config/Features.php
+blocks/ProductsListingBlock/    <span class="c">← <l-en>filtered product catalog block</l-en><l-ru>блок каталога с фильтрами</l-ru><l-ro>bloc de catalog cu filtre</l-ro></span>
+acf-json/group_product_badges.json · group_product_variant_fields.json · group_products_listing_block.json
+views/woocommerce/              <span class="c">← archive-product, single-product, cart, checkout, thank-you, account, wishlist</span>
+views/components/woocommerce/   <span class="c">← product-card, price, add-to-cart, variant-picker, product-gallery,
+                                  product-badges, sale-badge, stock-badge, cart-item, products-listing</span>
+views/partials/woocommerce/     <span class="c">← mini-cart, cart-count, product-filters, active-product-filters,
+                                  pagination, notices, checkout-review, checkout-payment, wishlist-products</span>
+frontend/src/css/woocommerce/   <span class="c">← catalog, product, cart, checkout, account</span>
+frontend/src/js/components/     <span class="c">← mini-cart, product-catalog, product-gallery, variant-picker,
+                                  wishlist, recently-viewed, woocommerce-analytics</span>
+translations/                   <span class="c">← <l-en>WPML UI strings</l-en><l-ru>UI-строки WPML</l-ru><l-ro>șiruri UI WPML</l-ro></span></pre>
+          </section>
+
+          <section id="woo-variations">
+            <h2><a class="anchor" href="#woo-variations"><l-en>Custom variations</l-en><l-ru>Кастомные вариации</l-ru><l-ro>Variații personalizate</l-ro></a></h2>
+            <ul>
+              <li><l-en>Every variant is a full WooCommerce <strong>simple product</strong>.</l-en><l-ru>Каждый вариант — полноценный <strong>простой товар</strong> WooCommerce.</l-ru><l-ro>Fiecare variantă este un <strong>produs simplu</strong> WooCommerce complet.</l-ro></li>
+              <li><l-en>The group anchor stores its own ID in <code>variant_parent</code> and is the only product with <code>is_main=1</code>; siblings store the anchor ID.</l-en><l-ru>Якорь группы хранит свой ID в <code>variant_parent</code> и единственный имеет <code>is_main=1</code>; остальные хранят ID якоря.</l-ru><l-ro>Ancora grupului își stochează ID-ul în <code>variant_parent</code> și e singurul produs cu <code>is_main=1</code>; celelalte stochează ID-ul ancorei.</l-ro></li>
+              <li><l-en><code>product_attribute</code> parent terms are picker/filter groups, child terms are values (optional <code>hex</code> swatch).</l-en><l-ru>Родительские термины <code>product_attribute</code> — группы выбора/фильтров, дочерние — значения (опционально <code>hex</code>-цвет).</l-ru><l-ro>Termenii părinte <code>product_attribute</code> sunt grupuri de selecție/filtru, cei copil sunt valori (opțional culoare <code>hex</code>).</l-ro></li>
+              <li><l-en>Products → <strong>Clone as variant</strong>; WooCommerce → <strong>Variant Integrity</strong> reports broken groups.</l-en><l-ru>Products → <strong>Clone as variant</strong>; WooCommerce → <strong>Variant Integrity</strong> показывает сломанные группы.</l-ru><l-ro>Products → <strong>Clone as variant</strong>; WooCommerce → <strong>Variant Integrity</strong> raportează grupurile defecte.</l-ro></li>
+            </ul>
+          </section>
+
+          <section id="woo-cart">
+            <h2><a class="anchor" href="#woo-cart"><l-en>Cart and checkout</l-en><l-ru>Корзина и checkout</l-ru><l-ro>Coș și checkout</l-ro></a></h2>
+            <ul>
+              <li><l-en>WooCommerce owns cart and checkout state, validation, gateways, orders, stock and emails; Twig owns presentation.</l-en><l-ru>WooCommerce отвечает за состояние корзины и checkout, валидацию, оплату, заказы, остатки и письма; Twig — за отображение.</l-ru><l-ro>WooCommerce gestionează starea coșului și a checkout-ului, validarea, plățile, comenzile, stocul și emailurile; Twig — prezentarea.</l-ro></li>
+              <li><l-en>The checkout never calls <code>process_checkout()</code> manually; order review fragments are replaced with Twig partials.</l-en><l-ru>Checkout никогда не вызывает <code>process_checkout()</code> вручную; фрагменты order review заменяются Twig-partials.</l-ru><l-ro>Checkout-ul nu apelează niciodată manual <code>process_checkout()</code>; fragmentele order review sunt înlocuite cu partial-uri Twig.</l-ro></li>
+              <li><l-en>The mini-cart updates through <code>woocommerce_add_to_cart_fragments</code>.</l-en><l-ru>Мини-корзина обновляется через <code>woocommerce_add_to_cart_fragments</code>.</l-ru><l-ro>Mini-coșul se actualizează prin <code>woocommerce_add_to_cart_fragments</code>.</l-ro></li>
+              <li><l-en>Delivery rules: implement <code>DeliveryPolicyInterface</code> (recipe in <code>knowledge/woocommerce/recipes/checkout-delivery/</code>).</l-en><l-ru>Правила доставки: реализуйте <code>DeliveryPolicyInterface</code> (рецепт — <code>knowledge/woocommerce/recipes/checkout-delivery/</code>).</l-ru><l-ro>Regulile de livrare: implementează <code>DeliveryPolicyInterface</code> (rețeta în <code>knowledge/woocommerce/recipes/checkout-delivery/</code>).</l-ro></li>
+            </ul>
+          </section>
+
+          <section id="woo-features">
+            <h2><a class="anchor" href="#woo-features"><l-en>Storefront</l-en><l-ru>Витрина</l-ru><l-ro>Vitrina</l-ro></a></h2>
+            <div class="grid">
+              <div class="card"><h3><l-en>Catalog</l-en><l-ru>Каталог</l-ru><l-ro>Catalog</l-ro></h3><p><l-en>AJAX filters, pagination, <code>ProductsListingBlock</code> for any page.</l-en><l-ru>AJAX-фильтры, пагинация, <code>ProductsListingBlock</code> для любой страницы.</l-ru><l-ro>Filtre AJAX, paginare, <code>ProductsListingBlock</code> pentru orice pagină.</l-ro></p></div>
+              <div class="card"><h3><l-en>Badges</l-en><l-ru>Бейджи</l-ru><l-ro>Badge-uri</l-ro></h3><p><l-en>Sale, stock and custom product badges.</l-en><l-ru>Скидка, наличие и свои бейджи товаров.</l-ru><l-ro>Reducere, stoc și badge-uri personalizate.</l-ro></p></div>
+              <div class="card"><h3>Wishlist</h3><p><l-en>Optional; synced with the account for logged-in users.</l-en><l-ru>Опционально; синхронизируется с аккаунтом для авторизованных.</l-ru><l-ro>Opțional; sincronizat cu contul pentru utilizatorii autentificați.</l-ro></p></div>
+              <div class="card"><h3><l-en>Recently viewed</l-en><l-ru>Недавно просмотренные</l-ru><l-ro>Văzute recent</l-ro></h3><p><l-en>A capped, consent-aware list of IDs in <code>localStorage</code>.</l-en><l-ru>Ограниченный список ID в <code>localStorage</code> с учётом согласия.</l-ru><l-ro>O listă limitată de ID-uri în <code>localStorage</code>, cu respectarea consimțământului.</l-ro></p></div>
+            </div>
+            <p><l-en>Storefront options: <strong>WooCommerce → Storefront</strong>.</l-en><l-ru>Настройки витрины: <strong>WooCommerce → Storefront</strong>.</l-ru><l-ro>Opțiunile vitrinei: <strong>WooCommerce → Storefront</strong>.</l-ro></p>
+          </section>
+
+          <section id="woo-services">
+            <h2><a class="anchor" href="#woo-services"><l-en>Services and controllers</l-en><l-ru>Сервисы и контроллеры</l-ru><l-ro>Servicii și controllere</l-ro></a></h2>
+            <div class="table-wrap"><table>
+              <thead><tr><th><l-en>Class</l-en><l-ru>Класс</l-ru><l-ro>Clasă</l-ro></th><th><l-en>Responsibility</l-en><l-ru>Ответственность</l-ru><l-ro>Responsabilitate</l-ro></th></tr></thead>
+              <tbody>
+                <tr><td><code>Product*Controller</code>, <code>Cart</code>, <code>Checkout</code>, <code>Account</code>, <code>WishlistController</code></td><td><l-en>Store pages</l-en><l-ru>Страницы магазина</l-ru><l-ro>Paginile magazinului</l-ro></td></tr>
+                <tr><td><code>WooCommerceService</code></td><td><l-en>Template routing, requirements notice</l-en><l-ru>Маршрутизация шаблонов, проверка требований</l-ru><l-ro>Rutarea template-urilor, notificarea de cerințe</l-ro></td></tr>
+                <tr><td><code>ProductService</code>, <code>ProductQueryService</code>, <code>ProductCatalogService</code></td><td><l-en>Product data, queries, AJAX catalog filters</l-en><l-ru>Данные товаров, запросы, AJAX-фильтры каталога</l-ru><l-ro>Datele produselor, interogări, filtre AJAX</l-ro></td></tr>
+                <tr><td><code>ProductVariationService</code>, <code>ProductVariationAdminService</code></td><td><l-en>Variant picker, cloning, integrity screen</l-en><l-ru>Выбор варианта, клонирование, проверка целостности</l-ru><l-ro>Selectorul de variante, clonare, ecranul de integritate</l-ro></td></tr>
+                <tr><td><code>ProductBadgeService</code></td><td><l-en>Badges</l-en><l-ru>Бейджи</l-ru><l-ro>Badge-uri</l-ro></td></tr>
+                <tr><td><code>CartService</code>, <code>CheckoutService</code>, <code>OrderService</code></td><td><l-en>Mini-cart fragments, checkout fragments, orders</l-en><l-ru>Фрагменты мини-корзины и checkout, заказы</l-ru><l-ro>Fragmente mini-coș și checkout, comenzi</l-ro></td></tr>
+                <tr><td><code>WishlistService</code>, <code>RecentlyViewedService</code></td><td><l-en>Wishlist and recently viewed</l-en><l-ru>Wishlist и недавно просмотренные</l-ru><l-ro>Wishlist și văzute recent</l-ro></td></tr>
+                <tr><td><code>Multilingual*</code>, <code>WpmlService</code>, <code>WpmlStringImporterService</code></td><td><l-en>WPML adapter (or <code>NullMultilingualService</code>), UI string import</l-en><l-ru>Адаптер WPML (или <code>NullMultilingualService</code>), импорт UI-строк</l-ru><l-ro>Adaptorul WPML (sau <code>NullMultilingualService</code>), importul șirurilor UI</l-ro></td></tr>
+                <tr><td><code>StorefrontSettingsService</code></td><td>WooCommerce → Storefront</td></tr>
+                <tr><td><code>WooCommerceAnalyticsService</code>, <code>WooCommerceSeoService</code></td><td><l-en>E-commerce events, product SEO</l-en><l-ru>E-commerce события, SEO товаров</l-ru><l-ro>Evenimente e-commerce, SEO produse</l-ro></td></tr>
+                <tr><td><code>ProductCatalogIoExtensionService</code></td><td><l-en>Registers project fields in the Catalog I/O plugin</l-en><l-ru>Регистрирует поля проекта в плагине Catalog I/O</l-ru><l-ro>Înregistrează câmpurile proiectului în plugin-ul Catalog I/O</l-ro></td></tr>
+              </tbody>
+            </table></div>
+          </section>
+
+          <section id="woo-catalog">
+            <h2><a class="anchor" href="#woo-catalog"><l-en>Catalog I/O plugin</l-en><l-ru>Плагин Catalog I/O</l-ru><l-ro>Plugin-ul Catalog I/O</l-ro></a></h2>
+            <ul>
+              <li><l-en><code>wp-content/plugins/wpaikit-product-catalog-io/</code> — first-party plugin for XLSX validation, import and export of products, categories, attributes and media.</l-en><l-ru><code>wp-content/plugins/wpaikit-product-catalog-io/</code> — собственный плагин для проверки, импорта и экспорта XLSX: товары, категории, атрибуты, медиа.</l-ru><l-ro><code>wp-content/plugins/wpaikit-product-catalog-io/</code> — plugin propriu pentru validarea, importul și exportul XLSX: produse, categorii, atribute, media.</l-ro></li>
+              <li><l-en>Importers never live in the theme. The only theme-side import is WPML UI strings.</l-en><l-ru>Импортёры никогда не живут в теме. Единственный импорт в теме — UI-строки WPML.</l-ru><l-ro>Importatorii nu stau niciodată în temă. Singurul import din temă sunt șirurile UI WPML.</l-ro></li>
+              <li><l-en>Install its dependencies with <code>composer install</code> inside the plugin folder.</l-en><l-ru>Зависимости — <code>composer install</code> в папке плагина.</l-ru><l-ro>Dependențele — <code>composer install</code> în folderul plugin-ului.</l-ro></li>
+              <li><l-en>XLSX templates and rules — in the <a href="./guide.html#woocommerce-catalog">WPAIKit guide</a>.</l-en><l-ru>Шаблоны XLSX и правила — в <a href="./guide.html#woocommerce-catalog">гайде WPAIKit</a>.</l-ru><l-ro>Șabloanele XLSX și regulile — în <a href="./guide.html#woocommerce-catalog">ghidul WPAIKit</a>.</l-ro></li>
+            </ul>
+          </section>
+        </div>
+      </div>
+
+      <p class="footer">
+        WPAIKit Boilerplates ·
+        <a href="./guide.html"><l-en>WPAIKit guide</l-en><l-ru>Гайд WPAIKit</l-ru><l-ro>Ghidul WPAIKit</l-ro></a> ·
+        <a href="./changelog.html">Changelog</a> ·
+        <a href="https://github.com/GoldenCodesSlava/wpaikit">GitHub</a>
+      </p>
+    </main>
+
+    <script>
+      ;(() => {
+        const LANGS = ['en', 'ru', 'ro']
+        const STRINGS = {
+          en: {
+            title: 'WPAIKit — boilerplates',
+            description: 'WPAIKit boilerplates: structure, commands and development rules of the Standard and WooCommerce starters.',
+            copy: 'Copy',
+            copied: 'Copied',
+            theme: 'Toggle theme',
+            langGroup: 'Language',
+            sections: 'Documentation sections',
+            onPage: 'On this page',
+          },
+          ru: {
+            title: 'WPAIKit — boilerplates',
+            description: 'Boilerplates WPAIKit: структура, команды и правила разработки стартеров Standard и WooCommerce.',
+            copy: 'Копировать',
+            copied: 'Скопировано',
+            theme: 'Переключить тему',
+            langGroup: 'Язык',
+            sections: 'Разделы документации',
+            onPage: 'На этой странице',
+          },
+          ro: {
+            title: 'WPAIKit — boilerplate-uri',
+            description: 'Boilerplate-urile WPAIKit: structura, comenzile și regulile de dezvoltare ale starterelor Standard și WooCommerce.',
+            copy: 'Copiază',
+            copied: 'Copiat',
+            theme: 'Schimbă tema',
+            langGroup: 'Limbă',
+            sections: 'Secțiunile documentației',
+            onPage: 'Pe această pagină',
+          },
+        }
+        const root = document.documentElement
+        const store = {
+          get(key) {
+            try {
+              return localStorage.getItem(key)
+            } catch {
+              return null
+            }
+          },
+          set(key, value) {
+            try {
+              localStorage.setItem(key, value)
+            } catch {}
+          },
+        }
+
+        // ---------- language ----------
+        let lang = 'en'
+        function applyLang(next) {
+          lang = LANGS.includes(next) ? next : 'en'
+          const t = STRINGS[lang]
+          root.lang = lang
+          document.title = t.title
+          document.querySelector('meta[name="description"]').content = t.description
+          document.querySelectorAll('[data-i18n-aria]').forEach((element) => {
+            element.setAttribute('aria-label', t[element.dataset.i18nAria])
+          })
+          document.querySelectorAll('.lang-switch button').forEach((button) => {
+            button.setAttribute('aria-pressed', String(button.dataset.lang === lang))
+          })
+          document.querySelectorAll('.copy:not(.is-done)').forEach((button) => {
+            button.textContent = t.copy
+          })
+          store.set('wpaikit-docs-lang', lang)
+        }
+        document.querySelectorAll('.lang-switch button').forEach((button) => {
+          button.addEventListener('click', () => applyLang(button.dataset.lang))
+        })
+
+        // ---------- tabs ----------
+        const TABS = ['overview', 'structure', 'commands', 'develop', 'modules', 'woo']
+        const tabs = [...document.querySelectorAll('.tab')]
+        const panels = Object.fromEntries(TABS.map((id) => [id, document.getElementById(`panel-${id}`)]))
+
+        function tabFromHash(hash) {
+          const id = decodeURIComponent(hash.replace(/^#/, ''))
+          if (!id) return { tab: 'overview', anchor: null }
+          if (TABS.includes(id)) return { tab: id, anchor: null }
+          const element = document.getElementById(id)
+          const panel = element && element.closest('.panel')
+          return panel ? { tab: panel.id.replace('panel-', ''), anchor: id } : { tab: 'overview', anchor: null }
+        }
+
+        function activate(tab, { focus = false, anchor = null } = {}) {
+          tabs.forEach((button) => {
+            const selected = button.dataset.tab === tab
+            button.setAttribute('aria-selected', String(selected))
+            button.tabIndex = selected ? 0 : -1
+            if (selected && focus) button.focus()
+            if (selected) {
+              const strip = button.parentElement
+              const left = button.offsetLeft - strip.offsetLeft
+              if (left < strip.scrollLeft || left + button.offsetWidth > strip.scrollLeft + strip.clientWidth) {
+                strip.scrollLeft = left - 16
+              }
+            }
+          })
+          TABS.forEach((id) => {
+            panels[id].hidden = id !== tab
+          })
+          if (anchor) {
+            document.getElementById(anchor)?.scrollIntoView()
+          } else {
+            window.scrollTo({ top: 0, behavior: 'instant' })
+          }
+          updateToc()
+        }
+
+        function go(tab, anchor = null) {
+          const hash = `#${anchor || tab}`
+          if (location.hash !== hash) history.pushState(null, '', hash)
+          activate(tab, { anchor })
+        }
+
+        tabs.forEach((button, index) => {
+          button.addEventListener('click', () => go(button.dataset.tab))
+          button.addEventListener('keydown', (event) => {
+            const keys = { ArrowRight: 1, ArrowLeft: -1 }
+            if (event.key in keys) {
+              const next = tabs[(index + keys[event.key] + tabs.length) % tabs.length]
+              go(next.dataset.tab)
+              next.focus()
+              event.preventDefault()
+            }
+          })
+        })
+
+        document.addEventListener('click', (event) => {
+          const target = event.target.closest('[data-goto]')
+          if (!target) return
+          event.preventDefault()
+          const href = target.getAttribute('href')
+          const anchor = href && href.length > 1 && href.slice(1) !== target.dataset.goto ? href.slice(1) : null
+          go(target.dataset.goto, anchor)
+        })
+
+        document.addEventListener('keydown', (event) => {
+          const target = event.target.closest && event.target.closest('.card--link')
+          if (target && (event.key === 'Enter' || event.key === ' ')) {
+            event.preventDefault()
+            go(target.dataset.goto)
+          }
+        })
+
+        window.addEventListener('popstate', () => {
+          const { tab, anchor } = tabFromHash(location.hash)
+          activate(tab, { anchor })
+        })
+
+        // ---------- copy buttons ----------
+        document.querySelectorAll('.cmd').forEach((block) => {
+          const button = document.createElement('button')
+          button.type = 'button'
+          button.className = 'copy'
+          button.addEventListener('click', async () => {
+            const code = block.querySelector('pre').cloneNode(true)
+            code.querySelectorAll('.c').forEach((comment) => comment.remove())
+            const text = code.textContent.replace(/[ \t]+$/gm, '').trim()
+            try {
+              await navigator.clipboard.writeText(text)
+            } catch {
+              const area = document.createElement('textarea')
+              area.value = text
+              document.body.append(area)
+              area.select()
+              document.execCommand('copy')
+              area.remove()
+            }
+            button.textContent = STRINGS[lang].copied
+            button.classList.add('is-done')
+            setTimeout(() => {
+              button.classList.remove('is-done')
+              button.textContent = STRINGS[lang].copy
+            }, 1600)
+          })
+          block.append(button)
+        })
+
+        // ---------- active TOC link ----------
+        let tocLinks = []
+        function updateToc() {
+          const panel = document.querySelector('.panel:not([hidden])')
+          tocLinks = [...panel.querySelectorAll('.toc a')]
+          highlightToc()
+        }
+        function highlightToc() {
+          let current = null
+          for (const link of tocLinks) {
+            const section = document.getElementById(link.getAttribute('href').slice(1))
+            if (section && section.getBoundingClientRect().top < 180) current = link
+          }
+          tocLinks.forEach((link) => link.classList.toggle('is-active', link === (current || tocLinks[0])))
+        }
+        window.addEventListener('scroll', highlightToc, { passive: true })
+
+        // ---------- theme ----------
+        const savedTheme = store.get('wpaikit-docs-theme')
+        if (savedTheme) root.dataset.theme = savedTheme
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+          const dark = root.dataset.theme
+            ? root.dataset.theme === 'dark'
+            : matchMedia('(prefers-color-scheme: dark)').matches
+          root.dataset.theme = dark ? 'light' : 'dark'
+          store.set('wpaikit-docs-theme', root.dataset.theme)
+        })
+
+        // ---------- init ----------
+        const langParam = new URLSearchParams(location.search).get('lang')
+        applyLang(langParam || store.get('wpaikit-docs-lang') || 'en')
+        const initial = tabFromHash(location.hash)
+        activate(initial.tab, { anchor: initial.anchor })
+      })()
+    </script>
+  </body>
+</html>

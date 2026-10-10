@@ -2,7 +2,7 @@ import { exec } from '@veaceslav-golden/wp-ai-kit-core'
 import { readConfig } from '@veaceslav-golden/wp-ai-kit-core'
 import { accessSync, constants, existsSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { getWooPluginRequirements } from '../../woocommerce-plugins.js'
+import { getProjectPluginRequirements, KNOWN_SEO_PLUGIN_SLUGS } from '../../project-plugins.js'
 
 export type CheckStatus = 'ok' | 'warn' | 'error'
 
@@ -182,9 +182,13 @@ export async function checkProjectPlugins(cwd: string): Promise<CheckResult[]> {
     ]
   }
 
-  if (config?.preset !== 'woo' || !config.woocommerce) return []
+  if (!config) return []
 
-  const requirements = getWooPluginRequirements(config.woocommerce)
+  const results: CheckResult[] = config.seo === 'later' ? [checkSeoPluginChosenLater(cwd)] : []
+  const requirements = getProjectPluginRequirements(config)
+
+  if (requirements.length === 0) return results
+
   const installed = new Map(
     requirements.map((requirement) => [
       requirement.slug,
@@ -193,7 +197,6 @@ export async function checkProjectPlugins(cwd: string): Promise<CheckResult[]> {
   )
   const hasInstalledPlugin = [...installed.values()].some(Boolean)
   const canCheckActivation = hasInstalledPlugin ? await canCheckPluginActivation(cwd) : false
-  const results: CheckResult[] = []
 
   for (const requirement of requirements) {
     if (!installed.get(requirement.slug)) {
@@ -238,6 +241,22 @@ export async function checkProjectPlugins(cwd: string): Promise<CheckResult[]> {
   }
 
   return results
+}
+
+/** The built-in SEO module was removed at init, so some SEO plugin has to take over. */
+export function checkSeoPluginChosenLater(cwd: string): CheckResult {
+  const installed = KNOWN_SEO_PLUGIN_SLUGS.find((slug) =>
+    existsSync(resolve(cwd, 'wp-content', 'plugins', slug)),
+  )
+
+  return installed
+    ? { name: 'SEO plugin', status: 'ok', message: `${installed} installed` }
+    : {
+        name: 'SEO plugin',
+        status: 'warn',
+        message: 'none installed; the built-in SEO module was removed at init',
+        fix: 'Install an SEO plugin, e.g. wp plugin install wordpress-seo --activate (Yoast SEO) or seo-by-rank-math (Rank Math).',
+      }
 }
 
 export async function runAllChecks(cwd: string): Promise<CheckResult[]> {

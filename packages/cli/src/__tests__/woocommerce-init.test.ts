@@ -53,11 +53,12 @@ describe('WooCommerce init contracts', () => {
     })
 
     expect(config).toEqual({ multilingual: 'none', variantCatalog: 'all', wishlist: true })
-    expect(getWooConfigureArgs(config!)).toEqual([
+    expect(getWooConfigureArgs(config!, 'module')).toEqual([
       'bin/configure.php',
       '--multilingual=none',
       '--variant-catalog=all',
       '--wishlist=yes',
+      '--seo=module',
       '--non-interactive',
     ])
   })

@@ -21,6 +21,7 @@ program
   .option('--multilingual <profile>', 'Woo multilingual profile: wpml or none')
   .option('--variant-catalog <mode>', 'Woo catalog mode: main-only or all')
   .option('--wishlist <value>', 'Woo wishlist: yes or no')
+  .option('--seo <choice>', 'SEO: module (built-in), yoast, rank-math or later')
   .option('--packs <list>', 'knowledge packs: all (default) or design,slicing,wordpress')
   .action(async (options: InitCommandOptions) => {
     try {

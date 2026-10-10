@@ -1,0 +1,1124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Release notes for WPAIKit (CLI and knowledge) and the boilerplates." />
+    <title>WPAIKit — changelog</title>
+    <style>
+      :root {
+        --bg: #f6f7f9;
+        --surface: #ffffff;
+        --surface-2: #f0f2f5;
+        --border: #e2e5ea;
+        --text: #16181d;
+        --muted: #5b6270;
+        --accent: #4f46e5;
+        --accent-soft: #eef0ff;
+        --accent-text: #3730a3;
+        --code-bg: #12141a;
+        --code-text: #e6e8ee;
+        --ok: #0f7b4b;
+        --ok-soft: #e7f6ee;
+        --warn: #9a5b00;
+        --warn-soft: #fff4e0;
+        --design: #db2777;
+        --slicing: #0891b2;
+        --wordpress: #2563eb;
+        --woo: #7c3aed;
+        --radius: 12px;
+        --shadow: 0 1px 2px rgb(16 24 40 / 6%), 0 4px 16px rgb(16 24 40 / 4%);
+        color-scheme: light;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) {
+          --bg: #0e1015;
+          --surface: #161920;
+          --surface-2: #1d2129;
+          --border: #2a2f3a;
+          --text: #e8eaf0;
+          --muted: #9aa1b0;
+          --accent: #8b85ff;
+          --accent-soft: #23233d;
+          --accent-text: #c7c4ff;
+          --code-bg: #0a0b0f;
+          --ok: #4ade80;
+          --ok-soft: #12291c;
+          --warn: #fbbf24;
+          --warn-soft: #2b2210;
+          --design: #f472b6;
+          --slicing: #22d3ee;
+          --wordpress: #60a5fa;
+          --woo: #a78bfa;
+          --shadow: none;
+          color-scheme: dark;
+        }
+      }
+
+      :root[data-theme='dark'] {
+        --bg: #0e1015;
+        --surface: #161920;
+        --surface-2: #1d2129;
+        --border: #2a2f3a;
+        --text: #e8eaf0;
+        --muted: #9aa1b0;
+        --accent: #8b85ff;
+        --accent-soft: #23233d;
+        --accent-text: #c7c4ff;
+        --code-bg: #0a0b0f;
+        --ok: #4ade80;
+        --ok-soft: #12291c;
+        --warn: #fbbf24;
+        --warn-soft: #2b2210;
+        --design: #f472b6;
+        --slicing: #22d3ee;
+        --wordpress: #60a5fa;
+        --woo: #a78bfa;
+        --shadow: none;
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 140px;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 16px/1.6 -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a {
+        color: var(--accent);
+      }
+
+      code,
+      pre,
+      kbd {
+        font-family: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+      }
+
+      :not(pre) > code {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 1px 6px;
+        font-size: 0.88em;
+        overflow-wrap: anywhere;
+      }
+
+      /* ---------- header ---------- */
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: color-mix(in srgb, var(--bg) 88%, transparent);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .topbar__inner {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 14px 16px 0;
+      }
+
+      .brand-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: var(--text);
+        margin-right: auto;
+      }
+
+      .brand__mark {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 700;
+        font-size: 14px;
+      }
+
+      .brand strong {
+        font-size: 17px;
+      }
+
+      .brand small {
+        color: var(--muted);
+        font-size: 13px;
+        margin-left: 6px;
+      }
+
+      .icon-btn {
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text);
+        border-radius: 8px;
+        height: 34px;
+        padding: 0 10px;
+        font: inherit;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .icon-btn:hover {
+        border-color: var(--accent);
+      }
+
+      .tabs {
+        display: flex;
+        gap: 4px;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .tabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      .tab {
+        flex: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 0;
+        background: none;
+        color: var(--muted);
+        font: inherit;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 10px 14px 12px;
+        border-bottom: 2px solid transparent;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .tab:hover {
+        color: var(--text);
+      }
+
+      .tab[aria-selected='true'] {
+        color: var(--text);
+        border-bottom-color: var(--tab-color, var(--accent));
+      }
+
+      .tab:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: -2px;
+        border-radius: 6px;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--tab-color, var(--accent));
+      }
+
+      .tab[data-tab='install'] {
+        --tab-color: var(--accent);
+      }
+      .tab[data-tab='design'] {
+        --tab-color: var(--design);
+      }
+      .tab[data-tab='slicing'] {
+        --tab-color: var(--slicing);
+      }
+      .tab[data-tab='wordpress'] {
+        --tab-color: var(--wordpress);
+      }
+      .tab[data-tab='woocommerce'] {
+        --tab-color: var(--woo);
+      }
+
+      /* ---------- layout ---------- */
+      main {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 28px 16px 80px;
+      }
+
+      .panel {
+        display: grid;
+        grid-template-columns: 220px minmax(0, 1fr);
+        gap: 40px;
+      }
+
+      .panel[hidden] {
+        display: none;
+      }
+
+      .toc {
+        position: sticky;
+        top: 140px;
+        align-self: start;
+        font-size: 14px;
+      }
+
+      .toc__title {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+        margin: 0 0 8px;
+      }
+
+      .toc a {
+        display: block;
+        padding: 5px 10px;
+        border-left: 2px solid var(--border);
+        color: var(--muted);
+        text-decoration: none;
+      }
+
+      .toc a:hover,
+      .toc a.is-active {
+        color: var(--text);
+        border-left-color: var(--accent);
+      }
+
+      .content {
+        min-width: 0;
+      }
+
+      .hero {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 28px;
+        margin-bottom: 28px;
+        border-top: 4px solid var(--panel-color, var(--accent));
+      }
+
+      .hero__eyebrow {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--panel-color, var(--accent));
+        margin: 0 0 6px;
+      }
+
+      .hero h1 {
+        font-size: clamp(26px, 4vw, 34px);
+        line-height: 1.2;
+        margin: 0 0 10px;
+      }
+
+      .hero p {
+        color: var(--muted);
+        margin: 0;
+        max-width: 760px;
+      }
+
+      .hero .cmd {
+        margin-top: 18px;
+      }
+
+      #panel-design {
+        --panel-color: var(--design);
+      }
+      #panel-slicing {
+        --panel-color: var(--slicing);
+      }
+      #panel-wordpress {
+        --panel-color: var(--wordpress);
+      }
+      #panel-woocommerce {
+        --panel-color: var(--woo);
+      }
+
+      section {
+        margin-bottom: 44px;
+      }
+
+      h2 {
+        font-size: 22px;
+        line-height: 1.3;
+        margin: 0 0 14px;
+      }
+
+      h3 {
+        font-size: 17px;
+        margin: 24px 0 10px;
+      }
+
+      p {
+        margin: 0 0 14px;
+      }
+
+      ul,
+      ol {
+        padding-left: 22px;
+        margin: 0 0 14px;
+      }
+
+      li + li {
+        margin-top: 4px;
+      }
+
+      .anchor {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .anchor:hover::after {
+        content: ' #';
+        color: var(--muted);
+      }
+
+      /* ---------- code ---------- */
+      .cmd {
+        position: relative;
+        margin: 0 0 14px;
+      }
+
+      .cmd pre {
+        margin: 0;
+        background: var(--code-bg);
+        color: var(--code-text);
+        border-radius: 10px;
+        padding: 14px 92px 14px 16px;
+        overflow-x: auto;
+        font-size: 14px;
+        line-height: 1.55;
+      }
+
+      .cmd pre .c {
+        color: #8b93a7;
+      }
+
+      .copy {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        border: 1px solid #33384a;
+        background: #1d2130;
+        color: #cfd4e2;
+        border-radius: 6px;
+        font: inherit;
+        font-size: 12px;
+        padding: 4px 10px;
+        cursor: pointer;
+      }
+
+      .copy:hover {
+        background: #282d40;
+      }
+
+      .copy.is-done {
+        color: #4ade80;
+        border-color: #2f6b47;
+      }
+
+      /* ---------- components ---------- */
+      .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--surface);
+        margin: 0 0 16px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14.5px;
+      }
+
+      th,
+      td {
+        text-align: left;
+        vertical-align: top;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      th {
+        background: var(--surface-2);
+        font-size: 13px;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      tr:last-child td {
+        border-bottom: 0;
+      }
+
+      td code {
+        white-space: nowrap;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 14px;
+        margin: 0 0 16px;
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 18px;
+        box-shadow: var(--shadow);
+      }
+
+      .card h3 {
+        margin: 0 0 6px;
+        font-size: 16px;
+      }
+
+      .card p {
+        color: var(--muted);
+        font-size: 14.5px;
+        margin: 0 0 10px;
+      }
+
+      .card p:last-child {
+        margin-bottom: 0;
+      }
+
+      .card--link {
+        cursor: pointer;
+        transition: border-color 0.15s;
+        border-top: 3px solid var(--card-color, var(--accent));
+      }
+
+      .card--link:hover {
+        border-color: var(--card-color, var(--accent));
+      }
+
+      .card__role {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--card-color, var(--accent));
+      }
+
+      .steps {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 16px;
+        counter-reset: step;
+      }
+
+      .steps > li {
+        position: relative;
+        padding: 0 0 18px 48px;
+        margin: 0;
+        counter-increment: step;
+      }
+
+      .steps > li::before {
+        content: counter(step);
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: var(--accent-soft);
+        color: var(--accent-text);
+        font-weight: 700;
+        font-size: 14px;
+      }
+
+      .steps > li::after {
+        content: '';
+        position: absolute;
+        left: 14px;
+        top: 34px;
+        bottom: 4px;
+        width: 2px;
+        background: var(--border);
+      }
+
+      .steps > li:last-child::after {
+        display: none;
+      }
+
+      .steps strong {
+        display: block;
+        margin-bottom: 2px;
+      }
+
+      .steps p {
+        color: var(--muted);
+        margin: 0 0 8px;
+      }
+
+      .steps .cmd {
+        margin-top: 6px;
+      }
+
+      .note {
+        border-radius: 10px;
+        padding: 12px 16px;
+        margin: 0 0 16px;
+        font-size: 15px;
+        background: var(--accent-soft);
+        border-left: 3px solid var(--accent);
+      }
+
+      .note--ok {
+        background: var(--ok-soft);
+        border-left-color: var(--ok);
+      }
+
+      .note--warn {
+        background: var(--warn-soft);
+        border-left-color: var(--warn);
+      }
+
+      .note p:last-child,
+      .note ul:last-child {
+        margin-bottom: 0;
+      }
+
+      .pill {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: 1px 9px;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      .tree {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px 16px;
+        font-size: 13.5px;
+        line-height: 1.6;
+        overflow-x: auto;
+        margin: 0 0 16px;
+        color: var(--text);
+      }
+
+      .tree .c {
+        color: var(--muted);
+      }
+
+      details.faq {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 0 16px;
+        margin-bottom: 10px;
+      }
+
+      details.faq summary {
+        cursor: pointer;
+        font-weight: 600;
+        padding: 12px 0;
+      }
+
+      details.faq[open] summary {
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 12px;
+      }
+
+      .footer {
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 14px;
+        padding-top: 18px;
+      }
+
+      @media (max-width: 900px) {
+        .panel {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 0;
+        }
+
+        .toc {
+          display: none;
+        }
+
+        .hero {
+          padding: 20px;
+        }
+
+        .brand small {
+          display: none;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .cmd pre {
+          padding: 40px 14px 14px;
+        }
+      }
+
+      @media print {
+        .topbar,
+        .toc,
+        .copy {
+          display: none;
+        }
+
+        .panel[hidden] {
+          display: block;
+        }
+      }
+
+      /* ---------- languages ---------- */
+      html[lang='en'] :is(l-ru, l-ro),
+      html[lang='ru'] :is(l-en, l-ro),
+      html[lang='ro'] :is(l-en, l-ru) {
+        display: none;
+      }
+
+      .lang-switch {
+        display: flex;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--surface);
+      }
+
+      .lang-switch button {
+        border: 0;
+        background: none;
+        color: var(--muted);
+        font: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 0 10px;
+        height: 32px;
+        cursor: pointer;
+      }
+
+      .lang-switch button + button {
+        border-left: 1px solid var(--border);
+      }
+
+      .lang-switch button[aria-pressed='true'] {
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .lang-switch button:focus-visible,
+      .icon-btn:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      .page-link {
+        display: inline-flex;
+        align-items: center;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+
+      @media (max-width: 600px) {
+        .page-link { display: none; }
+      }
+
+      .tab[data-filter='all'] { --tab-color: var(--accent); }
+      .tab[data-filter='wpaikit'] { --tab-color: var(--design); }
+      .tab__sub { font-weight: 500; color: var(--muted); font-size: 12px; }
+      .entry__versions { color: var(--muted); font-size: 14px; margin: 0 0 8px; }
+      .entry--major { border-top: 3px solid var(--accent); }
+      .highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 0 0 8px; }
+      .highlight { background: var(--accent-soft); border-radius: 10px; padding: 14px 16px; }
+      .highlight strong { display: block; margin-bottom: 4px; color: var(--accent-text); }
+      .highlight p { margin: 0; font-size: 14.5px; }
+      .badge--wpaikit { color: var(--design); background: color-mix(in srgb, var(--design) 12%, transparent); }
+      .tab[data-filter='boilerplate'] { --tab-color: var(--woo); }
+
+      .page-link { display: inline-flex; align-items: center; text-decoration: none; white-space: nowrap; }
+      .cl-layout { max-width: 820px; margin: 0 auto; }
+      .cl-current { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+      .cl-current > div { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 16px; display: flex; flex-direction: column; }
+      .cl-current__label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+      .cl-current strong { font-size: 20px; }
+
+      .cl-list { display: flex; flex-direction: column; gap: 18px; }
+      .entry { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px 24px; margin: 0; }
+      .entry[hidden] { display: none; }
+      .entry--muted { background: var(--surface-2); box-shadow: none; }
+      .entry--muted h2 { font-size: 18px; }
+      .entry__head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin-bottom: 10px; }
+      .entry__head h2 { margin: 0; font-size: 22px; }
+      .entry__head time { color: var(--muted); font-size: 14px; margin-left: auto; }
+      .entry__lead { font-weight: 500; }
+      .entry h3 { margin: 16px 0 8px; font-size: 14px; }
+      .entry ul { margin-bottom: 4px; }
+      .entry:target { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+      .badge { font-size: 12px; font-weight: 700; border-radius: 6px; padding: 2px 9px; border: 1px solid transparent; white-space: nowrap; }
+      .badge--cli { color: var(--design); background: color-mix(in srgb, var(--design) 12%, transparent); }
+      .badge--knowledge { color: var(--slicing); background: color-mix(in srgb, var(--slicing) 12%, transparent); }
+      .badge--standard { color: var(--wordpress); background: color-mix(in srgb, var(--wordpress) 12%, transparent); }
+      .badge--woo { color: var(--woo); background: color-mix(in srgb, var(--woo) 12%, transparent); }
+
+      .tag { display: inline-block; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 2px 10px; background: var(--surface-2); border: 1px solid var(--border); }
+      .tag--added { color: var(--ok); background: var(--ok-soft); border-color: transparent; }
+      .tag--changed, .tag--upgrade { color: var(--accent-text); background: var(--accent-soft); border-color: transparent; }
+      .tag--removed, .tag--breaking, .tag--deprecated { color: var(--warn); background: var(--warn-soft); border-color: transparent; }
+      .tag--latest { color: #fff; background: var(--ok); border-color: transparent; }
+      .cl-empty { color: var(--muted); text-align: center; padding: 24px; }
+      .cl-howto { margin-top: 40px; }
+      .note[hidden] { display: none; }
+      .cl-list + .cl-empty { margin-top: 18px; }
+
+      @media (max-width: 600px) { .page-link { display: none; } .entry { padding: 18px; } .entry__head time { margin-left: 0; } }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar__inner">
+        <div class="brand-row">
+          <a class="brand" href="#all">
+            <span class="brand__mark">WK</span>
+            <strong>Changelog</strong>
+            <small>WPAIKit · Knowledge · Boilerplates</small>
+          </a>
+          <a class="icon-btn page-link" href="./guide.html">Guide</a>
+          <a class="icon-btn page-link" href="./boilerplates.html">Boilerplates</a>
+          <div class="lang-switch" role="group" data-i18n-aria="langGroup">
+            <button type="button" data-lang="en">EN</button>
+            <button type="button" data-lang="ru">RU</button>
+            <button type="button" data-lang="ro">RO</button>
+          </div>
+          <button class="icon-btn" type="button" id="theme-toggle" data-i18n-aria="theme">◐</button>
+        </div>
+        <nav class="tabs" role="tablist" data-i18n-aria="sections">
+          <button class="tab" role="tab" id="tab-all" data-filter="all"><span class="dot"></span><l-en>All updates</l-en><l-ru>Все обновления</l-ru><l-ro>Toate actualizările</l-ro></button>
+          <button class="tab" role="tab" id="tab-wpaikit" data-filter="wpaikit"><span class="dot"></span>WPAIKit <small class="tab__sub">CLI + Knowledge</small></button>
+          <button class="tab" role="tab" id="tab-boilerplate" data-filter="boilerplate"><span class="dot"></span>Boilerplates</button>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="cl-layout">
+        <div class="content">
+          <div class="hero">
+            <p class="hero__eyebrow">Changelog</p>
+            <h1><l-en>What's new</l-en><l-ru>Что нового</l-ru><l-ro>Noutăți</l-ro></h1>
+            <p><l-en>Updates for WPAIKit (CLI and knowledge together) and both boilerplates in one place. Newest first. Use the tabs to filter by product.</l-en><l-ru>Обновления WPAIKit (CLI и knowledge вместе) и обоих boilerplate в одном месте. Сначала новые. Табы фильтруют по продукту.</l-ru><l-ro>Actualizările pentru WPAIKit (CLI și knowledge împreună) și ambele boilerplate într-un singur loc. Cele mai noi primele. Tab-urile filtrează după produs.</l-ro></p>
+            <div class="cl-current">
+              <div><span class="cl-current__label">WPAIKit CLI</span><strong>1.0.0</strong></div>
+              <div><span class="cl-current__label">Core</span><strong>0.2.0</strong></div>
+              <div><span class="cl-current__label">Knowledge</span><strong>2.0.0</strong></div>
+            </div>
+            <div class="cmd"><pre><code>npm install -g @veaceslav-golden/wp-ai-kit@latest
+wpaikit knowledge install</code></pre></div>
+          </div>
+
+          <div class="note note--warn" data-product="wpaikit">
+            <p><l-en><strong>Upgrading from 0.4.x / knowledge 1.x?</strong> Knowledge file paths changed (<code>knowledge/prompts/…</code> → <code>knowledge/wordpress/prompts/…</code>). Run <code>wpaikit knowledge install --dry-run</code> first: old files are removed automatically, locally edited ones stop the install.</l-en><l-ru><strong>Обновляетесь с 0.4.x / knowledge 1.x?</strong> Пути файлов knowledge изменились (<code>knowledge/prompts/…</code> → <code>knowledge/wordpress/prompts/…</code>). Сначала <code>wpaikit knowledge install --dry-run</code>: старые файлы удалятся автоматически, а изменённые вручную остановят установку.</l-ru><l-ro><strong>Actualizezi de la 0.4.x / knowledge 1.x?</strong> Căile fișierelor knowledge s-au schimbat (<code>knowledge/prompts/…</code> → <code>knowledge/wordpress/prompts/…</code>). Rulează întâi <code>wpaikit knowledge install --dry-run</code>: fișierele vechi se șterg automat, cele modificate manual opresc instalarea.</l-ro></p>
+          </div>
+
+          <div class="cl-list" id="cl-list">
+
+            <!-- ============ 2026-10-06 ============ -->
+            <article class="entry entry--major" data-product="wpaikit" id="wpaikit-1-0-0">
+              <header class="entry__head">
+                <span class="badge badge--wpaikit">WPAIKit</span>
+                <h2><a class="anchor" href="#wpaikit-1-0-0">1.0.0</a></h2>
+                <time datetime="2026-10-06">2026-10-06</time>
+                <span class="tag tag--latest"><l-en>latest</l-en><l-ru>актуальная</l-ru><l-ro>curentă</l-ro></span>
+              </header>
+              <p class="entry__versions">CLI <code>1.0.0</code> · Core <code>0.2.0</code> · Knowledge <code>2.0.0</code></p>
+              <p class="entry__lead"><l-en>First stable release. WPAIKit is no longer tied to WordPress: install only what your role needs — and use it in any project, with or without WP.</l-en><l-ru>Первый стабильный релиз. WPAIKit больше не привязан к WordPress: ставьте только то, что нужно вашей роли, и используйте в любом проекте — с WP или без.</l-ru><l-ro>Prima versiune stabilă. WPAIKit nu mai e legat de WordPress: instalează doar ce are nevoie rolul tău și folosește-l în orice proiect — cu sau fără WP.</l-ro></p>
+
+              <h3><span class="tag tag--added"><l-en>Highlights</l-en><l-ru>Главное</l-ru><l-ro>Esențial</l-ro></span></h3>
+              <div class="highlights">
+                <div class="highlight">
+                  <strong><l-en>Slicing without WordPress</l-en><l-ru>Вёрстка без WordPress</l-ru><l-ro>Integrare fără WordPress</l-ro></strong>
+                  <p><l-en><code>/figma-to-block-html</code> turns a Figma block into <strong>HTML, CSS (SCSS), JS and Tailwind</strong> — no WP, no CMS, no boilerplate. Works in any front-end project.</l-en><l-ru><code>/figma-to-block-html</code> превращает блок Figma в <strong>HTML, CSS (SCSS), JS и Tailwind</strong> — без WP, без CMS, без boilerplate. Работает в любом front-end проекте.</l-ru><l-ro><code>/figma-to-block-html</code> transformă un bloc Figma în <strong>HTML, CSS (SCSS), JS și Tailwind</strong> — fără WP, fără CMS, fără boilerplate. Funcționează în orice proiect front-end.</l-ro></p>
+                </div>
+                <div class="highlight">
+                  <strong><l-en>Use it in non-WordPress projects</l-en><l-ru>Используйте в проектах без WordPress</l-ru><l-ro>Folosește-l în proiecte fără WordPress</l-ro></strong>
+                  <p><l-en>Next.js, React, Vue, Laravel, plain HTML — WPAIKit no longer assumes WordPress. <code>/scan-project</code> detects the stack and the commands follow its paths.</l-en><l-ru>Next.js, React, Vue, Laravel, чистый HTML — WPAIKit больше не предполагает WordPress. <code>/scan-project</code> определяет стек, а команды идут по его путям.</l-ru><l-ro>Next.js, React, Vue, Laravel, HTML simplu — WPAIKit nu mai presupune WordPress. <code>/scan-project</code> detectează stack-ul, iar comenzile urmează căile lui.</l-ro></p>
+                </div>
+                <div class="highlight">
+                  <strong><l-en>Design-only installs</l-en><l-ru>Установка только для дизайна</l-ru><l-ro>Instalare doar pentru design</l-ro></strong>
+                  <p><l-en>Designers install the Design pack: 10 Figma commands (audit, design system, components, Dev Ready, generation, SEO) with no code and no WordPress questions.</l-en><l-ru>Дизайнеры ставят набор Design: 10 Figma-команд (аудит, дизайн-система, компоненты, Dev Ready, генерация, SEO) без кода и без вопросов про WordPress.</l-ru><l-ro>Designerii instalează pachetul Design: 10 comenzi Figma (audit, design system, componente, Dev Ready, generare, SEO) fără cod și fără întrebări despre WordPress.</l-ro></p>
+                </div>
+              </div>
+
+              <h3><span class="tag tag--upgrade"><l-en>Install examples</l-en><l-ru>Примеры установки</l-ru><l-ro>Exemple de instalare</l-ro></span></h3>
+              <p><l-en>Interactive — the CLI asks which packs you need (<em>All</em> or <em>Choose packs</em>), and asks for the WordPress profile only if you pick WordPress:</l-en><l-ru>Интерактивно — CLI спросит, какие наборы нужны (<em>All</em> или <em>Choose packs</em>), и спросит профиль WordPress, только если выбран WordPress:</l-ru><l-ro>Interactiv — CLI-ul întreabă ce pachete vrei (<em>All</em> sau <em>Choose packs</em>) și cere profilul WordPress doar dacă alegi WordPress:</l-ro></p>
+              <div class="cmd"><pre><code>npm install -g @veaceslav-golden/wp-ai-kit@latest
+wpaikit knowledge install</code></pre></div>
+              <p><l-en>Or pick your role directly:</l-en><l-ru>Или сразу выберите свою роль:</l-ru><l-ro>Sau alege direct rolul:</l-ro></p>
+              <div class="table-wrap"><table>
+                <thead><tr><th><l-en>Role</l-en><l-ru>Роль</l-ru><l-ro>Rol</l-ro></th><th><l-en>Command</l-en><l-ru>Команда</l-ru><l-ro>Comandă</l-ro></th></tr></thead>
+                <tbody>
+                  <tr><td><l-en>Designer</l-en><l-ru>Дизайнер</l-ru><l-ro>Designer</l-ro></td><td><code>wpaikit knowledge install --packs design</code></td></tr>
+                  <tr><td><l-en>Slicer (any project, no WP)</l-en><l-ru>Верстальщик (любой проект, без WP)</l-ru><l-ro>Integrator (orice proiect, fără WP)</l-ro></td><td><code>wpaikit knowledge install --packs slicing</code></td></tr>
+                  <tr><td><l-en>Designer + slicer</l-en><l-ru>Дизайнер + верстальщик</l-ru><l-ro>Designer + integrator</l-ro></td><td><code>wpaikit knowledge install --packs design,slicing</code></td></tr>
+                  <tr><td>WordPress Standard</td><td><code>wpaikit knowledge install --packs wordpress --wp-profile standard</code></td></tr>
+                  <tr><td>WooCommerce</td><td><code>wpaikit knowledge install --packs wordpress --wp-profile woo</code></td></tr>
+                  <tr><td><l-en>Slicing + WordPress store</l-en><l-ru>Slicing + магазин WordPress</l-ru><l-ro>Slicing + magazin WordPress</l-ro></td><td><code>wpaikit knowledge install --packs slicing,wordpress --wp-profile woo</code></td></tr>
+                  <tr><td><l-en>Everything</l-en><l-ru>Всё</l-ru><l-ro>Tot</l-ro></td><td><code>wpaikit knowledge install --packs all</code></td></tr>
+                </tbody>
+              </table></div>
+              <p><l-en>A new WordPress site — all packs by default, or choose:</l-en><l-ru>Новый сайт на WordPress — по умолчанию все наборы, либо на выбор:</l-ru><l-ro>Un site WordPress nou — implicit toate pachetele, sau la alegere:</l-ro></p>
+              <div class="cmd"><pre><code>wpaikit init --preset woo
+wpaikit init --preset standard --packs wordpress</code></pre></div>
+              <p><l-en>Preview before changing an existing project (<code>+</code> add, <code>~</code> update, <code>-</code> remove):</l-en><l-ru>Посмотреть изменения перед обновлением существующего проекта (<code>+</code> добавить, <code>~</code> обновить, <code>-</code> удалить):</l-ru><l-ro>Previzualizează înainte de a modifica un proiect existent (<code>+</code> adăugare, <code>~</code> actualizare, <code>-</code> ștergere):</l-ro></p>
+              <div class="cmd"><pre><code>wpaikit knowledge install --packs design --dry-run</code></pre></div>
+              <div class="note"><p><l-en>The WordPress profile is stored in <code>.wpaikit.json</code> when the project has one, so later runs never ask again. Details — in the <a href="./guide.html#install-knowledge">guide</a>.</l-en><l-ru>Профиль WordPress берётся из <code>.wpaikit.json</code>, если он есть в проекте, поэтому повторные запуски больше не спрашивают. Подробнее — в <a href="./guide.html#install-knowledge">гайде</a>.</l-ru><l-ro>Profilul WordPress se ia din <code>.wpaikit.json</code> dacă proiectul îl are, așa că rulările ulterioare nu mai întreabă. Detalii — în <a href="./guide.html#install-knowledge">ghid</a>.</l-ro></p></div>
+
+              <h3><span class="tag tag--added"><l-en>Added — CLI</l-en><l-ru>Добавлено — CLI</l-ru><l-ro>Adăugat — CLI</l-ro></span></h3>
+              <ul>
+                <li><l-en><code>wpaikit knowledge install --packs &lt;list&gt;</code> — <code>all</code> or any of <code>design</code>, <code>slicing</code>, <code>wordpress</code>; <code>--wp-profile standard|woo</code>.</l-en><l-ru><code>wpaikit knowledge install --packs &lt;list&gt;</code> — <code>all</code> или любые из <code>design</code>, <code>slicing</code>, <code>wordpress</code>; <code>--wp-profile standard|woo</code>.</l-ru><l-ro><code>wpaikit knowledge install --packs &lt;list&gt;</code> — <code>all</code> sau oricare din <code>design</code>, <code>slicing</code>, <code>wordpress</code>; <code>--wp-profile standard|woo</code>.</l-ro></li>
+                <li><l-en>Interactive pack selection; a plain re-run reuses the saved selection.</l-en><l-ru>Интерактивный выбор наборов; обычный повторный запуск берёт сохранённый выбор.</l-ru><l-ro>Selecție interactivă de pachete; o rulare repetată folosește selecția salvată.</l-ro></li>
+                <li><l-en><code>wpaikit init --packs &lt;list&gt;</code> (default: all).</l-en><l-ru><code>wpaikit init --packs &lt;list&gt;</code> (по умолчанию: all).</l-ru><l-ro><code>wpaikit init --packs &lt;list&gt;</code> (implicit: all).</l-ro></li>
+                <li><l-en><code>--dry-run</code> lists every file with <code>+</code> / <code>~</code> / <code>-</code>.</l-en><l-ru><code>--dry-run</code> показывает каждый файл с пометкой <code>+</code> / <code>~</code> / <code>-</code>.</l-ru><l-ro><code>--dry-run</code> listează fiecare fișier cu <code>+</code> / <code>~</code> / <code>-</code>.</l-ro></li>
+              </ul>
+              <h3><span class="tag tag--added"><l-en>Added — Knowledge</l-en><l-ru>Добавлено — Knowledge</l-ru><l-ro>Adăugat — Knowledge</l-ro></span></h3>
+              <ul>
+                <li><l-en><strong>Slicing pack</strong>: <code>/figma-to-block-html</code>, plus rules <code>slicing/rules/markup.md</code> and <code>structure.md</code>.</l-en><l-ru><strong>Набор Slicing</strong>: <code>/figma-to-block-html</code> и правила <code>slicing/rules/markup.md</code>, <code>structure.md</code>.</l-ru><l-ro><strong>Pachetul Slicing</strong>: <code>/figma-to-block-html</code> și regulile <code>slicing/rules/markup.md</code>, <code>structure.md</code>.</l-ro></li>
+                <li><l-en><code>shared/contracts/design-system.md</code> documents the <code>.wpaikit/design-system.json</code> hand-off between design and development.</l-en><l-ru><code>shared/contracts/design-system.md</code> описывает передачу <code>.wpaikit/design-system.json</code> между дизайном и разработкой.</l-ru><l-ro><code>shared/contracts/design-system.md</code> descrie predarea <code>.wpaikit/design-system.json</code> între design și dezvoltare.</l-ro></li>
+                <li><l-en><code>AGENTS.md</code> and <code>knowledge/context.md</code> are generated only for the selected packs.</l-en><l-ru><code>AGENTS.md</code> и <code>knowledge/context.md</code> генерируются только под выбранные наборы.</l-ru><l-ro><code>AGENTS.md</code> și <code>knowledge/context.md</code> se generează doar pentru pachetele alese.</l-ro></li>
+              </ul>
+              <h3><span class="tag tag--changed"><l-en>Changed</l-en><l-ru>Изменено</l-ru><l-ro>Modificat</l-ro></span></h3>
+              <ul>
+                <li><l-en>Knowledge files live in pack folders: <code>knowledge/design/</code>, <code>slicing/</code>, <code>wordpress/</code>, <code>woocommerce/</code>, <code>shared/</code>. The manifest is version 2; version 1 is migrated automatically.</l-en><l-ru>Файлы knowledge лежат в папках наборов: <code>knowledge/design/</code>, <code>slicing/</code>, <code>wordpress/</code>, <code>woocommerce/</code>, <code>shared/</code>. Manifest — версии 2; версия 1 мигрирует автоматически.</l-ru><l-ro>Fișierele knowledge stau în folderele pachetelor: <code>knowledge/design/</code>, <code>slicing/</code>, <code>wordpress/</code>, <code>woocommerce/</code>, <code>shared/</code>. Manifestul e versiunea 2; versiunea 1 se migrează automat.</l-ro></li>
+                <li><l-en><code>rules/figma-to-block.md</code> moved unchanged to <code>shared/rules/figma-blocks.md</code>; <code>/analyze-figma</code> and <code>/prep-figma</code> keep the same rules.</l-en><l-ru><code>rules/figma-to-block.md</code> без изменений перенесён в <code>shared/rules/figma-blocks.md</code>; <code>/analyze-figma</code> и <code>/prep-figma</code> работают по тем же правилам.</l-ru><l-ro><code>rules/figma-to-block.md</code> a fost mutat neschimbat în <code>shared/rules/figma-blocks.md</code>; <code>/analyze-figma</code> și <code>/prep-figma</code> păstrează aceleași reguli.</l-ro></li>
+                <li><l-en><code>/scan-project</code> and <code>/setup-fonts</code> are shared by Slicing and WordPress and installed once.</l-en><l-ru><code>/scan-project</code> и <code>/setup-fonts</code> общие для Slicing и WordPress и ставятся один раз.</l-ru><l-ro><code>/scan-project</code> și <code>/setup-fonts</code> sunt comune pentru Slicing și WordPress și se instalează o singură dată.</l-ro></li>
+                <li><l-en>WordPress commands, including <code>/figma-to-block</code> (PHP + Twig + SCSS + ACF JSON), behave exactly as before.</l-en><l-ru>Команды WordPress, включая <code>/figma-to-block</code> (PHP + Twig + SCSS + ACF JSON), работают как раньше.</l-ru><l-ro>Comenzile WordPress, inclusiv <code>/figma-to-block</code> (PHP + Twig + SCSS + ACF JSON), funcționează exact ca înainte.</l-ro></li>
+                <li><l-en><code>/figma-seo-structure</code> no longer references code rules; project caches are optional.</l-en><l-ru><code>/figma-seo-structure</code> больше не ссылается на правила кода; кэши проекта опциональны.</l-ru><l-ro><code>/figma-seo-structure</code> nu mai face referire la regulile de cod; cache-urile proiectului sunt opționale.</l-ro></li>
+                <li><l-en><code>wpaikit doctor</code>: catalog checks renamed to “Catalog PHP CLI” and “Catalog PHP CLI extensions”.</l-en><l-ru><code>wpaikit doctor</code>: проверки каталога переименованы в «Catalog PHP CLI» и «Catalog PHP CLI extensions».</l-ru><l-ro><code>wpaikit doctor</code>: verificările de catalog redenumite în „Catalog PHP CLI” și „Catalog PHP CLI extensions”.</l-ro></li>
+              </ul>
+              <h3><span class="tag tag--removed"><l-en>Removed</l-en><l-ru>Удалено</l-ru><l-ro>Eliminat</l-ro></span></h3>
+              <ul>
+                <li><l-en>Unused <code>plugins.json</code> and <code>presets.json</code> from the knowledge base.</l-en><l-ru>Неиспользуемые <code>plugins.json</code> и <code>presets.json</code> из knowledge-базы.</l-ru><l-ro><code>plugins.json</code> și <code>presets.json</code>, nefolosite, din baza knowledge.</l-ro></li>
+              </ul>
+              <h3><span class="tag tag--breaking"><l-en>Upgrade notes</l-en><l-ru>Как обновиться</l-ru><l-ro>Note de actualizare</l-ro></span></h3>
+              <ul>
+                <li><l-en>Existing projects get all three packs and keep their WordPress profile. Files at the old paths are removed; a locally edited file stops the install (use <code>--force</code> to replace it).</l-en><l-ru>Существующие проекты получают все три набора и сохраняют профиль WordPress. Файлы по старым путям удаляются; изменённый вручную файл останавливает установку (<code>--force</code> заменит его).</l-ru><l-ro>Proiectele existente primesc toate cele trei pachete și își păstrează profilul WordPress. Fișierele de la căile vechi se șterg; un fișier modificat manual oprește instalarea (<code>--force</code> îl înlocuiește).</l-ro></li>
+                <li><l-en>CLI 1.0.0 requires Core 0.2.0 (installed automatically).</l-en><l-ru>CLI 1.0.0 требует Core 0.2.0 (ставится автоматически).</l-ru><l-ro>CLI 1.0.0 necesită Core 0.2.0 (se instalează automat).</l-ro></li>
+              </ul>
+            </article>
+
+            <article class="entry" data-product="wpaikit" id="core-0-2-0">
+              <header class="entry__head">
+                <span class="badge badge--wpaikit">WPAIKit Core</span>
+                <h2><a class="anchor" href="#core-0-2-0">0.2.0</a></h2>
+                <time datetime="2026-10-06">2026-10-06</time>
+              </header>
+              <ul>
+                <li><l-en>Project config schemas for the WooCommerce preset (multilingual profile, variant catalog, wishlist).</l-en><l-ru>Схемы конфигурации проекта для preset WooCommerce (мультиязычность, каталог вариантов, wishlist).</l-ru><l-ro>Scheme de configurare a proiectului pentru preset-ul WooCommerce (multilingv, catalog de variante, wishlist).</l-ro></li>
+                <li><l-en>Multi-select prompt helper used by the new pack selection.</l-en><l-ru>Помощник multi-select, который использует новый выбор наборов.</l-ru><l-ro>Helper multi-select folosit de noua selecție de pachete.</l-ro></li>
+              </ul>
+            </article>
+
+            <article class="entry entry--muted" data-product="wpaikit" id="cli-0-5-0">
+              <header class="entry__head">
+                <span class="badge badge--wpaikit">WPAIKit CLI</span>
+                <h2><a class="anchor" href="#cli-0-5-0">0.5.0</a></h2>
+                <time datetime="2026-10-06">2026-10-06</time>
+                <span class="tag tag--deprecated"><l-en>deprecated</l-en><l-ru>устарела</l-ru><l-ro>depreciată</l-ro></span>
+              </header>
+              <p><l-en>Same content as 1.0.0. Superseded — install 1.0.0 or later.</l-en><l-ru>То же содержимое, что и в 1.0.0. Заменена — ставьте 1.0.0 или новее.</l-ru><l-ro>Același conținut ca 1.0.0. Înlocuită — instalează 1.0.0 sau mai nouă.</l-ro></p>
+            </article>
+
+            <article class="entry entry--muted" data-product="wpaikit" id="cli-0-4-4">
+              <header class="entry__head">
+                <span class="badge badge--wpaikit">WPAIKit CLI</span>
+                <h2><a class="anchor" href="#cli-0-4-4">0.4.4</a></h2>
+                <time datetime="2026-10-06">2026-10-06</time>
+                <span class="tag tag--deprecated"><l-en>deprecated</l-en><l-ru>устарела</l-ru><l-ro>depreciată</l-ro></span>
+              </header>
+              <p><l-en>Published by mistake from an unrelated build. Do not use — install 1.0.0 or later.</l-en><l-ru>Опубликована по ошибке из постороннего билда. Не используйте — ставьте 1.0.0 или новее.</l-ru><l-ro>Publicată din greșeală dintr-un build străin. Nu o folosi — instalează 1.0.0 sau mai nouă.</l-ro></p>
+            </article>
+
+            <!-- ============ 2026-09-06 ============ -->
+            <article class="entry" data-product="boilerplate" id="standard-2026-09-06">
+              <header class="entry__head">
+                <span class="badge badge--standard">boilerplate-wp-standard</span>
+                <h2><a class="anchor" href="#standard-2026-09-06"><l-en>Cookie consent and analytics</l-en><l-ru>Cookie consent и аналитика</l-ru><l-ro>Cookie consent și analytics</l-ro></a></h2>
+                <time datetime="2026-09-06">2026-09-06</time>
+              </header>
+              <h3><span class="tag tag--added"><l-en>Added</l-en><l-ru>Добавлено</l-ru><l-ro>Adăugat</l-ro></span></h3>
+              <ul>
+                <li><l-en>Cookie consent module: banner, preferences dialog, consent state, RU / RO / EN texts, Settings → Cookies Banner.</l-en><l-ru>Модуль cookie consent: баннер, диалог настроек, состояние согласия, тексты RU / RO / EN, Settings → Cookies Banner.</l-ru><l-ro>Modul cookie consent: banner, dialog de preferințe, starea consimțământului, texte RU / RO / EN, Settings → Cookies Banner.</l-ro></li>
+                <li><l-en>Analytics module: GTM or direct GA4 / Google Ads / Meta Pixel with Google Consent Mode, provider API in <code>providers.js</code>.</l-en><l-ru>Модуль аналитики: GTM или напрямую GA4 / Google Ads / Meta Pixel с Google Consent Mode, API провайдеров в <code>providers.js</code>.</l-ru><l-ro>Modul analytics: GTM sau direct GA4 / Google Ads / Meta Pixel cu Google Consent Mode, API de provideri în <code>providers.js</code>.</l-ro></li>
+                <li><l-en>Tests: <code>npm run test:consent</code>, Playwright <code>npm run test:e2e</code>, <code>composer test:cookie-consent</code>, <code>composer test:analytics</code>.</l-en><l-ru>Тесты: <code>npm run test:consent</code>, Playwright <code>npm run test:e2e</code>, <code>composer test:cookie-consent</code>, <code>composer test:analytics</code>.</l-ru><l-ro>Teste: <code>npm run test:consent</code>, Playwright <code>npm run test:e2e</code>, <code>composer test:cookie-consent</code>, <code>composer test:analytics</code>.</l-ro></li>
+                <li><l-en>PHPStan stubs for plugin APIs.</l-en><l-ru>PHPStan-заглушки для API плагинов.</l-ru><l-ro>Stub-uri PHPStan pentru API-urile plugin-urilor.</l-ro></li>
+              </ul>
+            </article>
+
+            <!-- ============ 2026-08 ============ -->
+            <article class="entry" data-product="boilerplate" id="woo-2026-08-11">
+              <header class="entry__head">
+                <span class="badge badge--woo">boilerplate-wp-woocommerce</span>
+                <h2><a class="anchor" href="#woo-2026-08-11"><l-en>First release</l-en><l-ru>Первый релиз</l-ru><l-ro>Prima versiune</l-ro></a></h2>
+                <time datetime="2026-08-11">2026-08-11</time>
+              </header>
+              <p><l-en>The WooCommerce boilerplate, built on the Standard architecture (updated 2026-08-23 and 2026-08-24).</l-en><l-ru>Boilerplate WooCommerce на архитектуре Standard (обновлён 2026-08-23 и 2026-08-24).</l-ru><l-ro>Boilerplate-ul WooCommerce, construit pe arhitectura Standard (actualizat 2026-08-23 și 2026-08-24).</l-ro></p>
+              <h3><span class="tag tag--added"><l-en>Added</l-en><l-ru>Добавлено</l-ru><l-ro>Adăugat</l-ro></span></h3>
+              <ul>
+                <li><l-en>Custom variations: every variant is a simple product linked through <code>variant_parent</code>.</l-en><l-ru>Кастомные вариации: каждый вариант — простой товар, связанный через <code>variant_parent</code>.</l-ru><l-ro>Variații personalizate: fiecare variantă e un produs simplu legat prin <code>variant_parent</code>.</l-ro></li>
+                <li><l-en>Custom mini-cart and Twig checkout; <code>DeliveryPolicyInterface</code> for delivery rules.</l-en><l-ru>Своя мини-корзина и Twig-checkout; <code>DeliveryPolicyInterface</code> для правил доставки.</l-ru><l-ro>Mini-coș personalizat și checkout Twig; <code>DeliveryPolicyInterface</code> pentru regulile de livrare.</l-ro></li>
+                <li><l-en>Catalog filters, <code>ProductsListingBlock</code>, product badges, optional wishlist, recently viewed.</l-en><l-ru>Фильтры каталога, <code>ProductsListingBlock</code>, бейджи товаров, опциональный wishlist, недавно просмотренные.</l-ru><l-ro>Filtre de catalog, <code>ProductsListingBlock</code>, badge-uri de produs, wishlist opțional, văzute recent.</l-ro></li>
+                <li><l-en>WPML adapter with a <code>none</code> fallback; <code>php bin/configure.php</code> writes the store profile to <code>boilerplate-config.php</code>.</l-en><l-ru>Адаптер WPML с запасным профилем <code>none</code>; <code>php bin/configure.php</code> записывает профиль магазина в <code>boilerplate-config.php</code>.</l-ru><l-ro>Adaptor WPML cu fallback <code>none</code>; <code>php bin/configure.php</code> scrie profilul magazinului în <code>boilerplate-config.php</code>.</l-ro></li>
+              </ul>
+            </article>
+
+            <!-- ============ 2026-05 ============ -->
+            <article class="entry" data-product="boilerplate" id="standard-2026-05-15">
+              <header class="entry__head">
+                <span class="badge badge--standard">boilerplate-wp-standard</span>
+                <h2><a class="anchor" href="#standard-2026-05-15"><l-en>First release</l-en><l-ru>Первый релиз</l-ru><l-ro>Prima versiune</l-ro></a></h2>
+                <time datetime="2026-05-15">2026-05-15</time>
+              </header>
+              <p><l-en>Timber/Twig theme with ACF blocks, Vite + Tailwind + SCSS, services and controllers, and <code>ExampleBlock</code> as the reference (fixes on 2026-05-18 and 2026-05-21).</l-en><l-ru>Тема на Timber/Twig с ACF-блоками, Vite + Tailwind + SCSS, сервисами и контроллерами и <code>ExampleBlock</code> как образцом (исправления от 2026-05-18 и 2026-05-21).</l-ru><l-ro>Temă Timber/Twig cu blocuri ACF, Vite + Tailwind + SCSS, servicii și controllere și <code>ExampleBlock</code> ca referință (corecturi din 2026-05-18 și 2026-05-21).</l-ro></p>
+            </article>
+
+            <article class="entry entry--muted" data-product="wpaikit" id="cli-earlier">
+              <header class="entry__head">
+                <span class="badge badge--wpaikit">WPAIKit CLI</span>
+                <h2><a class="anchor" href="#cli-earlier">0.1.0 – 0.4.3</a></h2>
+                <time datetime="2026-05-17">2026-05-17 → 2026-05-25</time>
+              </header>
+              <p><l-en>Early releases: <code>wpaikit init</code>, <code>wpaikit doctor</code> and the first knowledge commands. Details are in the git history of the repository.</l-en><l-ru>Ранние релизы: <code>wpaikit init</code>, <code>wpaikit doctor</code> и первые команды knowledge. Подробности — в истории git репозитория.</l-ru><l-ro>Versiuni timpurii: <code>wpaikit init</code>, <code>wpaikit doctor</code> și primele comenzi knowledge. Detalii în istoricul git al repository-ului.</l-ro></p>
+            </article>
+          </div>
+
+          <p class="cl-empty" id="cl-empty" hidden><l-en>No updates for this filter yet.</l-en><l-ru>Для этого фильтра пока нет обновлений.</l-ru><l-ro>Încă nu există actualizări pentru acest filtru.</l-ro></p>
+
+          <section class="cl-howto" id="howto">
+            <h2><a class="anchor" href="#howto"><l-en>Publishing an update</l-en><l-ru>Как опубликовать обновление</l-ru><l-ro>Cum publici o actualizare</l-ro></a></h2>
+            <ol class="steps">
+              <li><strong><l-en>Copy the newest <code>&lt;article class="entry"&gt;</code> in <code>docs/changelog.html</code></l-en><l-ru>Скопируйте самый свежий <code>&lt;article class="entry"&gt;</code> в <code>docs/changelog.html</code></l-ru><l-ro>Copiază cel mai nou <code>&lt;article class="entry"&gt;</code> din <code>docs/changelog.html</code></l-ro></strong></li>
+              <li><strong><l-en>Set <code>data-product</code> to <code>wpaikit</code> or <code>boilerplate</code> and a unique <code>id</code></l-en><l-ru>Задайте <code>data-product</code>: <code>wpaikit</code> или <code>boilerplate</code>, и уникальный <code>id</code></l-ru><l-ro>Setează <code>data-product</code> la <code>wpaikit</code> sau <code>boilerplate</code> și un <code>id</code> unic</l-ro></strong></li>
+              <li><strong><l-en>Write the text in all three languages (<code>&lt;l-en&gt;</code>, <code>&lt;l-ru&gt;</code>, <code>&lt;l-ro&gt;</code>); tags: added, changed, fixed, removed, breaking</l-en><l-ru>Напишите текст на трёх языках (<code>&lt;l-en&gt;</code>, <code>&lt;l-ru&gt;</code>, <code>&lt;l-ro&gt;</code>); теги: added, changed, fixed, removed, breaking</l-ru><l-ro>Scrie textul în trei limbi (<code>&lt;l-en&gt;</code>, <code>&lt;l-ru&gt;</code>, <code>&lt;l-ro&gt;</code>); taguri: added, changed, fixed, removed, breaking</l-ro></strong></li>
+              <li><strong><l-en>Update the version numbers in the page header and commit — GitHub Pages redeploys on push</l-en><l-ru>Обновите номера версий в шапке страницы и закоммитьте — GitHub Pages обновится при push</l-ru><l-ro>Actualizează numerele de versiune din antet și fă commit — GitHub Pages se redeployează la push</l-ro></strong></li>
+            </ol>
+          </section>
+        </div>
+      </div>
+
+      <p class="footer">
+        WPAIKit ·
+        <a href="./guide.html">Guide</a> ·
+        <a href="./boilerplates.html">Boilerplates</a> ·
+        <a href="https://www.npmjs.com/package/@veaceslav-golden/wp-ai-kit">npm</a> ·
+        <a href="https://github.com/GoldenCodesSlava/wpaikit">GitHub</a>
+      </p>
+    </main>
+
+    <script>
+      ;(() => {
+        const LANGS = ['en', 'ru', 'ro']
+        const STRINGS = {
+          en: { title: 'WPAIKit — changelog', description: 'Release notes for WPAIKit (CLI and knowledge) and the boilerplates.', theme: 'Toggle theme', langGroup: 'Language', sections: 'Filter by product' },
+          ru: { title: 'WPAIKit — changelog', description: 'История обновлений CLI WPAIKit, knowledge-базы и boilerplate.', theme: 'Переключить тему', langGroup: 'Язык', sections: 'Фильтр по продукту' },
+          ro: { title: 'WPAIKit — changelog', description: 'Istoricul actualizărilor pentru CLI-ul WPAIKit, baza knowledge și boilerplate-uri.', theme: 'Schimbă tema', langGroup: 'Limbă', sections: 'Filtrează după produs' },
+        }
+        const root = document.documentElement
+        const store = {
+          get(k) { try { return localStorage.getItem(k) } catch { return null } },
+          set(k, v) { try { localStorage.setItem(k, v) } catch {} },
+        }
+
+        function applyLang(next) {
+          const lang = LANGS.includes(next) ? next : 'en'
+          const t = STRINGS[lang]
+          root.lang = lang
+          document.title = t.title
+          document.querySelector('meta[name="description"]').content = t.description
+          document.querySelectorAll('[data-i18n-aria]').forEach((el) => el.setAttribute('aria-label', t[el.dataset.i18nAria]))
+          document.querySelectorAll('.lang-switch button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)))
+          store.set('wpaikit-docs-lang', lang)
+        }
+        document.querySelectorAll('.lang-switch button').forEach((b) => b.addEventListener('click', () => applyLang(b.dataset.lang)))
+
+        const FILTERS = ['all', 'wpaikit', 'boilerplate']
+        const tabs = [...document.querySelectorAll('.tab')]
+        const entries = [...document.querySelectorAll('.entry')]
+        const notes = [...document.querySelectorAll('.note[data-product]')]
+
+        function applyFilter(filter, anchor) {
+          tabs.forEach((tab) => {
+            const on = tab.dataset.filter === filter
+            tab.setAttribute('aria-selected', String(on))
+            tab.tabIndex = on ? 0 : -1
+          })
+          let visible = 0
+          entries.forEach((entry) => {
+            const show = filter === 'all' || entry.dataset.product.split(' ').includes(filter)
+            entry.hidden = !show
+            if (show) visible += 1
+          })
+          notes.forEach((note) => { note.hidden = !(filter === 'all' || note.dataset.product.split(' ').includes(filter)) })
+          document.getElementById('cl-empty').hidden = visible > 0
+          if (anchor) document.getElementById(anchor)?.scrollIntoView()
+          else window.scrollTo({ top: 0, behavior: 'instant' })
+        }
+
+        function fromHash() {
+          const id = decodeURIComponent(location.hash.replace(/^#/, ''))
+          if (!id) return { filter: 'all', anchor: null }
+          if (FILTERS.includes(id)) return { filter: id, anchor: null }
+          const el = document.getElementById(id)
+          return el && el.dataset.product ? { filter: 'all', anchor: id } : { filter: 'all', anchor: el ? id : null }
+        }
+
+        tabs.forEach((tab, i) => {
+          tab.addEventListener('click', () => {
+            history.pushState(null, '', '#' + tab.dataset.filter)
+            applyFilter(tab.dataset.filter)
+          })
+          tab.addEventListener('keydown', (e) => {
+            const d = { ArrowRight: 1, ArrowLeft: -1 }[e.key]
+            if (!d) return
+            const next = tabs[(i + d + tabs.length) % tabs.length]
+            next.click(); next.focus(); e.preventDefault()
+          })
+        })
+        window.addEventListener('popstate', () => { const s = fromHash(); applyFilter(s.filter, s.anchor) })
+
+        const saved = store.get('wpaikit-docs-theme')
+        if (saved) root.dataset.theme = saved
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+          const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches
+          root.dataset.theme = dark ? 'light' : 'dark'
+          store.set('wpaikit-docs-theme', root.dataset.theme)
+        })
+
+        applyLang(new URLSearchParams(location.search).get('lang') || store.get('wpaikit-docs-lang') || 'en')
+        const s = fromHash()
+        applyFilter(s.filter, s.anchor)
+      })()
+    </script>
+  </body>
+</html>

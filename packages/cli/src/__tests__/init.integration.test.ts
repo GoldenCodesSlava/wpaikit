@@ -7,7 +7,11 @@ import { Rollback } from '@veaceslav-golden/wp-ai-kit-core'
 import { createProjectDir } from '../commands/init/steps/create-dir.js'
 import { renameBoilerplate } from '../commands/init/steps/rename.js'
 import { writeProjectConfig } from '../commands/init/steps/write-config.js'
-import { configureWooBoilerplate } from '../commands/init/steps/configure-boilerplate.js'
+import {
+  configureBoilerplate,
+  getStandardConfigureArgs,
+  getWooConfigureArgs,
+} from '../commands/init/steps/configure-boilerplate.js'
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -282,12 +286,30 @@ describe('init pipeline (without network)', () => {
     renameBoilerplate(projectDir, 'Shop', 'shop', 'Shop', 'shop')
 
     await expect(
-      configureWooBoilerplate(projectDir, 'shop', {
-        multilingual: 'wpml',
-        variantCatalog: 'main-only',
-        wishlist: false,
-      }),
-    ).rejects.toThrow(/initializer not found/)
+      configureBoilerplate(
+        projectDir,
+        'shop',
+        'woo',
+        getWooConfigureArgs(
+          { multilingual: 'wpml', variantCatalog: 'main-only', wishlist: false },
+          'module',
+        ),
+      ),
+    ).rejects.toThrow(/WooCommerce initializer not found/)
+
+    await rollback.run()
+    expect(existsSync(projectDir)).toBe(false)
+  })
+
+  it('rolls back when the Standard initializer is missing', async () => {
+    const rollback = new Rollback()
+    const projectDir = createProjectDir(tmpBase, 'site', false, rollback)
+    makeBoilerplateTheme(projectDir)
+    renameBoilerplate(projectDir, 'Site', 'site', 'Site', 'site')
+
+    await expect(
+      configureBoilerplate(projectDir, 'site', 'standard', getStandardConfigureArgs('yoast')),
+    ).rejects.toThrow(/Standard initializer not found/)
 
     await rollback.run()
     expect(existsSync(projectDir)).toBe(false)

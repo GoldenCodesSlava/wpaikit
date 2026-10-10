@@ -4,6 +4,10 @@ import { z } from 'zod'
 
 export const MultilingualProfileSchema = z.enum(['wpml', 'none'])
 export const VariantCatalogProfileSchema = z.enum(['main-only', 'all'])
+/** module = built-in theme SEO module; yoast / rank-math = that plugin; later = pick a plugin yourself */
+export const SeoProfileSchema = z.enum(['module', 'yoast', 'rank-math', 'later'])
+
+export type SeoProfile = z.infer<typeof SeoProfileSchema>
 
 export const WooCommerceProjectConfigSchema = z.object({
   multilingual: MultilingualProfileSchema,
@@ -20,6 +24,8 @@ export const WpaikitConfigSchema = z
     textDomain: z.string().min(1),
     preset: z.enum(['standard', 'woo']),
     woocommerce: WooCommerceProjectConfigSchema.optional(),
+    // Optional so .wpaikit.json files written before the SEO choice existed stay valid.
+    seo: SeoProfileSchema.optional(),
     createdAt: z.string().datetime(),
   })
   .superRefine((config, context) => {
