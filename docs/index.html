@@ -3,1242 +3,902 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="WPAIKit workflow documentation for turning prepared Figma designs into WordPress ACF blocks."
-    />
-    <title>WPAIKit Workflow Guide</title>
-    <link rel="stylesheet" href="./workflow.css" />
+    <meta name="description" content="WPAIKit documentation: guide, boilerplates and changelog." />
+    <title>WPAIKit — documentation</title>
+    <style>
+      :root {
+        --bg: #f6f7f9;
+        --surface: #ffffff;
+        --surface-2: #f0f2f5;
+        --border: #e2e5ea;
+        --text: #16181d;
+        --muted: #5b6270;
+        --accent: #4f46e5;
+        --accent-soft: #eef0ff;
+        --accent-text: #3730a3;
+        --code-bg: #12141a;
+        --code-text: #e6e8ee;
+        --ok: #0f7b4b;
+        --ok-soft: #e7f6ee;
+        --warn: #9a5b00;
+        --warn-soft: #fff4e0;
+        --design: #db2777;
+        --slicing: #0891b2;
+        --wordpress: #2563eb;
+        --woo: #7c3aed;
+        --radius: 12px;
+        --shadow: 0 1px 2px rgb(16 24 40 / 6%), 0 4px 16px rgb(16 24 40 / 4%);
+        color-scheme: light;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) {
+          --bg: #0e1015;
+          --surface: #161920;
+          --surface-2: #1d2129;
+          --border: #2a2f3a;
+          --text: #e8eaf0;
+          --muted: #9aa1b0;
+          --accent: #8b85ff;
+          --accent-soft: #23233d;
+          --accent-text: #c7c4ff;
+          --code-bg: #0a0b0f;
+          --ok: #4ade80;
+          --ok-soft: #12291c;
+          --warn: #fbbf24;
+          --warn-soft: #2b2210;
+          --design: #f472b6;
+          --slicing: #22d3ee;
+          --wordpress: #60a5fa;
+          --woo: #a78bfa;
+          --shadow: none;
+          color-scheme: dark;
+        }
+      }
+
+      :root[data-theme='dark'] {
+        --bg: #0e1015;
+        --surface: #161920;
+        --surface-2: #1d2129;
+        --border: #2a2f3a;
+        --text: #e8eaf0;
+        --muted: #9aa1b0;
+        --accent: #8b85ff;
+        --accent-soft: #23233d;
+        --accent-text: #c7c4ff;
+        --code-bg: #0a0b0f;
+        --ok: #4ade80;
+        --ok-soft: #12291c;
+        --warn: #fbbf24;
+        --warn-soft: #2b2210;
+        --design: #f472b6;
+        --slicing: #22d3ee;
+        --wordpress: #60a5fa;
+        --woo: #a78bfa;
+        --shadow: none;
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 140px;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 16px/1.6 -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a {
+        color: var(--accent);
+      }
+
+      code,
+      pre,
+      kbd {
+        font-family: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+      }
+
+      :not(pre) > code {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 1px 6px;
+        font-size: 0.88em;
+        overflow-wrap: anywhere;
+      }
+
+      /* ---------- header ---------- */
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: color-mix(in srgb, var(--bg) 88%, transparent);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .topbar__inner {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 14px 16px 0;
+      }
+
+      .brand-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: var(--text);
+        margin-right: auto;
+      }
+
+      .brand__mark {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 700;
+        font-size: 14px;
+      }
+
+      .brand strong {
+        font-size: 17px;
+      }
+
+      .brand small {
+        color: var(--muted);
+        font-size: 13px;
+        margin-left: 6px;
+      }
+
+      .icon-btn {
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text);
+        border-radius: 8px;
+        height: 34px;
+        padding: 0 10px;
+        font: inherit;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .icon-btn:hover {
+        border-color: var(--accent);
+      }
+
+      .tabs {
+        display: flex;
+        gap: 4px;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .tabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      .tab {
+        flex: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 0;
+        background: none;
+        color: var(--muted);
+        font: inherit;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 10px 14px 12px;
+        border-bottom: 2px solid transparent;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .tab:hover {
+        color: var(--text);
+      }
+
+      .tab[aria-selected='true'] {
+        color: var(--text);
+        border-bottom-color: var(--tab-color, var(--accent));
+      }
+
+      .tab:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: -2px;
+        border-radius: 6px;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--tab-color, var(--accent));
+      }
+
+      .tab[data-tab='install'] {
+        --tab-color: var(--accent);
+      }
+      .tab[data-tab='design'] {
+        --tab-color: var(--design);
+      }
+      .tab[data-tab='slicing'] {
+        --tab-color: var(--slicing);
+      }
+      .tab[data-tab='wordpress'] {
+        --tab-color: var(--wordpress);
+      }
+      .tab[data-tab='woocommerce'] {
+        --tab-color: var(--woo);
+      }
+
+      /* ---------- layout ---------- */
+      main {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 28px 16px 80px;
+      }
+
+      .panel {
+        display: grid;
+        grid-template-columns: 220px minmax(0, 1fr);
+        gap: 40px;
+      }
+
+      .panel[hidden] {
+        display: none;
+      }
+
+      .toc {
+        position: sticky;
+        top: 140px;
+        align-self: start;
+        font-size: 14px;
+      }
+
+      .toc__title {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+        margin: 0 0 8px;
+      }
+
+      .toc a {
+        display: block;
+        padding: 5px 10px;
+        border-left: 2px solid var(--border);
+        color: var(--muted);
+        text-decoration: none;
+      }
+
+      .toc a:hover,
+      .toc a.is-active {
+        color: var(--text);
+        border-left-color: var(--accent);
+      }
+
+      .content {
+        min-width: 0;
+      }
+
+      .hero {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 28px;
+        margin-bottom: 28px;
+        border-top: 4px solid var(--panel-color, var(--accent));
+      }
+
+      .hero__eyebrow {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--panel-color, var(--accent));
+        margin: 0 0 6px;
+      }
+
+      .hero h1 {
+        font-size: clamp(26px, 4vw, 34px);
+        line-height: 1.2;
+        margin: 0 0 10px;
+      }
+
+      .hero p {
+        color: var(--muted);
+        margin: 0;
+        max-width: 760px;
+      }
+
+      .hero .cmd {
+        margin-top: 18px;
+      }
+
+      #panel-design {
+        --panel-color: var(--design);
+      }
+      #panel-slicing {
+        --panel-color: var(--slicing);
+      }
+      #panel-wordpress {
+        --panel-color: var(--wordpress);
+      }
+      #panel-woocommerce {
+        --panel-color: var(--woo);
+      }
+
+      section {
+        margin-bottom: 44px;
+      }
+
+      h2 {
+        font-size: 22px;
+        line-height: 1.3;
+        margin: 0 0 14px;
+      }
+
+      h3 {
+        font-size: 17px;
+        margin: 24px 0 10px;
+      }
+
+      p {
+        margin: 0 0 14px;
+      }
+
+      ul,
+      ol {
+        padding-left: 22px;
+        margin: 0 0 14px;
+      }
+
+      li + li {
+        margin-top: 4px;
+      }
+
+      .anchor {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .anchor:hover::after {
+        content: ' #';
+        color: var(--muted);
+      }
+
+      /* ---------- code ---------- */
+      .cmd {
+        position: relative;
+        margin: 0 0 14px;
+      }
+
+      .cmd pre {
+        margin: 0;
+        background: var(--code-bg);
+        color: var(--code-text);
+        border-radius: 10px;
+        padding: 14px 92px 14px 16px;
+        overflow-x: auto;
+        font-size: 14px;
+        line-height: 1.55;
+      }
+
+      .cmd pre .c {
+        color: #8b93a7;
+      }
+
+      .copy {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        border: 1px solid #33384a;
+        background: #1d2130;
+        color: #cfd4e2;
+        border-radius: 6px;
+        font: inherit;
+        font-size: 12px;
+        padding: 4px 10px;
+        cursor: pointer;
+      }
+
+      .copy:hover {
+        background: #282d40;
+      }
+
+      .copy.is-done {
+        color: #4ade80;
+        border-color: #2f6b47;
+      }
+
+      /* ---------- components ---------- */
+      .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--surface);
+        margin: 0 0 16px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14.5px;
+      }
+
+      th,
+      td {
+        text-align: left;
+        vertical-align: top;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      th {
+        background: var(--surface-2);
+        font-size: 13px;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      tr:last-child td {
+        border-bottom: 0;
+      }
+
+      td code {
+        white-space: nowrap;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 14px;
+        margin: 0 0 16px;
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 18px;
+        box-shadow: var(--shadow);
+      }
+
+      .card h3 {
+        margin: 0 0 6px;
+        font-size: 16px;
+      }
+
+      .card p {
+        color: var(--muted);
+        font-size: 14.5px;
+        margin: 0 0 10px;
+      }
+
+      .card p:last-child {
+        margin-bottom: 0;
+      }
+
+      .card--link {
+        cursor: pointer;
+        transition: border-color 0.15s;
+        border-top: 3px solid var(--card-color, var(--accent));
+      }
+
+      .card--link:hover {
+        border-color: var(--card-color, var(--accent));
+      }
+
+      .card__role {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--card-color, var(--accent));
+      }
+
+      .steps {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 16px;
+        counter-reset: step;
+      }
+
+      .steps > li {
+        position: relative;
+        padding: 0 0 18px 48px;
+        margin: 0;
+        counter-increment: step;
+      }
+
+      .steps > li::before {
+        content: counter(step);
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: var(--accent-soft);
+        color: var(--accent-text);
+        font-weight: 700;
+        font-size: 14px;
+      }
+
+      .steps > li::after {
+        content: '';
+        position: absolute;
+        left: 14px;
+        top: 34px;
+        bottom: 4px;
+        width: 2px;
+        background: var(--border);
+      }
+
+      .steps > li:last-child::after {
+        display: none;
+      }
+
+      .steps strong {
+        display: block;
+        margin-bottom: 2px;
+      }
+
+      .steps p {
+        color: var(--muted);
+        margin: 0 0 8px;
+      }
+
+      .steps .cmd {
+        margin-top: 6px;
+      }
+
+      .note {
+        border-radius: 10px;
+        padding: 12px 16px;
+        margin: 0 0 16px;
+        font-size: 15px;
+        background: var(--accent-soft);
+        border-left: 3px solid var(--accent);
+      }
+
+      .note--ok {
+        background: var(--ok-soft);
+        border-left-color: var(--ok);
+      }
+
+      .note--warn {
+        background: var(--warn-soft);
+        border-left-color: var(--warn);
+      }
+
+      .note p:last-child,
+      .note ul:last-child {
+        margin-bottom: 0;
+      }
+
+      .pill {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 600;
+        border-radius: 999px;
+        padding: 1px 9px;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      .tree {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px 16px;
+        font-size: 13.5px;
+        line-height: 1.6;
+        overflow-x: auto;
+        margin: 0 0 16px;
+        color: var(--text);
+      }
+
+      .tree .c {
+        color: var(--muted);
+      }
+
+      details.faq {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 0 16px;
+        margin-bottom: 10px;
+      }
+
+      details.faq summary {
+        cursor: pointer;
+        font-weight: 600;
+        padding: 12px 0;
+      }
+
+      details.faq[open] summary {
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 12px;
+      }
+
+      .footer {
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 14px;
+        padding-top: 18px;
+      }
+
+      @media (max-width: 900px) {
+        .panel {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 0;
+        }
+
+        .toc {
+          display: none;
+        }
+
+        .hero {
+          padding: 20px;
+        }
+
+        .brand small {
+          display: none;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .cmd pre {
+          padding: 40px 14px 14px;
+        }
+      }
+
+      @media print {
+        .topbar,
+        .toc,
+        .copy {
+          display: none;
+        }
+
+        .panel[hidden] {
+          display: block;
+        }
+      }
+
+      /* ---------- languages ---------- */
+      html[lang='en'] :is(l-ru, l-ro),
+      html[lang='ru'] :is(l-en, l-ro),
+      html[lang='ro'] :is(l-en, l-ru) {
+        display: none;
+      }
+
+      .lang-switch {
+        display: flex;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--surface);
+      }
+
+      .lang-switch button {
+        border: 0;
+        background: none;
+        color: var(--muted);
+        font: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 0 10px;
+        height: 32px;
+        cursor: pointer;
+      }
+
+      .lang-switch button + button {
+        border-left: 1px solid var(--border);
+      }
+
+      .lang-switch button[aria-pressed='true'] {
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .lang-switch button:focus-visible,
+      .icon-btn:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      .page-link {
+        display: inline-flex;
+        align-items: center;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+
+      @media (max-width: 600px) {
+        .page-link { display: none; }
+      }
+
+      .hub { max-width: 980px; margin: 0 auto; }
+      .hub-nav { display: flex; gap: 4px; margin-right: auto; }
+      .hub-nav a { color: var(--muted); text-decoration: none; font-weight: 600; font-size: 15px; padding: 6px 10px; border-radius: 8px; }
+      .hub-nav a:hover { color: var(--text); background: var(--surface-2); }
+      .hub-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+      .hub-card { display: flex; flex-direction: column; gap: 6px; background: var(--surface); border: 1px solid var(--border); border-top: 4px solid var(--card-color); border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px; text-decoration: none; color: var(--text); transition: transform .15s, border-color .15s; }
+      .hub-card:hover { transform: translateY(-2px); border-color: var(--card-color); }
+      .hub-card h3 { margin: 0; font-size: 19px; }
+      .hub-card p { color: var(--muted); margin: 0; flex: 1; font-size: 15px; }
+      .hub-card__tag { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--card-color); }
+      .hub-card__go { margin-top: 8px; font-weight: 600; color: var(--card-color); }
+      .hub-roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+      .hub-roles a { display: flex; flex-direction: column; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--card-color); border-radius: 10px; padding: 14px 16px; text-decoration: none; color: var(--text); }
+      .hub-roles a:hover { border-color: var(--card-color); }
+      .hub-roles span { color: var(--muted); font-size: 14px; }
+      .hub-roles code { align-self: flex-start; margin-top: 4px; }
+      main { padding-top: 32px; }
+      @media (max-width: 700px) { .hub-nav { display: none; } }
+    </style>
   </head>
   <body>
-    <a class="skip-link" href="#overview">Skip to workflow content</a>
-    <div class="app-shell">
-      <aside class="sidebar" aria-label="Workflow navigation">
-        <a class="brand" href="#top" aria-label="WPAIKit workflow home">
-          <span class="brand__mark">WK</span>
-          <span class="brand__text">
-            <span class="brand__overline">wpkit</span>
-            <strong>Workflow</strong>
-            <small data-i18n="brand.subtitle">Workflow Guide</small>
-          </span>
-        </a>
-
-        <div class="language-switcher" aria-label="Language switcher">
-          <button type="button" data-lang="en" aria-pressed="true">EN</button>
-          <button type="button" data-lang="ru" aria-pressed="false">RU</button>
-          <button type="button" data-lang="ro" aria-pressed="false">RO</button>
-        </div>
-
-        <div class="sidebar-status" aria-label="Documentation status">
-          <span data-i18n="sidebar.statusLabel">Docs status</span>
-          <strong data-i18n="sidebar.statusText">Live workflow map</strong>
-        </div>
-
-        <nav class="nav">
-          <a href="#install" data-i18n="nav.install">1. Установка</a>
-          <a href="#init" data-i18n="nav.init">2. wpaikit init</a>
-          <a href="#knowledge" data-i18n="nav.knowledge">3. Knowledge Base</a>
-          <a href="#commands" data-i18n="nav.commands">4. Команды</a>
-          <a href="#full-workflows" data-i18n="nav.fullWorkflows">5. Полные workflow</a>
-          <a href="#situations" data-i18n="nav.situations">6. Частые ситуации</a>
-          <a href="#key-files" data-i18n="nav.keyFiles">7. Ключевые файлы</a>
-          <a href="#update" data-i18n="nav.update">8. Обновление</a>
-          <a href="#figma-workflow" data-i18n="nav.figmaWorkflow">Figma → Block</a>
-        </nav>
-      </aside>
-
-      <main id="top" class="content">
-        <header class="hero">
-          <div class="hero__main">
-            <div class="eyebrow" data-i18n="fullHero.kicker">
-              wpaikit -> WordPress -> Figma -> ACF -> Twig
-            </div>
-            <h1 data-i18n="fullHero.title">Полный workflow wpaikit</h1>
-            <p data-i18n-html="fullHero.description">
-              Развернутый путь от установки CLI и <code>wpaikit init</code> до генерации дизайна,
-              Design System, ACF-блоков, проверки кода и обновления knowledge base.
-            </p>
-
-            <div class="quick-actions" aria-label="Primary file references">
-              <span class="quick-actions__label" data-i18n="fullHero.sources">
-                Основные источники
-              </span>
-              <a href="./guide.html">guide.html</a>
-              <a href="./workflow.md">workflow.md</a>
-              <a href="../knowledge/packs/design/prompts/analyze-figma.md">analyze-figma.md</a>
-              <a href="../knowledge/packs/shared/rules/figma-blocks.md"
-                >figma-to-block rules</a
-              >
-            </div>
+    <header class="topbar">
+      <div class="topbar__inner">
+        <div class="brand-row">
+          <a class="brand" href="./index.html">
+            <span class="brand__mark">WK</span>
+            <strong>WPAIKit</strong>
+            <small>CLI 1.0.0 · knowledge 2.0.0</small>
+          </a>
+          <nav class="hub-nav" data-i18n-aria="sections">
+            <a href="./guide.html">Guide</a>
+            <a href="./boilerplates.html">Boilerplates</a>
+            <a href="./changelog.html">Changelog</a>
+          </nav>
+          <div class="lang-switch" role="group" data-i18n-aria="langGroup">
+            <button type="button" data-lang="en">EN</button>
+            <button type="button" data-lang="ru">RU</button>
+            <button type="button" data-lang="ro">RO</button>
           </div>
-
-          <aside class="hero__aside" aria-label="Fast path">
-            <span data-i18n="fullHero.fastPath">Быстрый путь</span>
-            <ol>
-              <li>
-                <strong>01</strong
-                ><span data-i18n-html="fullHero.pathInstall"
-                  >Установить CLI и пройти <code>wpaikit doctor</code>.</span
-                >
-              </li>
-              <li>
-                <strong>02</strong
-                ><span data-i18n-html="fullHero.pathInit"
-                  >Запустить <code>wpaikit init</code> и настроить WordPress.</span
-                >
-              </li>
-              <li>
-                <strong>03</strong
-                ><span data-i18n="fullHero.pathKnowledge"
-                  >Установить knowledge base и запускать slash-команды из темы.</span
-                >
-              </li>
-            </ol>
-          </aside>
-        </header>
-
-        <section id="install" class="section">
-          <div class="section__head">
-            <span class="section__index">01</span>
-            <div>
-              <h2 data-i18n="full.install.title">Установка wpaikit</h2>
-              <p data-i18n="full.install.description">
-                Начинайте с проверки окружения. CLI ставится глобально и дальше используется для
-                создания WordPress-проекта, установки knowledge base и обновления команд.
-              </p>
-            </div>
-          </div>
-
-          <div class="flow-grid">
-            <article>
-              <h3 data-i18n="full.install.requirements">Минимальные требования</h3>
-              <p><code>Node.js 18+</code></p>
-              <p><code>PHP 8.1+</code></p>
-              <p><code>Git</code>, <code>Composer</code>, <code>pnpm</code></p>
-              <p data-i18n-html="full.install.fonttools">
-                <code>Python + fonttools</code> для команды <code>/setup-fonts</code>
-              </p>
-            </article>
-            <article>
-              <h3 data-i18n="full.install.global">Глобальная установка</h3>
-              <pre class="code-block"><code>npm install -g @veaceslav-golden/wp-ai-kit-core
-npm install -g @veaceslav-golden/wp-ai-kit</code></pre>
-            </article>
-            <article>
-              <h3 data-i18n="full.install.check">Проверка</h3>
-              <pre class="code-block"><code>wpaikit --version
-wpaikit doctor</code></pre>
-            </article>
-          </div>
-
-          <div class="callout">
-            <strong data-i18n="full.install.doctorTitle">Что делает doctor</strong>
-            <span data-i18n="full.install.doctorText">
-              Проверяет доступность Node, Git, Composer, npm и права записи в текущей директории.
-              Если чего-то не хватает, команда показывает, что надо установить до старта проекта.
-            </span>
-          </div>
-        </section>
-
-        <section id="init" class="section stage">
-          <div class="stage__marker">2</div>
-          <div class="stage__body">
-            <div class="section__head">
-              <span class="badge badge--active">CLI</span>
-              <div>
-                <h2>wpaikit init</h2>
-                <p data-i18n="full.init.description">
-                  Главная стартовая команда. Она скачивает WordPress, подключает boilerplate,
-                  переименовывает тему и готовит проект к ручной настройке базы данных.
-                </p>
-              </div>
-            </div>
-
-            <div class="command-panel">
-              <span class="command-panel__label">Command</span>
-              <code>wpaikit init</code>
-            </div>
-
-            <div class="flow-grid">
-              <article>
-                <h3 data-i18n="full.init.questions">Интерактивные вопросы</h3>
-                <p data-i18n-html="full.init.projectName">
-                  <code>Project name</code> — человекочитаемое имя проекта.
-                </p>
-                <p data-i18n-html="full.init.slug">
-                  <code>Slug</code> — kebab-case для папки темы.
-                </p>
-                <p data-i18n-html="full.init.namespace">
-                  <code>Namespace</code> — PHP namespace в PascalCase.
-                </p>
-                <p data-i18n-html="full.init.location">
-                  <code>Location</code> — новый подкаталог или текущая директория.
-                </p>
-              </article>
-              <article>
-                <h3 data-i18n="full.init.automatic">Автоматические шаги</h3>
-                <ul class="check-list">
-                  <li data-i18n="full.init.stepDownload">
-                    Скачивает последнюю стабильную WordPress-сборку.
-                  </li>
-                  <li data-i18n-html="full.init.stepClone">
-                    Клонирует boilerplate в <code>wp-content/</code>.
-                  </li>
-                  <li data-i18n="full.init.stepRename">
-                    Переименовывает тему, namespace и text domain.
-                  </li>
-                  <li data-i18n-html="full.init.stepInstall">
-                    Запускает <code>composer install</code> и frontend build.
-                  </li>
-                  <li data-i18n-html="full.init.stepMetadata">
-                    Создает <code>.wpaikit.json</code> с метаданными проекта.
-                  </li>
-                  <li data-i18n-html="full.init.stepKnowledge">
-                    Устанавливает выбранный Knowledge Base профиль в корень темы.
-                  </li>
-                </ul>
-              </article>
-              <article>
-                <h3 data-i18n="full.init.flags">Полезные flags</h3>
-                <p><code>wpaikit init --preset standard</code></p>
-                <p><code>wpaikit init --preset woo --multilingual wpml</code></p>
-                <p><code>--variant-catalog main-only</code></p>
-                <p><code>--wishlist no</code></p>
-              </article>
-            </div>
-
-            <div class="split">
-              <div>
-                <h3 data-i18n="full.init.manualTitle">Ручные шаги после init</h3>
-                <ol class="check-list">
-                  <li data-i18n="full.init.manualDb">
-                    Создайте локальную базу данных через Herd, MAMP, TablePlus или CLI.
-                  </li>
-                  <li data-i18n-html="full.init.manualConfig">
-                    Заполните доступы в <code>wp-config.php</code>.
-                  </li>
-                  <li data-i18n="full.init.manualWizard">
-                    Откройте сайт в браузере и пройдите WordPress wizard.
-                  </li>
-                  <li data-i18n-html="full.init.manualTheme">
-                    Активируйте тему в <code>wp-admin -> Appearance -> Themes</code>.
-                  </li>
-                </ol>
-              </div>
-              <pre class="code-block"><code>define('DB_NAME', 'salon_frumusete');
-define('DB_USER', 'root');
-define('DB_PASSWORD', '');
-define('DB_HOST', 'localhost');
-define('BOILERPLATE_DEV', true);</code></pre>
-            </div>
-          </div>
-        </section>
-
-        <section id="knowledge" class="section stage">
-          <div class="stage__marker">3</div>
-          <div class="stage__body">
-            <div class="section__head">
-              <span class="badge badge--active">AI setup</span>
-              <div>
-                <h2 data-i18n="full.knowledge.title">Knowledge Base</h2>
-                <p data-i18n="full.knowledge.description">
-                  Init устанавливает выбранный профиль автоматически. Из корня темы команда
-                  knowledge install проверяет и обновляет управляемые файлы.
-                </p>
-              </div>
-            </div>
-
-            <div class="command-panel">
-              <span class="command-panel__label">Theme root</span>
-              <code>cd wp-content/themes/{slug}</code>
-              <code>wpaikit knowledge install --dry-run</code>
-              <code>wpaikit knowledge install</code>
-            </div>
-
-            <div class="flow-grid">
-              <article>
-                <h3 data-i18n="full.knowledge.copiedTitle">Что копируется</h3>
-                <p data-i18n-html="full.knowledge.copiedKnowledge">
-                  <code>knowledge/</code> — rules, prompts, skills.
-                </p>
-                <p data-i18n-html="full.knowledge.copiedClaude">
-                  <code>CLAUDE.md</code> — инструкции для Claude Code.
-                </p>
-                <p data-i18n-html="full.knowledge.copiedAgents">
-                  <code>AGENTS.md</code> — инструкции для Codex/OpenAI.
-                </p>
-                <p data-i18n-html="full.knowledge.copiedCommands">
-                  <code>.claude/commands/</code> — slash-команды.
-                </p>
-              </article>
-              <article>
-                <h3 data-i18n="full.knowledge.updateTitle">Когда обновлять</h3>
-                <p data-i18n="full.knowledge.updateText">
-                  После обновления глобального CLI или когда команда получила новый prompt/skill.
-                </p>
-                <pre class="code-block"><code>npm install -g @veaceslav-golden/wp-ai-kit-core@latest
-npm install -g @veaceslav-golden/wp-ai-kit@latest
-wpaikit knowledge install</code></pre>
-              </article>
-              <article>
-                <h3 data-i18n="full.knowledge.ruleTitle">Рабочее правило</h3>
-                <p data-i18n="full.knowledge.ruleText">
-                  CLI делает детерминированные операции. AI-команды интерпретируют Figma, brief,
-                  структуру блоков и решения по дизайну.
-                </p>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <section id="commands" class="section">
-          <div class="section__head">
-            <span class="section__index">04</span>
-            <div>
-              <h2 data-i18n="full.commands.title">Команды и когда их запускать</h2>
-              <p data-i18n-html="full.commands.description">
-                Команды запускаются в Claude Code из корня темы. Каждая команда предварительно
-                читает нужные файлы из <code>knowledge/</code>.
-              </p>
-            </div>
-          </div>
-
-          <div class="skill-list">
-            <article>
-              <span class="badge badge--active">Design</span>
-              <h3>/generate-design</h3>
-              <p data-i18n="full.commands.generateDesign">
-                Интерактивно собирает brief, Figma project URL, референсы, Design System, brand
-                assets, icon library и Pexels API key, затем генерирует UI в Figma.
-              </p>
-            </article>
-            <article>
-              <span class="badge badge--active">Audit</span>
-              <h3>/design-quality-check</h3>
-              <p data-i18n="full.commands.designQuality">
-                Проверяет brief или Figma frames на category reflex, banned patterns, цветовую
-                стратегию, register consistency, theme logic, typography и layout rhythm.
-              </p>
-            </article>
-            <article>
-              <span class="badge badge--active">Audit</span>
-              <h3>/analyze-figma</h3>
-              <p data-i18n="full.commands.analyzeFigma">
-                Аудитирует Figma frame на готовность к реализации: Auto Layout, токены, responsive
-                variants, reusable components и semantic naming.
-              </p>
-            </article>
-            <article>
-              <span class="badge badge--active">Tokens</span>
-              <h3>/figma-design-system</h3>
-              <p data-i18n-html="full.commands.figmaDesignSystem">
-                Извлекает colors, typography, spacing, radius и UI patterns из 4-6 representative
-                frames. Создает Design System page, Variables, Text Styles и
-                <code>.wpaikit/design-system.json</code>.
-              </p>
-            </article>
-            <article>
-              <span class="badge badge--active">Figma</span>
-              <h3>/figma-components</h3>
-              <p data-i18n-html="full.commands.figmaComponents">
-                Создает Figma Component Sets с вариантами Type x Size x State на основе patterns из
-                <code>design-system.json</code>.
-              </p>
-            </article>
-            <article>
-              <span class="badge badge--active">Figma</span>
-              <h3>/figma-update-design-system</h3>
-              <p data-i18n="full.commands.updateDesignSystem">
-                Добавляет новые frames в существующий Design System без удаления старых токенов.
-                Делает diff, append в Figma и merge JSON.
-              </p>
-            </article>
-            <article>
-              <span class="badge badge--active">Figma</span>
-              <h3>/figma-sync-tokens</h3>
-              <p data-i18n-html="full.commands.syncTokens">
-                Синхронизирует <code>design-system.json</code>, когда дизайнер вручную меняет
-                Variables или Text Styles. Удаленные токены помечаются <code>deprecated</code>.
-              </p>
-            </article>
-            <article>
-              <span class="badge badge--active">Prep</span>
-              <h3>/prep-figma</h3>
-              <p data-i18n="full.commands.prepFigma">
-                Создает страницу Dev Ready, семантически переименовывает layers, связывает styles с
-                tokens, заменяет detached элементы компонентами и добавляет Auto Layout.
-              </p>
-            </article>
-            <article>
-              <span class="badge badge--active">Fonts</span>
-              <h3>/setup-fonts</h3>
-              <p data-i18n-html="full.commands.setupFonts">
-                Сравнивает нужные font families/weights с файлами в
-                <code>frontend/src/fonts/</code>, удаляет лишнее, конвертирует TTF/OTF в woff2/woff
-                и генерирует <code>_fonts.scss</code>.
-              </p>
-            </article>
-            <article>
-              <span class="badge badge--active">Code</span>
-              <h3>/design-system-to-code</h3>
-              <p data-i18n-html="full.commands.designSystemToCode">
-                Генерирует Twig components, SCSS partials, обновляет Tailwind config и добавляет
-                imports в <code>main.scss</code>.
-              </p>
-            </article>
-            <article>
-              <span class="badge badge--active">Code</span>
-              <h3>/scan-components</h3>
-              <p data-i18n-html="full.commands.scanComponents">
-                Индексирует Twig и SCSS компоненты, BEM blocks/elements/modifiers и пишет
-                <code>.wpaikit/components-registry.md</code> для повторного использования.
-              </p>
-            </article>
-            <article>
-              <span class="badge badge--active">Code</span>
-              <h3>/figma-to-block</h3>
-              <p data-i18n="full.commands.figmaToBlock">
-                Генерирует один ACF block за запуск: PHP class, Twig template, SCSS partial и ACF
-                JSON. После каждого блока надо sync в wp-admin Custom Fields.
-              </p>
-            </article>
-            <article>
-              <span class="badge badge--active">QA</span>
-              <h3>/validate-code</h3>
-              <p data-i18n="full.commands.validateCode">
-                Проверяет SCSS, Twig и PHP по rules. Может чинить BEM, raw CSS, hardcoded hex,
-                autoescape mistakes, namespaces и image fields.
-              </p>
-            </article>
-            <article>
-              <span class="badge badge--active">Reference</span>
-              <h3>/get-comment-for-frontend</h3>
-              <p data-i18n-html="full.commands.commentFrontend">
-                Читает базу WordPress напрямую, парсит ACF blocks из <code>post_content</code> и
-                генерирует developer reference с путями Twig, SCSS, PHP и JS.
-              </p>
-            </article>
-            <article>
-              <span class="badge badge--active">SEO</span>
-              <h3>/figma-seo-structure</h3>
-              <p data-i18n="full.commands.seoStructure">
-                Аудит страницы Figma по структурному SEO: тип страницы, внутренние ссылки,
-                E-E-A-T, локальное SEO, Schema.org, layout states. После одобрения плана строит
-                недостающие блоки в копии страницы и добавляет SEO-аннотации для разработчиков.
-              </p>
-            </article>
-            <article>
-              <span class="badge badge--active">SEO</span>
-              <h3>/figma-seo-texts</h3>
-              <p data-i18n="full.commands.seoTexts">
-                Генерирует мультиязычные SEO-тексты для editorial-блоков страницы Figma: meta, H1,
-                тексты секций. Динамические блоки пропускает, Figma не меняет. Запускать после
-                /figma-seo-structure.
-              </p>
-            </article>
-          </div>
-        </section>
-
-        <section id="full-workflows" class="section">
-          <div class="section__head">
-            <span class="section__index">05</span>
-            <div>
-              <h2 data-i18n="full.workflows.title">Полные workflow</h2>
-              <p data-i18n="full.workflows.description">
-                Два базовых сценария: проект с готовым дизайном и проект, где дизайн сначала
-                генерируется в Figma.
-              </p>
-            </div>
-          </div>
-
-          <div class="split">
-            <div>
-              <h3 data-i18n="full.workflows.aTitle">Workflow A — дизайн уже есть в Figma</h3>
-              <pre
-                class="code-block"
-              ><code data-i18n-html="full.workflows.aCode">npm install -g @veaceslav-golden/wp-ai-kit-core
-npm install -g @veaceslav-golden/wp-ai-kit
-wpaikit doctor
-wpaikit init
-
-# manual:
-# create DB, configure wp-config.php,
-# complete WordPress wizard, activate theme
-
-cd wp-content/themes/{slug}
-
-/analyze-figma &lt;url&gt;
-/figma-design-system &lt;url&gt;
-/figma-components
-/prep-figma &lt;url&gt;
-/setup-fonts
-/design-system-to-code
-cd frontend && npm run build
-/scan-components
-/figma-to-block &lt;url&gt;
-/validate-code</code></pre>
-            </div>
-            <div>
-              <h3 data-i18n="full.workflows.bTitle">Workflow B — проекта без дизайна</h3>
-              <pre
-                class="code-block"
-              ><code data-i18n-html="full.workflows.bCode">npm install -g @veaceslav-golden/wp-ai-kit-core
-npm install -g @veaceslav-golden/wp-ai-kit
-wpaikit doctor
-wpaikit init
-cd wp-content/themes/{slug}
-
-/generate-design
-/design-quality-check &lt;figma-url&gt;
-/figma-design-system &lt;url&gt;
-/figma-components
-/prep-figma &lt;url&gt;
-
-# дальше как Workflow A:
-/setup-fonts
-/design-system-to-code
-/scan-components
-/figma-to-block &lt;url&gt;
-/validate-code</code></pre>
-            </div>
-          </div>
-
-          <div class="callout callout--important">
-            <strong data-i18n="full.workflows.importantTitle">Важно</strong>
-            <span data-i18n-html="full.workflows.importantText">
-              Один запуск <code>/figma-to-block</code> генерирует один блок. Для каждой секции
-              страницы повторяйте команду отдельно и после каждого блока синхронизируйте ACF JSON в
-              WordPress admin.
-            </span>
-          </div>
-        </section>
-
-        <section id="situations" class="section">
-          <div class="section__head">
-            <span class="section__index">06</span>
-            <div>
-              <h2 data-i18n="full.situations.title">Частые ситуации</h2>
-              <p data-i18n="full.situations.description">
-                Короткая карта решений для ежедневной работы с проектом.
-              </p>
-            </div>
-          </div>
-
-          <div class="mapping-table" role="table" aria-label="Common situations">
-            <div role="row">
-              <strong role="cell" data-i18n="full.situations.colSituation">Ситуация</strong>
-              <strong role="cell" data-i18n="full.situations.colRun">Что запускать</strong>
-              <strong role="cell" data-i18n="full.situations.colComment">Комментарий</strong>
-            </div>
-            <div role="row">
-              <span role="cell" data-i18n="full.situations.newBlock">Новый блок из Figma</span>
-              <span role="cell"><code>/prep-figma</code> -> <code>/figma-to-block</code></span>
-              <span role="cell" data-i18n="full.situations.newBlockComment">
-                Prep можно пропустить только если frame уже dev-ready.
-              </span>
-            </div>
-            <div role="row">
-              <span role="cell" data-i18n="full.situations.tokensChanged">
-                Дизайнер поменял цвета или шрифты
-              </span>
-              <span role="cell"><code>/figma-sync-tokens</code></span>
-              <span role="cell" data-i18n="full.situations.tokensChangedComment">
-                После этого проверьте Tailwind и build.
-              </span>
-            </div>
-            <div role="row">
-              <span role="cell" data-i18n="full.situations.pagesAdded">
-                В Figma добавились страницы
-              </span>
-              <span role="cell"><code>/figma-update-design-system</code></span>
-              <span role="cell" data-i18n="full.situations.pagesAddedComment">
-                Новые токены добавляются, старые не удаляются.
-              </span>
-            </div>
-            <div role="row">
-              <span role="cell" data-i18n="full.situations.componentAdded">
-                Добавлена новая Twig/SCSS компонента
-              </span>
-              <span role="cell"><code>/scan-components</code></span>
-              <span role="cell" data-i18n="full.situations.componentAddedComment">
-                Обновляет registry для будущей генерации блоков.
-              </span>
-            </div>
-            <div role="row">
-              <span role="cell" data-i18n="full.situations.afterGeneration">
-                Нужна проверка после генерации
-              </span>
-              <span role="cell"><code>/validate-code</code></span>
-              <span role="cell" data-i18n="full.situations.afterGenerationComment">
-                Проверяет SCSS, Twig и PHP против rules.
-              </span>
-            </div>
-            <div role="row">
-              <span role="cell" data-i18n="full.situations.findFiles">
-                Разработчику надо найти файлы страницы
-              </span>
-              <span role="cell"><code>/get-comment-for-frontend &lt;url&gt;</code></span>
-              <span role="cell" data-i18n="full.situations.findFilesComment">
-                Пишет markdown-референс по блокам страницы.
-              </span>
-            </div>
-            <div role="row">
-              <span role="cell" data-i18n="full.situations.seoPage">
-                Нужна SEO-структура и тексты страницы
-              </span>
-              <span role="cell"
-                ><code>/figma-seo-structure &lt;url&gt;</code> -&gt;
-                <code>/figma-seo-texts &lt;url&gt;</code></span
-              >
-              <span role="cell" data-i18n="full.situations.seoPageComment">
-                Сначала структура (блоки, ссылки, schema), затем тексты.
-              </span>
-            </div>
-          </div>
-        </section>
-
-        <section id="key-files" class="section">
-          <div class="section__head">
-            <span class="section__index">07</span>
-            <div>
-              <h2 data-i18n="full.keyFiles.title">Ключевые файлы проекта</h2>
-              <p data-i18n="full.keyFiles.description">
-                Эти файлы и папки чаще всего нужны при разработке и отладке.
-              </p>
-            </div>
-          </div>
-
-          <div class="flow-grid">
-            <article>
-              <h3 data-i18n="full.keyFiles.metadataTitle">Metadata и AI</h3>
-              <p data-i18n-html="full.keyFiles.metadataConfig">
-                <code>.wpaikit.json</code> — имя, namespace, preset.
-              </p>
-              <p data-i18n-html="full.keyFiles.metadataDesignSystem">
-                <code>.wpaikit/design-system.json</code> — cache токенов.
-              </p>
-              <p data-i18n-html="full.keyFiles.metadataRegistry">
-                <code>.wpaikit/components-registry.md</code> — индекс компонентов.
-              </p>
-              <p data-i18n-html="full.keyFiles.metadataKnowledge">
-                <code>knowledge/</code> — rules, prompts, skills.
-              </p>
-            </article>
-            <article>
-              <h3>Frontend</h3>
-              <p data-i18n-html="full.keyFiles.frontendMain">
-                <code>frontend/src/css/main.scss</code> — SCSS entry.
-              </p>
-              <p data-i18n-html="full.keyFiles.frontendTailwind">
-                <code>frontend/tailwind.config.js</code> — Tailwind tokens.
-              </p>
-              <p data-i18n-html="full.keyFiles.frontendComponents">
-                <code>frontend/src/css/components/</code> — component partials.
-              </p>
-              <p data-i18n-html="full.keyFiles.frontendBlocks">
-                <code>frontend/src/css/blocks/</code> — block partials.
-              </p>
-            </article>
-            <article>
-              <h3 data-i18n="full.keyFiles.themeTitle">WordPress theme</h3>
-              <p data-i18n-html="full.keyFiles.themeBlocks">
-                <code>blocks/</code> — PHP classes for ACF blocks.
-              </p>
-              <p data-i18n-html="full.keyFiles.themeViews">
-                <code>views/blocks/</code> — Twig block templates.
-              </p>
-              <p data-i18n-html="full.keyFiles.themeComponents">
-                <code>views/components/</code> — reusable Twig components.
-              </p>
-              <p data-i18n-html="full.keyFiles.themeAcf">
-                <code>acf-json/</code> — ACF field groups to sync in admin.
-              </p>
-            </article>
-          </div>
-        </section>
-
-        <section id="update" class="section">
-          <div class="section__head">
-            <span class="section__index">08</span>
-            <div>
-              <h2 data-i18n="full.update.title">Обновление wpaikit</h2>
-              <p data-i18n="full.update.description">
-                CLI обновляется глобально, knowledge base обновляется отдельно в каждой теме.
-              </p>
-            </div>
-          </div>
-
-          <div class="split">
-            <div>
-              <h3 data-i18n="full.update.projectDevelopers">Для разработчиков проекта</h3>
-              <pre class="code-block"><code>npm install -g @veaceslav-golden/wp-ai-kit-core@latest
-npm install -g @veaceslav-golden/wp-ai-kit@latest
-cd wp-content/themes/{slug}
-wpaikit knowledge install --dry-run
-wpaikit knowledge install</code></pre>
-            </div>
-            <div>
-              <h3 data-i18n="full.update.packageAuthor">Для автора пакета</h3>
-              <pre class="code-block"><code>pnpm --filter @veaceslav-golden/wp-ai-kit build
-cd packages/cli
-pnpm publish --no-git-checks --otp=XXXXXX</code></pre>
-            </div>
-          </div>
-        </section>
-
-        <section id="figma-workflow" class="section">
-          <div class="section__head">
-            <span class="section__index">FG</span>
-            <div>
-              <h2 data-i18n="full.figmaIntro.title">Figma -> ACF block: подробные этапы</h2>
-              <p data-i18n="full.figmaIntro.description">
-                Ниже остается прежняя детальная карта Figma-to-block процесса. Она полезна, когда
-                проект уже инициализирован и нужно работать именно с дизайном и блоками.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section id="overview" class="section">
-          <div class="section__head">
-            <span class="section__index">00</span>
-            <div>
-              <h2 data-i18n="overview.title">Overview</h2>
-              <p data-i18n="overview.description">
-                The process is split into stages so each skill has one clear responsibility.
-              </p>
-            </div>
-          </div>
-
-          <div class="overview-grid">
-            <article class="metric">
-              <span data-i18n="overview.metricSkillsLabel">Active skills</span>
-              <strong>13</strong>
-              <p data-i18n="overview.metricSkillsText">
-                Design generation, analysis, design system, prep, components, sync, fonts, code
-                output, validation, block generation, and developer reference.
-              </p>
-            </article>
-            <article class="metric">
-              <span data-i18n="overview.metricInputLabel">Primary input</span>
-              <strong>Figma URL</strong>
-              <p data-i18n="overview.metricInputText">
-                Frame, page-level frame, or multi-selection depending on the stage.
-              </p>
-            </article>
-            <article class="metric">
-              <span data-i18n="overview.metricTargetLabel">Code target</span>
-              <strong data-i18n="overview.metricTargetValue">Theme root</strong>
-              <p>
-                <code>wp-content/themes/boilerplate/</code>
-                <span data-i18n="overview.metricTargetText">or a renamed project theme.</span>
-              </p>
-            </article>
-          </div>
-
-          <div class="callout callout--important">
-            <strong data-i18n="overview.coreRuleLabel">Core rule:</strong>
-            <span data-i18n="overview.coreRuleText">
-              One top-level Figma frame should map to one ACF block. If the design structure does
-              not reflect the future HTML structure, run analysis and preparation first.
-            </span>
-          </div>
-        </section>
-
-        <section id="design" class="section stage">
-          <div class="stage__marker">1</div>
-          <div class="stage__body">
-            <div class="section__head">
-              <span class="badge badge--active" data-i18n="status.foundation">Foundation</span>
-              <div>
-                <h2 data-i18n="design.title">Design</h2>
-                <p data-i18n="design.description">
-                  The designer prepares the layout so an agent can read it safely.
-                </p>
-              </div>
-            </div>
-
-            <div class="split">
-              <div>
-                <h3 data-i18n="design.checkTitle">What Figma should contain</h3>
-                <ul class="check-list">
-                  <li>
-                    <span data-i18n="design.checkFrame">Frames are named after blocks:</span>
-                    <code>HeroBlock</code>, <code>TeamBlock</code>.
-                  </li>
-                  <li>
-                    <span data-i18n="design.checkLayers">Layers use semantic names:</span>
-                    <code>Heading</code>, <code>CTA Button</code>.
-                  </li>
-                  <li data-i18n="design.checkAutoLayout">Structural layers use Auto Layout.</li>
-                  <li data-i18n="design.checkTokens">
-                    Colors, spacing, radius, and typography come from Variables or Styles.
-                  </li>
-                  <li data-i18n="design.checkComponents">
-                    Repeated elements are built as Figma Components.
-                  </li>
-                </ul>
-              </div>
-              <pre class="code-block"><code>HeroBlock
-  Container
-    Heading
-    Description
-    CTA Button
-  Background Image</code></pre>
-            </div>
-          </div>
-        </section>
-
-        <section id="design-system" class="section stage">
-          <div class="stage__marker">2</div>
-          <div class="stage__body">
-            <div class="section__head">
-              <span class="badge badge--active" data-i18n="status.active">Active</span>
-              <div>
-                <h2 data-i18n="designSystem.title">Create Design System</h2>
-                <p data-i18n="designSystem.description">
-                  Extracts tokens from representative Figma frames and creates local JSON.
-                </p>
-              </div>
-            </div>
-
-            <div class="command-panel">
-              <span class="command-panel__label" data-i18n="common.prompt">Prompt</span>
-              <code>/figma-design-system &lt;figma-frame-url&gt; [&lt;figma-frame-url&gt;]</code>
-            </div>
-
-            <div class="flow-grid">
-              <article>
-                <h3 data-i18n="common.input">Input</h3>
-                <p data-i18n="designSystem.input">One or more representative Figma frames.</p>
-              </article>
-              <article>
-                <h3 data-i18n="common.output">Output</h3>
-                <p>
-                  <code>.wpaikit/design-system.json</code>,
-                  <span data-i18n="designSystem.output"
-                    >Variables, Text Styles, Design System page.</span
-                  >
-                </p>
-              </article>
-              <article>
-                <h3 data-i18n="common.skill">Skill</h3>
-                <p>
-                  <a href="../knowledge/packs/design/skills/figma-create-design-system/SKILL.md">
-                    figma-create-design-system
-                  </a>
-                </p>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <section id="analyze" class="section stage">
-          <div class="stage__marker">3</div>
-          <div class="stage__body">
-            <div class="section__head">
-              <span class="badge badge--active" data-i18n="status.active">Active</span>
-              <div>
-                <h2 data-i18n="analyze.title">Analyze Figma</h2>
-                <p data-i18n="analyze.description">
-                  Checks implementation readiness. It does not modify design or generate code.
-                </p>
-              </div>
-            </div>
-
-            <div class="command-panel">
-              <span class="command-panel__label" data-i18n="common.prompt">Prompt</span>
-              <code>/analyze-figma &lt;figma-url&gt; --lang en</code>
-            </div>
-
-            <div class="report-preview">
-              <h3 data-i18n="analyze.reportTitle">Report format</h3>
-              <pre class="code-block"><code>Status: Ready / Needs cleanup / Not ready
-
-Critical issues
-- [Location] Issue. Impact. Fix.
-
-Important issues
-- [Location] Issue. Impact. Fix.
-
-Minor issues
-- [Location] Issue. Impact. Fix.
-
-Implementation notes
-- ACF blocks detected:
-- Likely ACF fields:
-- Reusable Twig include candidates:
-- Tailwind/token assumptions:</code></pre>
-            </div>
-          </div>
-        </section>
-
-        <section id="prep" class="section stage">
-          <div class="stage__marker">4</div>
-          <div class="stage__body">
-            <div class="section__head">
-              <span class="badge badge--active" data-i18n="status.active">Active</span>
-              <div>
-                <h2 data-i18n="prep.title">Prep Figma</h2>
-                <p data-i18n="prep.description">
-                  Prepares a page-level frame for generation while preserving the visual result.
-                </p>
-              </div>
-            </div>
-
-            <div class="split">
-              <div>
-                <h3 data-i18n="prep.allowedTitle">What can change</h3>
-                <ul class="check-list">
-                  <li data-i18n="prep.allowedNaming">Layer naming and block boundaries.</li>
-                  <li data-i18n="prep.allowedTokens">
-                    Token bindings for colors, spacing, radius, and typography.
-                  </li>
-                  <li data-i18n="prep.allowedAutoLayout">
-                    Auto Layout when geometry does not shift.
-                  </li>
-                  <li data-i18n="prep.allowedComponents">
-                    Component instance replacement without size changes.
-                  </li>
-                </ul>
-              </div>
-              <div class="callout">
-                <strong data-i18n="prep.guardrailLabel">Guardrail</strong>
-                <span data-i18n="prep.guardrailText">
-                  If a change may shift pixels, skip it and add it to the report.
-                </span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="components" class="section stage">
-          <div class="stage__marker">5</div>
-          <div class="stage__body">
-            <div class="section__head">
-              <span class="badge badge--active" data-i18n="status.active">Active</span>
-              <div>
-                <h2 data-i18n="components.title">Components</h2>
-                <p data-i18n="components.description">
-                  Repeated UI patterns become Figma Components and then Twig includes.
-                </p>
-              </div>
-            </div>
-
-            <div class="mapping-table" role="table" aria-label="Component mapping">
-              <div role="row">
-                <strong role="cell" data-i18n="components.tableFigma">Figma Component</strong>
-                <strong role="cell" data-i18n="components.tableCode">Code target</strong>
-                <strong role="cell" data-i18n="components.tablePurpose">Purpose</strong>
-              </div>
-              <div role="row">
-                <span role="cell"><code>Button/Primary</code></span>
-                <span role="cell"><code>views/components/button.twig</code></span>
-                <span role="cell" data-i18n="components.buttonPurpose">
-                  Reusable CTA and link rendering.
-                </span>
-              </div>
-              <div role="row">
-                <span role="cell"><code>Card/Team</code></span>
-                <span role="cell"><code>views/components/team-card.twig</code></span>
-                <span role="cell" data-i18n="components.cardPurpose">
-                  Repeated repeater row layout.
-                </span>
-              </div>
-              <div role="row">
-                <span role="cell"><code>Media/Video</code></span>
-                <span role="cell"><code>views/components/video.twig</code></span>
-                <span role="cell" data-i18n="components.videoPurpose">
-                  Shared video behavior and markup.
-                </span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="generate" class="section stage">
-          <div class="stage__marker">6</div>
-          <div class="stage__body">
-            <div class="section__head">
-              <span class="badge badge--active" data-i18n="status.active">Active</span>
-              <div>
-                <h2 data-i18n="generate.title">Generate Code</h2>
-                <p data-i18n="generate.description">
-                  Generation runs only after the design-system and prep stages.
-                </p>
-              </div>
-            </div>
-
-            <div class="flow-grid">
-              <article>
-                <h3 data-i18n="generate.blockFiles">Block files</h3>
-                <p><code class="code-wrap">blocks/{BlockName}/{BlockName}.php</code></p>
-                <p><code class="code-wrap">views/blocks/{BlockName}/{BlockName}.twig</code></p>
-                <p><code class="code-wrap">acf-json/group_{block_name}.json</code></p>
-              </article>
-              <article>
-                <h3 data-i18n="generate.styleFiles">Style files</h3>
-                <p><code class="code-wrap">frontend/src/blocks/_block-name.scss</code></p>
-                <p data-i18n="generate.styleImport">Imported from the main SCSS entry.</p>
-              </article>
-              <article>
-                <h3 data-i18n="generate.rules">Rules</h3>
-                <p data-i18n="generate.rulesText">
-                  No Tailwind utilities in Twig. Twig uses semantic BEM classes only.
-                </p>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <section id="verify" class="section stage stage--last">
-          <div class="stage__marker">7</div>
-          <div class="stage__body">
-            <div class="section__head">
-              <span class="badge badge--next" data-i18n="status.next">Next</span>
-              <div>
-                <h2 data-i18n="verify.title">Verify</h2>
-                <p data-i18n="verify.description">
-                  This is currently a manual stage. Later it can become a dedicated verification
-                  skill.
-                </p>
-              </div>
-            </div>
-
-            <div class="command-list">
-              <code>composer phpstan</code>
-              <code>cd frontend && npm run lint</code>
-              <code>cd frontend && npm run build</code>
-              <code>php -l path/to/changed-file.php</code>
-            </div>
-          </div>
-        </section>
-
-        <section id="skills" class="section">
-          <div class="section__head">
-            <span class="section__index">SR</span>
-            <div>
-              <h2 data-i18n="skills.title">Skill Registry</h2>
-              <p data-i18n="skills.description">
-                The current map of skills and prompts. This will grow as wpaikit evolves.
-              </p>
-            </div>
-          </div>
-
-          <div class="skill-list">
-            <article>
-              <span class="badge badge--active" data-i18n="status.active">Active</span>
-              <h3>figma-design-analysis</h3>
-              <p data-i18n="skills.analysis">
-                Audit Figma readiness. Output: Ready, Needs cleanup, or Not ready.
-              </p>
-              <a
-                href="../knowledge/packs/design/skills/figma-design-analysis/SKILL.md"
-                data-i18n="common.openSkill"
-              >
-                Open skill
-              </a>
-            </article>
-            <article>
-              <span class="badge badge--active" data-i18n="status.active">Active</span>
-              <h3>figma-create-design-system</h3>
-              <p data-i18n="skills.designSystem">
-                Extract tokens and create Figma Variables, Text Styles, and local JSON.
-              </p>
-              <a
-                href="../knowledge/packs/design/skills/figma-create-design-system/SKILL.md"
-                data-i18n="common.openSkill"
-              >
-                Open skill
-              </a>
-            </article>
-            <article>
-              <span class="badge badge--active" data-i18n="status.active">Active</span>
-              <h3>figma-prep</h3>
-              <p data-i18n="skills.prep">
-                Prepare Figma structure for generation without changing visual appearance.
-              </p>
-              <a
-                href="../knowledge/packs/design/skills/figma-prep/SKILL.md"
-                data-i18n="common.openSkill"
-              >
-                Open skill
-              </a>
-            </article>
-            <article>
-              <span class="badge badge--active" data-i18n="status.active">Active</span>
-              <h3>figma-components</h3>
-              <p data-i18n="skills.components">
-                Create reusable component variants from saved design system patterns.
-              </p>
-              <a
-                href="../knowledge/packs/design/skills/figma-components/SKILL.md"
-                data-i18n="common.openSkill"
-              >
-                Open skill
-              </a>
-            </article>
-            <article>
-              <span class="badge badge--active" data-i18n="status.active">Active</span>
-              <h3>figma-to-block</h3>
-              <p data-i18n="skills.toBlock">
-                Generate ACF block PHP, Twig, SCSS, and ACF JSON from a Figma block frame.
-              </p>
-              <a
-                href="../knowledge/packs/wordpress/skills/figma-to-block/SKILL.md"
-                data-i18n="common.openSkill"
-              >
-                Open skill
-              </a>
-            </article>
-            <article>
-              <span class="badge badge--active" data-i18n="status.active">Active</span>
-              <h3>figma-sync-tokens</h3>
-              <p data-i18n="skills.sync">
-                Sync local design-system.json after Variables, Text Styles, or Components changed in
-                Figma.
-              </p>
-              <a
-                href="../knowledge/packs/design/skills/figma-sync-tokens/SKILL.md"
-                data-i18n="common.openSkill"
-              >
-                Open skill
-              </a>
-            </article>
-            <article>
-              <span class="badge badge--active" data-i18n="status.active">Active</span>
-              <h3>design-system-to-code</h3>
-              <p data-i18n="skills.toCode">
-                Generate Twig components, SCSS partials, and Tailwind config from the design system
-                JSON.
-              </p>
-              <a
-                href="../knowledge/packs/wordpress/skills/design-system-to-code/SKILL.md"
-                data-i18n="common.openSkill"
-              >
-                Open skill
-              </a>
-            </article>
-            <article>
-              <span class="badge badge--active" data-i18n="status.active">Active</span>
-              <h3>generate-design</h3>
-              <p data-i18n="skills.generateDesign">
-                Interactively collect design materials and generate a full UI in Figma from brief,
-                design system, and brand references.
-              </p>
-              <a
-                href="../knowledge/packs/design/skills/generate-design/SKILL.md"
-                data-i18n="common.openSkill"
-              >
-                Open skill
-              </a>
-            </article>
-            <article>
-              <span class="badge badge--active" data-i18n="status.active">Active</span>
-              <h3>figma-update-design-system</h3>
-              <p data-i18n="skills.updateDS">
-                Add new Figma frames to an existing design system — merge tokens and update Figma
-                page without deleting existing data.
-              </p>
-              <a
-                href="../knowledge/packs/design/skills/figma-update-design-system/SKILL.md"
-                data-i18n="common.openSkill"
-              >
-                Open skill
-              </a>
-            </article>
-            <article>
-              <span class="badge badge--active" data-i18n="status.active">Active</span>
-              <h3>setup-fonts</h3>
-              <p data-i18n="skills.setupFonts">
-                Audit fonts against design-system.json, remove unused files, convert to woff2/woff,
-                and generate @font-face SCSS.
-              </p>
-              <a
-                href="../knowledge/packs/shared/skills/setup-fonts/SKILL.md"
-                data-i18n="common.openSkill"
-              >
-                Open skill
-              </a>
-            </article>
-            <article>
-              <span class="badge badge--active" data-i18n="status.active">Active</span>
-              <h3>scan-components</h3>
-              <p data-i18n="skills.scanComponents">
-                Scan SCSS and Twig files to build a components registry used by figma-to-block for
-                reuse instead of duplication.
-              </p>
-              <a
-                href="../knowledge/packs/wordpress/skills/scan-components/SKILL.md"
-                data-i18n="common.openSkill"
-              >
-                Open skill
-              </a>
-            </article>
-            <article>
-              <span class="badge badge--active" data-i18n="status.active">Active</span>
-              <h3>validate-code</h3>
-              <p data-i18n="skills.validateCode">
-                Validate SCSS, Twig, and PHP against coding rules. Report violations and fix them —
-                including unknown hex colors.
-              </p>
-              <a
-                href="../knowledge/packs/wordpress/skills/validate-code/SKILL.md"
-                data-i18n="common.openSkill"
-              >
-                Open skill
-              </a>
-            </article>
-            <article>
-              <span class="badge badge--active" data-i18n="status.active">Active</span>
-              <h3>get-comment-for-frontend</h3>
-              <p data-i18n="skills.commentFrontend">
-                Query the WordPress database directly, parse ACF blocks from post_content, and write
-                a developer reference .md with Twig, SCSS, and JS paths.
-              </p>
-              <a
-                href="../knowledge/packs/wordpress/skills/get-comment-for-frontend/SKILL.md"
-                data-i18n="common.openSkill"
-              >
-                Open skill
-              </a>
-            </article>
-          </div>
-        </section>
-      </main>
-    </div>
-
-    <dialog class="md-viewer" aria-labelledby="md-viewer-title">
-      <div class="md-viewer__shell">
-        <header class="md-viewer__bar">
-          <div class="md-viewer__window-controls" aria-hidden="true">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-          <div class="md-viewer__file">
-            <span data-md-viewer-path>markdown</span>
-            <strong id="md-viewer-title" data-md-viewer-title>Document</strong>
-          </div>
-          <div class="md-viewer__actions">
-            <a
-              href="about:blank"
-              data-md-viewer-raw
-              data-i18n="modal.raw"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Raw
-            </a>
-            <button type="button" data-md-viewer-close data-i18n="modal.close">Close</button>
-          </div>
-        </header>
-        <div class="md-viewer__content" data-md-viewer-content>
-          <div class="md-viewer__empty" data-i18n="modal.empty">Select a markdown reference.</div>
+          <button class="icon-btn" type="button" id="theme-toggle" data-i18n-aria="theme">◐</button>
         </div>
       </div>
-    </dialog>
+    </header>
 
-    <script src="./workflow.js"></script>
+    <main>
+      <div class="hub">
+        <div class="hero">
+          <p class="hero__eyebrow"><l-en>Documentation</l-en><l-ru>Документация</l-ru><l-ro>Documentație</l-ro></p>
+          <h1><l-en>WPAIKit documentation</l-en><l-ru>Документация WPAIKit</l-ru><l-ro>Documentația WPAIKit</l-ro></h1>
+          <p><l-en>AI-assisted workflows for designers, slicers and WordPress developers: from Figma to production code. Pick a section below.</l-en><l-ru>AI-процессы для дизайнеров, верстальщиков и WordPress-разработчиков: от Figma до production-кода. Выберите раздел ниже.</l-ru><l-ro>Fluxuri asistate de AI pentru designeri, integratori și dezvoltatori WordPress: de la Figma la cod de producție. Alege o secțiune mai jos.</l-ro></p>
+          <div class="cmd"><pre><code>npm install -g @veaceslav-golden/wp-ai-kit
+wpaikit knowledge install</code></pre></div>
+        </div>
+
+        <section>
+          <h2><l-en>Start here</l-en><l-ru>С чего начать</l-ru><l-ro>De unde începi</l-ro></h2>
+          <div class="hub-cards">
+            <a class="hub-card" href="./guide.html" style="--card-color: var(--accent)">
+              <span class="hub-card__tag">Guide</span>
+              <h3><l-en>Installation and roles</l-en><l-ru>Установка и роли</l-ru><l-ro>Instalare și roluri</l-ro></h3>
+              <p><l-en>Install the CLI and knowledge packs, then follow the step-by-step process for Design, Slicing, WordPress and WooCommerce.</l-en><l-ru>Установка CLI и knowledge-наборов, затем пошаговый процесс для Design, Slicing, WordPress и WooCommerce.</l-ru><l-ro>Instalează CLI-ul și pachetele knowledge, apoi urmează procesul pas cu pas pentru Design, Slicing, WordPress și WooCommerce.</l-ro></p>
+              <span class="hub-card__go"><l-en>Open the guide →</l-en><l-ru>Открыть гайд →</l-ru><l-ro>Deschide ghidul →</l-ro></span>
+            </a>
+            <a class="hub-card" href="./boilerplates.html" style="--card-color: var(--woo)">
+              <span class="hub-card__tag">Boilerplates</span>
+              <h3><l-en>Structure and development</l-en><l-ru>Структура и разработка</l-ru><l-ro>Structură și dezvoltare</l-ro></h3>
+              <p><l-en>Standard and WooCommerce starters: folder structure, commands, built-in modules (SEO, cookie consent, analytics) and how to extend the theme.</l-en><l-ru>Стартеры Standard и WooCommerce: структура папок, команды, встроенные модули (SEO, cookie consent, аналитика) и как расширять тему.</l-ru><l-ro>Starterele Standard și WooCommerce: structura folderelor, comenzi, module integrate (SEO, cookie consent, analytics) și cum extinzi tema.</l-ro></p>
+              <span class="hub-card__go"><l-en>Open boilerplates →</l-en><l-ru>Открыть boilerplates →</l-ru><l-ro>Deschide boilerplate-urile →</l-ro></span>
+            </a>
+            <a class="hub-card" href="./changelog.html" style="--card-color: var(--ok)">
+              <span class="hub-card__tag">Changelog</span>
+              <h3><l-en>What's new</l-en><l-ru>Что нового</l-ru><l-ro>Noutăți</l-ro></h3>
+              <p><l-en>Release notes for WPAIKit (CLI and knowledge together) and the boilerplates, with upgrade notes.</l-en><l-ru>История обновлений WPAIKit (CLI и knowledge вместе) и boilerplate, с заметками по обновлению.</l-ru><l-ro>Istoricul actualizărilor pentru WPAIKit (CLI și knowledge împreună) și boilerplate-uri, cu note de actualizare.</l-ro></p>
+              <span class="hub-card__go"><l-en>Open changelog →</l-en><l-ru>Открыть changelog →</l-ru><l-ro>Deschide changelog-ul →</l-ro></span>
+            </a>
+          </div>
+        </section>
+
+        <section>
+          <h2><l-en>Jump to your role</l-en><l-ru>Перейти к своей роли</l-ru><l-ro>Sari la rolul tău</l-ro></h2>
+          <div class="hub-roles">
+            <a href="./guide.html#design" style="--card-color: var(--design)"><strong>Design</strong><span><l-en>Figma audit, design system, components</l-en><l-ru>Аудит Figma, дизайн-система, компоненты</l-ru><l-ro>Audit Figma, design system, componente</l-ro></span><code>--packs design</code></a>
+            <a href="./guide.html#slicing" style="--card-color: var(--slicing)"><strong>Slicing</strong><span><l-en>HTML + SCSS + JS without a CMS</l-en><l-ru>HTML + SCSS + JS без CMS</l-ru><l-ro>HTML + SCSS + JS fără CMS</l-ro></span><code>--packs slicing</code></a>
+            <a href="./guide.html#wordpress" style="--card-color: var(--wordpress)"><strong>WordPress</strong><span><l-en>ACF blocks from Figma</l-en><l-ru>ACF-блоки из Figma</l-ru><l-ro>Blocuri ACF din Figma</l-ro></span><code>--packs wordpress</code></a>
+            <a href="./guide.html#woocommerce" style="--card-color: var(--woo)"><strong>WooCommerce</strong><span><l-en>Store: variations, checkout, catalog</l-en><l-ru>Магазин: вариации, checkout, каталог</l-ru><l-ro>Magazin: variații, checkout, catalog</l-ro></span><code>--wp-profile woo</code></a>
+          </div>
+        </section>
+
+        <section>
+          <h2><l-en>More</l-en><l-ru>Ещё</l-ru><l-ro>Mai mult</l-ro></h2>
+          <div class="table-wrap"><table>
+            <thead><tr><th><l-en>Page</l-en><l-ru>Страница</l-ru><l-ro>Pagina</l-ro></th><th><l-en>What is inside</l-en><l-ru>Что внутри</l-ru><l-ro>Ce conține</l-ro></th></tr></thead>
+            <tbody>
+              <tr><td><a href="./woocommerce-init.md">woocommerce-init.md</a></td><td><l-en>WooCommerce preset: init flags and required plugins.</l-en><l-ru>Preset WooCommerce: флаги init и обязательные плагины.</l-ru><l-ro>Preset WooCommerce: flaguri init și plugin-uri necesare.</l-ro></td></tr>
+              <tr><td><a href="https://github.com/GoldenCodesSlava/wpaikit">GitHub</a></td><td><l-en>Source code and issues.</l-en><l-ru>Исходный код и issues.</l-ru><l-ro>Cod sursă și issues.</l-ro></td></tr>
+            </tbody>
+          </table></div>
+        </section>
+      </div>
+
+      <p class="footer">
+        WPAIKit ·
+        <a href="./guide.html">Guide</a> ·
+        <a href="./boilerplates.html">Boilerplates</a> ·
+        <a href="./changelog.html">Changelog</a> ·
+        <a href="https://www.npmjs.com/package/@veaceslav-golden/wp-ai-kit">npm</a>
+      </p>
+    </main>
+
+    <script>
+      ;(() => {
+        const LANGS = ['en', 'ru', 'ro']
+        const STRINGS = {
+          en: { title: 'WPAIKit — documentation', description: 'WPAIKit documentation: guide, boilerplates and changelog.', theme: 'Toggle theme', langGroup: 'Language', sections: 'Documentation pages' },
+          ru: { title: 'WPAIKit — документация', description: 'Документация WPAIKit: гайд, boilerplates и changelog.', theme: 'Переключить тему', langGroup: 'Язык', sections: 'Страницы документации' },
+          ro: { title: 'WPAIKit — documentație', description: 'Documentația WPAIKit: ghid, boilerplate-uri și changelog.', theme: 'Schimbă tema', langGroup: 'Limbă', sections: 'Paginile documentației' },
+        }
+        const root = document.documentElement
+        const store = {
+          get(k) { try { return localStorage.getItem(k) } catch { return null } },
+          set(k, v) { try { localStorage.setItem(k, v) } catch {} },
+        }
+        function applyLang(next) {
+          const lang = LANGS.includes(next) ? next : 'en'
+          const t = STRINGS[lang]
+          root.lang = lang
+          document.title = t.title
+          document.querySelector('meta[name="description"]').content = t.description
+          document.querySelectorAll('[data-i18n-aria]').forEach((el) => el.setAttribute('aria-label', t[el.dataset.i18nAria]))
+          document.querySelectorAll('.lang-switch button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)))
+          store.set('wpaikit-docs-lang', lang)
+        }
+        document.querySelectorAll('.lang-switch button').forEach((b) => b.addEventListener('click', () => applyLang(b.dataset.lang)))
+        const saved = store.get('wpaikit-docs-theme')
+        if (saved) root.dataset.theme = saved
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+          const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches
+          root.dataset.theme = dark ? 'light' : 'dark'
+          store.set('wpaikit-docs-theme', root.dataset.theme)
+        })
+        document.querySelectorAll('.cmd').forEach((block) => {
+          const button = document.createElement('button')
+          button.type = 'button'
+          button.className = 'copy'
+          button.textContent = 'Copy'
+          button.addEventListener('click', async () => {
+            try { await navigator.clipboard.writeText(block.querySelector('pre').textContent.trim()) } catch {}
+            button.textContent = 'Copied'
+            setTimeout(() => { button.textContent = 'Copy' }, 1600)
+          })
+          block.append(button)
+        })
+        applyLang(new URLSearchParams(location.search).get('lang') || store.get('wpaikit-docs-lang') || 'en')
+      })()
+    </script>
   </body>
 </html>
