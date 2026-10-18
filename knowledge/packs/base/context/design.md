@@ -13,6 +13,9 @@
 # SEO (before implementation):
 /figma-seo-structure    ← which blocks, links, schema the page needs (run first)
 /figma-seo-texts        ← copy for the editorial blocks (run after structure is approved)
+
+# Case studies:
+/case-study-mockups     ← mockup images from a live site, placed into the Figma case study
 ```
 
 - When in doubt about how a block should be structured or named in Figma, check

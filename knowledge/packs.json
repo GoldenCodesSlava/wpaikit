@@ -14,7 +14,8 @@
         "generate-design",
         "design-quality-check",
         "figma-seo-structure",
-        "figma-seo-texts"
+        "figma-seo-texts",
+        "case-study-mockups"
       ],
       "sharedCommands": [],
       "sharedFiles": ["rules/figma-blocks.md", "contracts/design-system.md"]
@@ -102,6 +103,11 @@
       "usage": "/figma-seo-texts <figma-url>",
       "description": "Generate multilingual SEO texts from a Figma page — skips dynamic blocks, localizes per language",
       "constraint": "read-only from Figma; never modifies Figma layers; never skips confirmation of block list or keywords; only writes the output `.md` file."
+    },
+    "case-study-mockups": {
+      "usage": "/case-study-mockups <site-url> [figma-url] [--auth user:pass | --login-url URL --user U --pass P]",
+      "description": "Generate case study mockup images (browser, iPhone, isometric grid) from a live site and place them into the Figma case study",
+      "constraint": "real screenshots only; never changes the fixed compositions — only screenshots, logo and background colours; one confirmation stop before capturing; login only via separate parameters."
     },
     "figma-to-block-html": {
       "usage": "/figma-to-block-html <desktop-url> [<mobile-url>]",

@@ -1,0 +1,5 @@
+{
+  "name": "case-study-mockups",
+  "private": true,
+  "dependencies": { "playwright-core": "1.49.1" }
+}

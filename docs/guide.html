@@ -1186,6 +1186,7 @@ knowledge/
           <a href="#design-workflow"><l-en>Workflow</l-en><l-ru>Процесс</l-ru><l-ro>Flux de lucru</l-ro></a>
           <a href="#design-first">Design-first</a>
           <a href="#design-seo">SEO</a>
+          <a href="#design-mockups"><l-en>Case study mockups</l-en><l-ru>Мокапы для кейсов</l-ru><l-ro>Mockup-uri pentru studii de caz</l-ro></a>
           <a href="#design-commands"><l-en>All commands</l-en><l-ru>Все команды</l-ru><l-ro>Toate comenzile</l-ro></a>
           <a href="#design-naming"><l-en>Block naming</l-en><l-ru>Именование блоков</l-ru><l-ro>Denumirea blocurilor</l-ro></a>
           <a href="#design-handoff"><l-en>Handoff</l-en><l-ru>Передача в разработку</l-ru><l-ro>Predarea către dezvoltare</l-ro></a>
@@ -1227,9 +1228,9 @@ wpaikit knowledge install --packs design</code></pre></div>
               <li>
                 <strong><l-en>Open the assistant in this folder</l-en><l-ru>Откройте ассистента в этой папке</l-ru><l-ro>Deschide asistentul în acest folder</l-ro></strong>
                 <p>
-                  <l-en>Claude Code will show 10 slash commands starting with <code>/</code>.</l-en>
-                  <l-ru>В Claude Code появятся 10 slash-команд, начинающихся с <code>/</code>.</l-ru>
-                  <l-ro>În Claude Code vor apărea 10 comenzi slash care încep cu <code>/</code>.</l-ro>
+                  <l-en>Claude Code will show 11 slash commands starting with <code>/</code>.</l-en>
+                  <l-ru>В Claude Code появятся 11 slash-команд, начинающихся с <code>/</code>.</l-ru>
+                  <l-ro>În Claude Code vor apărea 11 comenzi slash care încep cu <code>/</code>.</l-ro>
                 </p>
               </li>
             </ol>
@@ -1337,6 +1338,42 @@ wpaikit knowledge install --packs design</code></pre></div>
             </ol>
           </section>
 
+          <section id="design-mockups">
+            <h2><a class="anchor" href="#design-mockups"><l-en>Case study mockups</l-en><l-ru>Мокапы для кейсов</l-ru><l-ro>Mockup-uri pentru studii de caz</l-ro></a></h2>
+            <p>
+              <l-en>Four showcase images for a case study page, made from real screenshots of a live site: Overview (browser + iPhone + logo), a wide showcase (big browser + tablet window), an isometric iPhone grid and a browser with two iPhones. The compositions are fixed — only the screenshots, the logo and the background colours change.</l-en><l-ru>Четыре картинки для страницы кейса из настоящих скриншотов живого сайта: Overview (браузер + iPhone + логотип), широкий showcase (большой браузер + окно планшетной версии), сетка изометрических iPhone и браузер с двумя iPhone. Композиции фиксированы — меняются только скриншоты, логотип и цвета фона.</l-ru><l-ro>Patru imagini pentru pagina unui studiu de caz, din capturi reale ale unui site live: Overview (browser + iPhone + logo), showcase lat (browser mare + fereastră de tabletă), grilă de iPhone izometrice și browser cu două iPhone. Compozițiile sunt fixe — se schimbă doar capturile, logo-ul și culorile de fundal.</l-ro>
+            </p>
+            <ol class="steps">
+              <li>
+                <strong><l-en>Run the command with the site URL</l-en><l-ru>Запустите команду со ссылкой на сайт</l-ru><l-ro>Rulează comanda cu linkul site-ului</l-ro></strong>
+                <p>
+                  <l-en>Optionally add the Figma case study frame. Without it (or with an empty page) the case study template is copied there.</l-en><l-ru>При желании добавьте ссылку на кадр кейса в Figma. Без неё (или если страница пустая) туда копируется шаблон кейса.</l-ru><l-ro>Opțional adaugă cadrul studiului de caz din Figma. Fără el (sau dacă pagina e goală) acolo se copiază șablonul studiului de caz.</l-ro>
+                </p>
+                <div class="cmd"><pre><code>/case-study-mockups &lt;site-url&gt; [&lt;figma-url&gt;]</code></pre></div>
+              </li>
+              <li>
+                <strong><l-en>Closed site? Pass access separately</l-en><l-ru>Сайт закрыт? Передайте доступ отдельно</l-ru><l-ro>Site închis? Transmite accesul separat</l-ro></strong>
+                <p>
+                  <l-en>Browser password prompt — <code>--auth</code>; login form — <code>--login-url</code>, <code>--user</code>, <code>--pass</code>. Without access the command stops instead of capturing the login page.</l-en><l-ru>Пароль в окне браузера — <code>--auth</code>; форма входа — <code>--login-url</code>, <code>--user</code>, <code>--pass</code>. Без доступа команда останавливается, а не снимает страницу входа.</l-ru><l-ro>Parolă în fereastra browserului — <code>--auth</code>; formular de login — <code>--login-url</code>, <code>--user</code>, <code>--pass</code>. Fără acces comanda se oprește în loc să captureze pagina de login.</l-ro>
+                </p>
+                <div class="cmd"><pre><code>/case-study-mockups &lt;site-url&gt; --auth user:pass
+/case-study-mockups &lt;site-url&gt; --login-url &lt;url&gt; --user &lt;login&gt; --pass &lt;password&gt;</code></pre></div>
+              </li>
+              <li>
+                <strong><l-en>Confirm pages, sections and colours</l-en><l-ru>Подтвердите страницы, секции и цвета</l-ru><l-ro>Confirmă paginile, secțiunile și culorile</l-ro></strong>
+                <p>
+                  <l-en>The assistant shows which pages and sections go into each image, the palette taken from the site and the logo — then waits for your OK. This is the only stop.</l-en><l-ru>Ассистент показывает, какие страницы и секции пойдут в каждую картинку, палитру с сайта и логотип — и ждёт подтверждения. Это единственная остановка.</l-ru><l-ro>Asistentul arată ce pagini și secțiuni intră în fiecare imagine, paleta luată din site și logo-ul — apoi așteaptă confirmarea. Este singura oprire.</l-ro>
+                </p>
+              </li>
+              <li>
+                <strong><l-en>Get the images in Figma</l-en><l-ru>Получите картинки в Figma</l-ru><l-ro>Primește imaginile în Figma</l-ro></strong>
+                <p>
+                  <l-en>Images are rendered at 3x and placed into the Desktop and Mobile case study. Copies are saved to <code>assets/generated/case-studies/&lt;domain&gt;/</code>. Requires Google Chrome, Node 20 and Python 3 with Pillow and numpy; run <code>npm i</code> once in <code>knowledge/design/skills/case-study-mockups/</code>.</l-en><l-ru>Картинки рендерятся в 3x и ставятся в десктопную и мобильную версии кейса. Копии сохраняются в <code>assets/generated/case-studies/&lt;domain&gt;/</code>. Нужны Google Chrome, Node 20 и Python 3 с Pillow и numpy; один раз выполните <code>npm i</code> в <code>knowledge/design/skills/case-study-mockups/</code>.</l-ru><l-ro>Imaginile se randează la 3x și se pun în studiul de caz Desktop și Mobile. Copiile se salvează în <code>assets/generated/case-studies/&lt;domain&gt;/</code>. Necesită Google Chrome, Node 20 și Python 3 cu Pillow și numpy; rulează o dată <code>npm i</code> în <code>knowledge/design/skills/case-study-mockups/</code>.</l-ro>
+                </p>
+              </li>
+            </ol>
+          </section>
+
           <section id="design-commands">
             <h2><a class="anchor" href="#design-commands"><l-en>All commands</l-en><l-ru>Все команды</l-ru><l-ro>Toate comenzile</l-ro></a></h2>
             <div class="table-wrap">
@@ -1398,6 +1435,11 @@ wpaikit knowledge install --packs design</code></pre></div>
                     <td><code>/figma-seo-texts</code></td>
                     <td><l-en>Multilingual SEO copy</l-en><l-ru>Многоязычные SEO-тексты</l-ru><l-ro>Texte SEO multilingve</l-ro></td>
                     <td><span class="pill"><l-en>no</l-en><l-ru>нет</l-ru><l-ro>nu</l-ro></span></td>
+                  </tr>
+                  <tr>
+                    <td><code>/case-study-mockups</code></td>
+                    <td><l-en>Case study mockup images from a live site</l-en><l-ru>Картинки с мокапами для кейса с живого сайта</l-ru><l-ro>Imagini mockup pentru studiu de caz din site-ul live</l-ro></td>
+                    <td><span class="pill"><l-en>image slots</l-en><l-ru>слоты картинок</l-ru><l-ro>sloturile de imagini</l-ro></span></td>
                   </tr>
                 </tbody>
               </table>

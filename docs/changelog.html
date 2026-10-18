@@ -830,9 +830,9 @@
             <h1><l-en>What's new</l-en><l-ru>Что нового</l-ru><l-ro>Noutăți</l-ro></h1>
             <p><l-en>Updates for WPAIKit (CLI and knowledge together) and both boilerplates in one place. Newest first. Use the tabs to filter by product.</l-en><l-ru>Обновления WPAIKit (CLI и knowledge вместе) и обоих boilerplate в одном месте. Сначала новые. Табы фильтруют по продукту.</l-ru><l-ro>Actualizările pentru WPAIKit (CLI și knowledge împreună) și ambele boilerplate într-un singur loc. Cele mai noi primele. Tab-urile filtrează după produs.</l-ro></p>
             <div class="cl-current">
-              <div><span class="cl-current__label">WPAIKit CLI</span><strong>1.0.0</strong></div>
+              <div><span class="cl-current__label">WPAIKit CLI</span><strong>1.1.0</strong></div>
               <div><span class="cl-current__label">Core</span><strong>0.2.0</strong></div>
-              <div><span class="cl-current__label">Knowledge</span><strong>2.0.0</strong></div>
+              <div><span class="cl-current__label">Knowledge</span><strong>2.1.0</strong></div>
             </div>
             <div class="cmd"><pre><code>npm install -g @veaceslav-golden/wp-ai-kit@latest
 wpaikit knowledge install</code></pre></div>
@@ -844,13 +844,37 @@ wpaikit knowledge install</code></pre></div>
 
           <div class="cl-list" id="cl-list">
 
+            <!-- ============ 2026-10-18 ============ -->
+            <article class="entry" data-product="wpaikit" id="wpaikit-1-1-0">
+              <header class="entry__head">
+                <span class="badge badge--wpaikit">WPAIKit</span>
+                <h2><a class="anchor" href="#wpaikit-1-1-0">1.1.0</a></h2>
+                <time datetime="2026-10-18">2026-10-18</time>
+                <span class="tag tag--latest"><l-en>latest</l-en><l-ru>актуальная</l-ru><l-ro>curentă</l-ro></span>
+              </header>
+              <p class="entry__versions">CLI <code>1.1.0</code> · Knowledge <code>2.1.0</code> · <l-en>Design pack</l-en><l-ru>набор Design</l-ru><l-ro>pachetul Design</l-ro></p>
+              <p class="entry__lead"><l-en>New Design command: case study mockup images straight from a live site.</l-en><l-ru>Новая команда в наборе Design: картинки с мокапами для кейса прямо с живого сайта.</l-ru><l-ro>Comandă nouă în pachetul Design: imagini cu mockup-uri pentru un studiu de caz, direct dintr-un site live.</l-ro></p>
+
+              <h3><span class="tag tag--added"><l-en>Added</l-en><l-ru>Добавлено</l-ru><l-ro>Adăugat</l-ro></span></h3>
+              <ul>
+                <li><l-en><code>/case-study-mockups &lt;site-url&gt; [&lt;figma-url&gt;]</code> — captures the site and renders the 4 case study images: Overview (browser + iPhone + logo), wide showcase (big browser + tablet window), isometric iPhone grid and browser + two iPhones. Uploads them to the Desktop and Mobile case study in Figma.</l-en><l-ru><code>/case-study-mockups &lt;site-url&gt; [&lt;figma-url&gt;]</code> — снимает сайт и рендерит 4 картинки кейса: Overview (браузер + iPhone + логотип), широкий showcase (большой браузер + окно планшетной версии), сетка изометрических iPhone и браузер + два iPhone. Загружает их в десктопную и мобильную версии кейса в Figma.</l-ru><l-ro><code>/case-study-mockups &lt;site-url&gt; [&lt;figma-url&gt;]</code> — face capturi ale site-ului și randează cele 4 imagini ale studiului de caz: Overview (browser + iPhone + logo), showcase lat (browser mare + fereastră de tabletă), grilă de iPhone izometrice și browser + două iPhone. Le încarcă în studiul de caz Desktop și Mobile din Figma.</l-ro></li>
+                <li><l-en>Fixed compositions: only the screenshots, the logo and the background colours change. Colours are taken from the site (footer / page backgrounds / buttons) and confirmed before capturing.</l-en><l-ru>Структура картинок фиксирована: меняются только скриншоты, логотип и цвета фона. Цвета берутся с сайта (футер, фоны страниц, кнопки) и подтверждаются перед съёмкой.</l-ru><l-ro>Compoziții fixe: se schimbă doar capturile, logo-ul și culorile de fundal. Culorile se iau din site (footer, fundaluri, butoane) și se confirmă înainte de capturi.</l-ro></li>
+                <li><l-en>Closed sites: pass access with <code>--auth user:pass</code> or <code>--login-url … --user … --pass …</code>. The command reminds about it at the start and stops if a login page is detected.</l-en><l-ru>Закрытые сайты: доступ передаётся через <code>--auth user:pass</code> или <code>--login-url … --user … --pass …</code>. Команда напоминает об этом в начале и останавливается, если видит страницу входа.</l-ru><l-ro>Site-uri închise: accesul se transmite cu <code>--auth user:parola</code> sau <code>--login-url … --user … --pass …</code>. Comanda amintește asta la început și se oprește dacă detectează o pagină de login.</l-ro></li>
+                <li><l-en>iPhone 15 Pro bodies (front and isometric) ship inside the skill — no Figma community files needed at run time.</l-en><l-ru>Корпуса iPhone 15 Pro (фронтальный и изометрический) лежат внутри скилла — community-файлы Figma при запуске не нужны.</l-ru><l-ro>Corpurile iPhone 15 Pro (frontal și izometric) vin în skill — nu e nevoie de fișiere Figma community la rulare.</l-ro></li>
+              </ul>
+              <h3><span class="tag tag--breaking"><l-en>Upgrade notes</l-en><l-ru>Как обновиться</l-ru><l-ro>Note de actualizare</l-ro></span></h3>
+              <ul>
+                <li><l-en>Requires Google Chrome, Node 20 and Python 3 with Pillow and numpy. Run <code>npm i</code> once in <code>knowledge/design/skills/case-study-mockups/</code>.</l-en><l-ru>Нужны Google Chrome, Node 20 и Python 3 с Pillow и numpy. Один раз выполните <code>npm i</code> в <code>knowledge/design/skills/case-study-mockups/</code>.</l-ru><l-ro>Necesită Google Chrome, Node 20 și Python 3 cu Pillow și numpy. Rulează o dată <code>npm i</code> în <code>knowledge/design/skills/case-study-mockups/</code>.</l-ro></li>
+              </ul>
+              <div class="cmd"><pre><code>wpaikit knowledge install --packs design</code></pre></div>
+            </article>
+
             <!-- ============ 2026-10-06 ============ -->
             <article class="entry entry--major" data-product="wpaikit" id="wpaikit-1-0-0">
               <header class="entry__head">
                 <span class="badge badge--wpaikit">WPAIKit</span>
                 <h2><a class="anchor" href="#wpaikit-1-0-0">1.0.0</a></h2>
                 <time datetime="2026-10-06">2026-10-06</time>
-                <span class="tag tag--latest"><l-en>latest</l-en><l-ru>актуальная</l-ru><l-ro>curentă</l-ro></span>
               </header>
               <p class="entry__versions">CLI <code>1.0.0</code> · Core <code>0.2.0</code> · Knowledge <code>2.0.0</code></p>
               <p class="entry__lead"><l-en>First stable release. WPAIKit is no longer tied to WordPress: install only what your role needs — and use it in any project, with or without WP.</l-en><l-ru>Первый стабильный релиз. WPAIKit больше не привязан к WordPress: ставьте только то, что нужно вашей роли, и используйте в любом проекте — с WP или без.</l-ru><l-ro>Prima versiune stabilă. WPAIKit nu mai e legat de WordPress: instalează doar ce are nevoie rolul tău și folosește-l în orice proiect — cu sau fără WP.</l-ro></p>

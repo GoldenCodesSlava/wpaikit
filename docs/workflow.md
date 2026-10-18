@@ -128,7 +128,7 @@ Knowledge base-ul este împărțit în pachete independente. Fiecare rol instale
 
 | Pachet | Pentru cine | Conține |
 |---|---|---|
-| `design` | designer | Comenzile Figma: analiză, design system, componente, prep, generare, SEO. Fără reguli WordPress. |
+| `design` | designer | Comenzile Figma: analiză, design system, componente, prep, generare, SEO, mockup-uri pentru studii de caz. Fără reguli WordPress. |
 | `slicing` | integrator (fără CMS) | `/figma-to-block-html` — HTML + SCSS (Tailwind `@apply`) + JS, plus `/scan-project` și `/setup-fonts` |
 | `wordpress` | dezvoltator WordPress | `/figma-to-block` (PHP + Twig + SCSS + ACF JSON), regulile boilerplate-ului; profilul `woo` adaugă WooCommerce |
 
@@ -393,6 +393,57 @@ Fiecare punct: ✅ / ⚠️ / ❌ + motiv + prioritate (P1/P2/P3).
 - Textele din Figma sunt considerate placeholder și sunt înlocuite complet
 
 **Când se folosește:** După ce structura paginii a fost aprobată (`/figma-seo-structure`), înainte de a completa conținutul în CMS.
+
+---
+
+### `/case-study-mockups`
+
+**Scop:** Generează cele 4 imagini cu mockup-uri pentru o pagină de studiu de caz (case study) direct dintr-un site live și le pune în Figma.
+
+```
+/case-study-mockups <site-url> [<figma-url>]
+/case-study-mockups <site-url> [<figma-url>] --auth user:parola
+/case-study-mockups <site-url> [<figma-url>] --login-url <pagina-de-login> --user <login> --pass <parola>
+```
+
+- `<site-url>` — site-ul din care se fac capturile (obligatoriu)
+- `<figma-url>` — cadrul studiului de caz care trebuie actualizat (opțional). Dacă linkul duce la o pagină goală sau lipsește, comanda copiază acolo șablonul studiului de caz (Desktop + Mobile)
+- `--auth` / `--login-url --user --pass` — acces pentru site-uri închise (staging cu parolă sau pagină de login). La început comanda amintește mereu cum se transmite accesul; dacă site-ul e închis și accesul lipsește, se oprește și îl cere
+
+**Ce imagini se generează (structura e fixă):**
+
+| Șablon | Locul în case study | Dimensiune | Fundal | Conținut |
+|---|---|---|---|---|
+| **A** Overview | imaginea din `OverviewBlock` | 1312×940 | deschis | browser lat cu pagina principală + iPhone frontal + logo orizontal (icon + text) sub browser |
+| **B** Showcase lat | prima imagine din `ShowcaseBlock` | 1312×720 | deschis | browser mare cu o secție + browser mic (versiunea de tabletă, 834 px) |
+| **C** Grilă izometrică | stânga în `Two Shots` | 644×556 | închis | grilă de iPhone 15 Pro izometrice cu 9 ecrane diferite |
+| **D** Browser + telefoane | dreapta în `Two Shots` | 644×556 | închis | browser cu o secție + două iPhone frontale |
+
+De la un site la altul se schimbă doar capturile de ecran, logo-ul și culorile de fundal. Compozițiile, dispozitivele și dimensiunile rămân aceleași.
+
+**Ce face:**
+
+1. Parcurge site-ul (meniu + `sitemap.xml`): pagini, titluri de secțiuni, blocuri cu carduri, logo-ul și culorile
+2. Propune paleta: fundal închis (footer-ul, dacă e închis, altfel cea mai închisă culoare neutră), fundal deschis (cea mai deschisă culoare de fundal), glow (culoarea butoanelor)
+3. Afișează paginile și secțiunile alese pentru fiecare șablon, paleta, logo-ul și domeniul din bara browserului — **și așteaptă confirmarea** (singura oprire)
+4. Face capturile în trei dimensiuni: desktop 1440×900 (2x), mobil 390×844 (3x), tabletă 834×1194 (3x). Derulează toată pagina pentru animații și imagini lazy, așteaptă terminarea animațiilor, ascunde bannerele de cookie și pune secția imediat sub header-ul sticky
+5. Separă logo-ul în icon + text pentru șablonul A
+6. Pune ecranele în iPhone 15 Pro (frontal și izometric); corpurile dispozitivelor sunt salvate în skill (`assets/devices/`)
+7. Randează cele 4 imagini la 3x și le verifică vizual
+8. Le încarcă în sloturile Desktop și Mobile ale studiului de caz și le copiază în `assets/generated/case-studies/<domeniu>/`
+
+**Pentru secțiunile din B și D** se alege: o hartă sau o listă; dacă nu există — orice bloc cu carduri; altfel — cea mai interesantă secție vizual. B și D arată secțiuni diferite.
+
+**Cerințe:** Google Chrome, Node 20, Python 3 cu Pillow și numpy. O singură dată, în folderul skill-ului (`knowledge/design/skills/case-study-mockups/`): `npm i`.
+
+**Note:**
+
+- Doar capturi reale ale site-ului — fără imagini generate de AI
+- Nu modifică compozițiile; schimbă doar capturile, logo-ul și culorile
+- Datele de acces se folosesc doar de scripturi și nu apar în răspunsuri, fișiere sau Figma
+- Textele studiului de caz nu se schimbă — dacă s-a copiat șablonul, ele rămân din exemplu și trebuie completate separat
+
+**Când se folosește:** Când pregătești un studiu de caz nou pe site-ul CreativSoft sau când site-ul clientului s-a schimbat și imaginile trebuie refăcute.
 
 ---
 
@@ -776,6 +827,7 @@ cd {slug}                          # dacă init a creat un folder nou; knowledge
 /figma-update-design-system       # când apar pagini/secțiuni noi în Figma
 /figma-seo-structure <url>        # audit SEO structural + blocuri lipsă în Figma
 /figma-seo-texts <url>            # texte SEO multilingve pentru blocurile editoriale
+/case-study-mockups <site-url>    # imagini mockup pentru un studiu de caz, din site-ul live
 /scan-components                  # după adăugarea de componente noi
 /validate-code                    # verificare cod după orice modificare
 /get-comment-for-frontend <url>   # referință pentru developer la review/bugfix

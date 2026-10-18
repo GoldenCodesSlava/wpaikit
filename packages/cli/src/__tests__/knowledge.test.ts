@@ -102,6 +102,7 @@ describe('knowledge packs', () => {
     expect(existsSync(join(dir, 'knowledge', 'shared', 'rules', 'figma-blocks.md'))).toBe(true)
     expect(commandFiles(dir)).toEqual([
       'analyze-figma.md',
+      'case-study-mockups.md',
       'design-quality-check.md',
       'figma-components.md',
       'figma-design-system.md',

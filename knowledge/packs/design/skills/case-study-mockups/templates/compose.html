@@ -1,0 +1,68 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",Inter,sans-serif;overflow:hidden}
+.scene{position:relative;overflow:hidden}
+.abs{position:absolute}
+.glow{position:absolute;border-radius:50%;filter:blur(60px)}
+.browser{border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 40px 80px -20px rgba(20,14,8,.55),0 12px 24px -8px rgba(20,14,8,.35)}
+.bar{display:flex;align-items:center;gap:7px;padding:0 14px;background:#ece8e1;border-bottom:1px solid #dcd6cc}
+.bar i{width:11px;height:11px;border-radius:50%;display:block}
+.url{flex:0 1 46%;margin:0 auto;background:#fff;border-radius:7px;color:#5c564e;text-align:center;padding:5px 0;letter-spacing:.1px;white-space:nowrap;overflow:hidden}
+.browser img{display:block;width:100%}
+</style></head><body><div id="root"></div>
+<script>
+// CONFIG is injected by render.js: { template, work, domain, palette:{dark,light,accent}, slots:{...}, meta:{...}, logo:{icon,text,iconAspect,textAspect} }
+const C = window.CONFIG;
+const W = C.work + '/';
+const mix = (a, b, t) => { const p = h => [1,3,5].map(i => parseInt(h.slice(i, i+2), 16)); const x = p(a), y = p(b);
+  return '#' + x.map((v, i) => Math.round(v + (y[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
+const rgba = (h, a) => { const p = [1,3,5].map(i => parseInt(h.slice(i, i+2), 16)); return `rgba(${p.join(',')},${a})`; };
+const bg = {
+  dark: `radial-gradient(110% 90% at 70% 15%,${mix(C.palette.dark,'#ffffff',.09)} 0%,${C.palette.dark} 55%,${mix(C.palette.dark,'#000000',.25)} 100%)`,
+  light: `radial-gradient(120% 100% at 20% 0%,${mix(C.palette.light,'#ffffff',.5)} 0%,${C.palette.light} 60%,${mix(C.palette.light,'#000000',.06)} 100%)`,
+};
+const glow = (w, h, x, y, a) => `<div class="glow" style="width:${w}px;height:${h}px;left:${x}px;top:${y}px;background:${rgba(C.palette.accent, a)}"></div>`;
+const bar = (bh, fs, urlFlex) => `<div class="bar" style="height:${bh}px"><i style="background:#ee6a5f"></i><i style="background:#f5bd4f"></i><i style="background:#61c454"></i><div class="url" style="flex:0 1 ${urlFlex};font-size:${fs}px">${C.domain}</div><span style="width:${urlFlex==='46%'?40:20}px"></span></div>`;
+// Browser with the whole 1440x900 viewport shot.
+const browser = (src, w) => `<div class="browser" style="width:${w}px">${bar(Math.round(w*.04), Math.max(9, w*.012), '46%')}<img src="${W}shots/${src}"></div>`;
+// Browser cropped to a viewport height (vh) in scene px; bar size can be fixed (bh, fs) to match a big window.
+const browserC = (src, w, vh, bh = Math.round(w*.04), fs = Math.max(9, w*.012), urlFlex = '46%') =>
+  `<div class="browser" style="width:${w}px">${bar(bh, fs, urlFlex)}<div style="height:${vh}px;overflow:hidden"><img src="${W}shots/${src}"></div></div>`;
+const fphone = (k, w) => `<img src="${W}devices/front-${k}.png" style="display:block;width:${w}px;filter:drop-shadow(0 30px 40px rgba(20,14,8,.45)) drop-shadow(0 8px 12px rgba(20,14,8,.3))">`;
+const iphone = (k, w) => `<img src="${W}devices/iso-${k}.png" style="display:block;width:${w}px;filter:drop-shadow(-28px 34px 26px rgba(0,0,0,.5)) drop-shadow(-6px 8px 6px rgba(0,0,0,.35))">`;
+const isoGrid = (keys, S, x0, y0, gu, gv, w, h) => { const k = S/1692, U = [523*k*gu, -349*k*gu], V = [1017*k*gv, 629*k*gv]; let out = '', n = 0;
+  for (let j = -3; j <= 3; j++) for (let i = -3; i <= 4; i++) { const x = x0+i*U[0]+j*V[0], y = y0+i*U[1]+j*V[1];
+    if (x+S*.95 < 0 || y+S*.82 < 0 || x+S*.05 > w || y+S*.2 > h) continue; out += `<div class="abs" style="left:${x}px;top:${y}px">${iphone(keys[(n++)%keys.length], S)}</div>`; } return out; };
+// Horizontal logo: icon + wordmark side by side (or the whole logo if it could not be split).
+const hlogo = (hIcon, hText, gap) => C.logo.text
+  ? `<div style="display:flex;align-items:center;gap:${gap}px"><img src="${W}${C.logo.icon}" style="height:${hIcon}px;width:${hIcon*C.logo.iconAspect}px"><img src="${W}${C.logo.text}" style="height:${hText}px;width:${hText*C.logo.textAspect}px"></div>`
+  : `<img src="${W}${C.logo.icon}" style="height:${hIcon}px;width:${hIcon*C.logo.iconAspect}px">`;
+
+const S = C.slots, M = C.meta;
+const T = {
+  // A — Overview: wide browser + phone + horizontal logo (1312x940, light).
+  A() { const bw = 1238, k = bw/1440, bx = 48, m = M[S.desktopHome.replace(/\.png$/, '')] || {};
+    const phoneW = 295, heroRight = m.hero ? m.hero.right : 1400;
+    const logoLeft = m.logo ? bx + m.logo.x * k : 82.67;
+    return { w: 1312, h: 940, bg: bg.light, html:
+      glow(960, 680, 380, 120, .3) +
+      `<div class="abs" style="left:${bx}px;top:28px">${browserC(S.desktopHome, bw, 683)}</div>` +
+      `<div class="abs" style="left:${logoLeft}px;top:800px">${hlogo(100, 78, 30)}</div>` +
+      `<div class="abs" style="left:${bx + heroRight*k - phoneW}px;top:222px">${fphone(S.mobileHome, phoneW)}</div>` }; },
+  // B — Showcase wide: big browser with a feature section + small browser (tablet page) of the same height line (1312x720, light).
+  B() { return { w: 1312, h: 720, bg: bg.light, html:
+      glow(700, 500, 80, 200, .22) +
+      `<div class="abs" style="left:364px;top:62px">${browser(S.desktopSection, 900)}</div>` +
+      `<div class="abs" style="left:22px;top:162px;filter:drop-shadow(0 30px 40px rgba(20,14,8,.35)) drop-shadow(0 8px 12px rgba(20,14,8,.22))">${browserC(S.tabletPage, 370, 463, 36, 10.8, '62%')}</div>` }; },
+  // C — Isometric grid of 9 phones (644x556, dark).
+  C() { return { w: 644, h: 556, bg: bg.dark, html: glow(520, 420, 60, 70, .3) + isoGrid(S.isoScreens, 320, 120, 90, 1.55, 1.22, 644, 556) }; },
+  // D — Browser with a section + two front phones (644x556, dark).
+  D() { return { w: 644, h: 556, bg: bg.dark, html:
+      glow(460, 340, 120, 150, .3) +
+      `<div class="abs" style="left:30px;top:44px">${browser(S.desktopSection2, 540)}</div>` +
+      `<div class="abs" style="left:318px;top:206px">${fphone(S.phone1, 140)}</div>` +
+      `<div class="abs" style="left:462px;top:156px">${fphone(S.phone2, 156)}</div>` }; },
+};
+const sc = T[C.template]();
+document.getElementById('root').innerHTML = `<div class="scene" style="width:${sc.w}px;height:${sc.h}px;background:${sc.bg}">${sc.html}</div>`;
+</script></body></html>
