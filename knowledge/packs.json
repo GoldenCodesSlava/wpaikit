@@ -35,7 +35,8 @@
         "design-system-to-code",
         "scan-components",
         "validate-code",
-        "get-comment-for-frontend"
+        "get-comment-for-frontend",
+        "migrate-blocks-v3"
       ],
       "sharedCommands": ["scan-project", "setup-fonts"],
       "sharedFiles": ["rules/figma-blocks.md", "contracts/design-system.md"],
@@ -116,7 +117,7 @@
     },
     "figma-to-block": {
       "usage": "/figma-to-block <desktop-url> [<mobile-url>]",
-      "description": "Generate PHP + Twig + SCSS + ACF JSON for a WordPress block from a Figma frame",
+      "description": "Generate an ACF Blocks v3 block (block.json + PHP + Twig + SCSS + ACF JSON) from a Figma frame",
       "constraint": "run from the active theme root containing `blocks/`, `views/` and `acf-json/`; never overwrite files without confirmation."
     },
     "design-system-to-code": {
@@ -138,6 +139,11 @@
       "usage": "/get-comment-for-frontend <page-url-or-slug>",
       "description": "Generate a `.md` developer reference listing all ACF blocks on a page with Twig, SCSS, and JS paths",
       "constraint": "read-only DB query (SELECT only); never prints DB credentials; writes only the output `.md` file."
+    },
+    "migrate-blocks-v3": {
+      "usage": "/migrate-blocks-v3",
+      "description": "Migrate a boilerplate theme from legacy ACF blocks to ACF Blocks v3 (block.json, ACF PRO as a plugin)",
+      "constraint": "run from the theme root; audits first, confirms every change, never renames blocks or fields and never commits."
     },
     "scan-project": {
       "usage": "/scan-project",

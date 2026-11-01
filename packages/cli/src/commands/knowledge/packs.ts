@@ -291,7 +291,7 @@ function addFile(files: Map<string, Buffer>, managedPath: string, contents: Buff
 
 /**
  * Builds the complete set of managed files for a selection: pack files, shared files,
- * Claude commands and the generated AGENTS.md / CLAUDE.md / knowledge/context.md.
+ * Claude commands, Codex skills and the generated AGENTS.md / CLAUDE.md / knowledge/context.md.
  */
 export async function buildPackFiles(
   knowledgeSource: string,
@@ -352,6 +352,13 @@ export async function buildPackFiles(
       `knowledge/shared/${file}`,
       await readFile(resolve(packsRoot, 'shared', ...file.split('/'))),
     )
+  }
+
+  // Codex discovers project skills in .agents/skills. Keep the installed knowledge
+  // copy as the source of truth and mirror each selected skill into that location.
+  for (const [managedPath, contents] of [...files]) {
+    const match = /^knowledge\/[^/]+\/skills\/([^/]+)\/(.+)$/.exec(managedPath)
+    if (match) addFile(files, `.agents/skills/${match[1]}/${match[2]}`, contents)
   }
 
   const label = formatSelection(selection, catalog)

@@ -87,6 +87,8 @@ Do not put a third-party URL in `src` before consent. Use:
 ></iframe>
 ```
 
+For YouTube and Vimeo use `views/components/video.twig` instead: it creates the iframe on click after consent, so nothing loads until the visitor asks for the video.
+
 ## Required Production Check
 
 Before the browser check, switch through every active WPML language and configure Privacy Policy, Cookie Policy, and first-party processing countries. Site Health reports whether each language uses built-in defaults or customized copy and treats missing processing countries as critical in production.

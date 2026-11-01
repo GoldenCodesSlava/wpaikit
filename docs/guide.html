@@ -1082,6 +1082,7 @@
             <pre class="tree">AGENTS.md                   <span class="c">← <l-en>instructions for Codex / Cursor (for the selected packs)</l-en><l-ru>инструкции для Codex / Cursor (под выбранные наборы)</l-ru><l-ro>instrucțiuni pentru Codex / Cursor (pentru pachetele alese)</l-ro></span>
 CLAUDE.md                   <span class="c">← <l-en>loads AGENTS.md in Claude Code</l-en><l-ru>подключает AGENTS.md для Claude Code</l-ru><l-ro>încarcă AGENTS.md în Claude Code</l-ro></span>
 .claude/commands/           <span class="c">← <l-en>slash commands of the selected packs</l-en><l-ru>slash-команды выбранных наборов</l-ru><l-ro>comenzile slash ale pachetelor alese</l-ro></span>
+.agents/skills/             <span class="c">← <l-en>skills of the selected packs for Codex, called as <code>$skill-name</code></l-en><l-ru>скиллы выбранных наборов для Codex, вызов — <code>$skill-name</code></l-ru><l-ro>skill-urile pachetelor alese pentru Codex, apelate cu <code>$skill-name</code></l-ro></span>
 .wpaikit/
   knowledge-manifest.json   <span class="c">← <l-en>packs, version and file checksums</l-en><l-ru>наборы, версия и контрольные суммы файлов</l-ru><l-ro>pachete, versiune și sumele de control ale fișierelor</l-ro></span>
 knowledge/
@@ -1767,9 +1768,9 @@ tailwind.config.js</pre>
             <p class="hero__eyebrow"><l-en>Standard preset · WordPress developer</l-en><l-ru>Preset standard · WordPress-разработчик</l-ru><l-ro>Preset standard · dezvoltator WordPress</l-ro></p>
             <h1><l-en>A WordPress site from the boilerplate</l-en><l-ru>WordPress-сайт из boilerplate</l-ru><l-ro>Un site WordPress din boilerplate</l-ro></h1>
             <p>
-              <l-en>Timber + ACF + Vite + Tailwind. <code>wpaikit init</code> creates the project, and the WordPress pack generates ACF blocks (PHP + Twig + SCSS + ACF JSON) straight from Figma.</l-en>
-              <l-ru>Timber + ACF + Vite + Tailwind. <code>wpaikit init</code> создаёт проект, а набор WordPress генерирует ACF-блоки (PHP + Twig + SCSS + ACF JSON) прямо из Figma.</l-ru>
-              <l-ro>Timber + ACF + Vite + Tailwind. <code>wpaikit init</code> creează proiectul, iar pachetul WordPress generează blocuri ACF (PHP + Twig + SCSS + ACF JSON) direct din Figma.</l-ro>
+              <l-en>Timber + ACF + Vite + Tailwind. <code>wpaikit init</code> creates the project, and the WordPress pack generates ACF Blocks v3 blocks (block.json + PHP + Twig + SCSS + ACF JSON) straight from Figma. ACF PRO 6.7+ is a licensed plugin: pass its zip with <code>--acf-zip</code> or <code>WPKIT_ACF_PRO_ZIP</code>, or install it later.</l-en>
+              <l-ru>Timber + ACF + Vite + Tailwind. <code>wpaikit init</code> создаёт проект, а набор WordPress генерирует блоки ACF Blocks v3 (block.json + PHP + Twig + SCSS + ACF JSON) прямо из Figma. ACF PRO 6.7+ — лицензионный плагин: передайте его zip через <code>--acf-zip</code> или <code>WPKIT_ACF_PRO_ZIP</code>, либо поставьте позже.</l-ru>
+              <l-ro>Timber + ACF + Vite + Tailwind. <code>wpaikit init</code> creează proiectul, iar pachetul WordPress generează blocuri ACF Blocks v3 (block.json + PHP + Twig + SCSS + ACF JSON) direct din Figma. ACF PRO 6.7+ e un plugin licențiat: transmite arhiva cu <code>--acf-zip</code> sau <code>WPKIT_ACF_PRO_ZIP</code>, ori instalează-l mai târziu.</l-ro>
             </p>
             <div class="cmd"><pre><code>wpaikit init --preset standard</code></pre></div>
           </div>
@@ -1892,9 +1893,9 @@ npm run dev</code></pre></div>
               <li>
                 <strong><l-en>Block from Figma</l-en><l-ru>Блок из Figma</l-ru><l-ro>Bloc din Figma</l-ro></strong>
                 <p>
-                  <l-en>PHP class, Twig, SCSS and ACF JSON. You can adjust the fields before generation.</l-en>
-                  <l-ru>PHP-класс, Twig, SCSS и ACF JSON. Поля можно поправить перед генерацией.</l-ru>
-                  <l-ro>Clasa PHP, Twig, SCSS și ACF JSON. Câmpurile se pot ajusta înainte de generare.</l-ro>
+                  <l-en>block.json, PHP class, Twig, SCSS and ACF JSON (ACF Blocks v3). You can adjust the fields before generation.</l-en>
+                  <l-ru>block.json, PHP-класс, Twig, SCSS и ACF JSON (ACF Blocks v3). Поля можно поправить перед генерацией.</l-ru>
+                  <l-ro>block.json, clasa PHP, Twig, SCSS și ACF JSON (ACF Blocks v3). Câmpurile se pot ajusta înainte de generare.</l-ro>
                 </p>
                 <div class="cmd"><pre><code>/figma-to-block &lt;desktop-url&gt; &lt;mobile-url&gt;</code></pre></div>
               </li>
@@ -1925,7 +1926,11 @@ npm run dev</code></pre></div>
                 <tbody>
                   <tr>
                     <td><code>/figma-to-block</code></td>
-                    <td><l-en>PHP + Twig + SCSS + ACF JSON for a block</l-en><l-ru>PHP + Twig + SCSS + ACF JSON для блока</l-ru><l-ro>PHP + Twig + SCSS + ACF JSON pentru un bloc</l-ro></td>
+                    <td><l-en>block.json + PHP + Twig + SCSS + ACF JSON for a block</l-en><l-ru>block.json + PHP + Twig + SCSS + ACF JSON для блока</l-ru><l-ro>block.json + PHP + Twig + SCSS + ACF JSON pentru un bloc</l-ro></td>
+                  </tr>
+                  <tr>
+                    <td><code>/migrate-blocks-v3</code></td>
+                    <td><l-en>Moves an older project to ACF Blocks v3: ACF PRO as a plugin, <code>block.json</code> per block, current block core and tests (see <code>docs/acf-blocks-v3-migration.md</code>)</l-en><l-ru>Переводит старый проект на ACF Blocks v3: ACF PRO плагином, <code>block.json</code> у каждого блока, актуальное ядро блоков и тесты (см. <code>docs/acf-blocks-v3-migration.md</code>)</l-ru><l-ro>Mută un proiect mai vechi pe ACF Blocks v3: ACF PRO ca plugin, <code>block.json</code> pentru fiecare bloc, nucleul actual al blocurilor și teste (vezi <code>docs/acf-blocks-v3-migration.md</code>)</l-ro></td>
                   </tr>
                   <tr>
                     <td><code>/design-system-to-code</code></td>
@@ -1966,7 +1971,7 @@ npm run dev</code></pre></div>
             <pre class="tree">wp-content/themes/{slug}/
   src/Theme/Controllers/   <span class="c">← <l-en>WP template rendering</l-en><l-ru>рендер шаблонов WP</l-ru><l-ro>randarea template-urilor WP</l-ro></span>
   src/Theme/Services/      <span class="c">← <l-en>business logic, WP_Query, CPT</l-en><l-ru>бизнес-логика, WP_Query, CPT</l-ru><l-ro>logica de business, WP_Query, CPT</l-ro></span>
-  blocks/{Block}/          <span class="c">← <l-en>ACF block PHP classes</l-en><l-ru>PHP-классы ACF-блоков</l-ru><l-ro>clasele PHP ale blocurilor ACF</l-ro></span>
+  blocks/{Block}/          <span class="c">← <l-en>ACF Blocks v3: block.json + PHP class</l-en><l-ru>ACF Blocks v3: block.json + PHP-класс</l-ru><l-ro>ACF Blocks v3: block.json + clasa PHP</l-ro></span>
   views/                   <span class="c">← Twig: layouts, partials, components, blocks</span>
   acf-json/                <span class="c">← <l-en>ACF field groups</l-en><l-ru>группы полей ACF</l-ru><l-ro>grupurile de câmpuri ACF</l-ro></span>
   frontend/src/            <span class="c">← SCSS, JS (Vite + Tailwind)</span></pre>
@@ -2122,6 +2127,11 @@ npm run dev</code></pre></div>
                   </tr>
                 </thead>
                 <tbody>
+                  <tr>
+                    <td>Advanced Custom Fields PRO 6.7+</td>
+                    <td><l-en>Always (every preset)</l-en><l-ru>Всегда (любой пресет)</l-ru><l-ro>Mereu (orice preset)</l-ro></td>
+                    <td><l-en>Licensed zip: <code>wpaikit init --acf-zip</code> or <code>WPKIT_ACF_PRO_ZIP</code></l-en><l-ru>Лицензионный zip: <code>wpaikit init --acf-zip</code> или <code>WPKIT_ACF_PRO_ZIP</code></l-ru><l-ro>Arhivă licențiată: <code>wpaikit init --acf-zip</code> sau <code>WPKIT_ACF_PRO_ZIP</code></l-ro></td>
+                  </tr>
                   <tr>
                     <td>WooCommerce</td>
                     <td><l-en>Always</l-en><l-ru>Всегда</l-ru><l-ro>Mereu</l-ro></td>

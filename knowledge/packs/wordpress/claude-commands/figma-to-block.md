@@ -1,5 +1,5 @@
 ---
-description: Generate WordPress ACF block (PHP + Twig + ACF JSON) from a Figma frame
+description: Generate WordPress ACF Blocks v3 block (block.json + PHP + Twig + ACF JSON) from a Figma frame
 argument-hint: <desktop-url> [<mobile-url>]
 ---
 

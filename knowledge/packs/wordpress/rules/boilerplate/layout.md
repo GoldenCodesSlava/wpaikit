@@ -210,6 +210,6 @@ These apply to all generated templates regardless of type:
 
 **PHP (blocks only):**
 - `declare(strict_types=1)` always first
-- `get_field() ?: ''` for strings, `get_field() ?: null` for objects
-- `new \Timber\Image()` for all image fields
+- ACF Blocks v3 class extending `AbstractBlock` (metadata in `block.json`); fields via `$this->getField('x', '', $block)` for strings, `null` for objects
+- Image fields normalized with `$this->sanitizeImage()` in the block class and rendered through `components/image.twig`
 - No HTML in PHP — all markup lives in Twig

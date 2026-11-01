@@ -154,6 +154,7 @@ Ce se copiază în proiectul tău:
   `knowledge/shared/` — reguli și comenzi comune; `knowledge/context.md` — lista comenzilor instalate
 - `CLAUDE.md` — instrucțiuni pentru Claude Code (încărcat automat)
 - `AGENTS.md` — instrucțiuni pentru Codex/OpenAI
+- `.agents/skills/` — skill-urile pachetelor selectate, apelabile în Codex cu `$nume-skill`
 - `.claude/commands/` — comenzile slash pentru Claude Code
 
 > Toate comenzile de mai jos se rulează din folderul rădăcină al temei.
@@ -727,7 +728,7 @@ _Fără container (full-width):_
 
 **Structura tab-urilor ACF:**
 
-- **Settings** — întotdeauna prezent (`is_active`, `block_custom_id`)
+- **Settings** — întotdeauna prezent (`is_active`); ancora se setează în sidebar-ul blocului (HTML anchor), `block_custom_id` nu se mai adaugă blocurilor noi
 - **Content** — câmpuri text, textarea, wysiwyg, link
 - **Media** — câmpuri image, video, file
 - **Appearance** — câmpuri select, radio, color_picker

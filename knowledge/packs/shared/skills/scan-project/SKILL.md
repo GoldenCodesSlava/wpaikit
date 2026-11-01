@@ -67,7 +67,7 @@ Read `composer.json`. Extract:
 
 Build a clean `TECH_STACK` list:
 ```
-WordPress 6.x, ACF Pro, Timber/Twig 2.x, Tailwind CSS 3.x, Vite, TypeScript
+WordPress 7.x, ACF PRO 6.x (ACF Blocks v3 when blocks have block.json with acf.blockVersion 3), Timber/Twig 2.x, Tailwind CSS 3.x, Vite, TypeScript
 ```
 
 ---
@@ -80,7 +80,7 @@ Based on `PROJECT_TYPE`, check existence of these directories and record those t
 
 | Directory | Purpose |
 |---|---|
-| `blocks/` | ACF block PHP classes |
+| `blocks/` | ACF blocks: `block.json` + PHP class per folder |
 | `views/blocks/` | Block Twig templates |
 | `views/components/` | Reusable Twig components |
 | `views/partials/` | Layout partials (header, footer, nav) |
@@ -128,6 +128,7 @@ Based on `PROJECT_TYPE`:
 **Blocks** — scan `blocks/` directory:
 - For each subdirectory (e.g. `blocks/HeroBlock/`), record:
   - Block name (directory name)
+  - Metadata: `blocks/{Name}/block.json` — record `name` (e.g. `acf/hero-block`) and `acf.blockVersion`; a folder without block.json is a legacy (pre-v3) block, note it
   - PHP file path: `blocks/{Name}/{Name}.php`
   - Twig path: `views/blocks/{Name}/{Name}.twig`
   - SCSS path: `frontend/src/css/blocks/_{kebab-name}.scss` or `frontend/src/blocks/_{kebab-name}.scss`

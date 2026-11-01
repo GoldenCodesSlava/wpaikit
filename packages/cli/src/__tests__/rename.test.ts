@@ -55,6 +55,29 @@ function makeThemeDir(base: string): string {
   )
 
   writeFileSync(
+    join(themesDir, 'blocks', 'ExampleBlock', 'block.json'),
+    JSON.stringify(
+      {
+        apiVersion: 3,
+        name: 'acf/example-block',
+        category: 'boilerplate-blocks',
+        textdomain: 'boilerplate',
+        acf: {
+          blockVersion: 3,
+          renderCallback: 'Boilerplate\\Theme\\Services\\BlocksService::renderAcfBlock',
+        },
+      },
+      null,
+      4,
+    ),
+  )
+
+  writeFileSync(
+    join(themesDir, 'src', 'Theme', 'BlocksService.php'),
+    "<?php\nnamespace Boilerplate\\Theme\\Services;\nreturn ['slug' => 'boilerplate-blocks', 'title' => __('Boilerplate Blocks', 'boilerplate')];\n",
+  )
+
+  writeFileSync(
     join(themesDir, 'boilerplate-config.php'),
     "<?php\ndefined('BOILERPLATE_WISHLIST') || define('BOILERPLATE_WISHLIST', false);\n",
   )
@@ -156,6 +179,23 @@ describe('renameBoilerplate', () => {
     )
     expect(php).toContain("'my-site'")
     expect(php).not.toContain("'boilerplate'")
+  })
+
+  it('keeps ACF Blocks v3 block.json consistent with the renamed PHP', () => {
+    renameBoilerplate(dir, 'My Site', 'my-site', 'MySite', 'my-domain')
+    const themeDir = join(dir, 'wp-content', 'themes', 'my-site')
+    const block = JSON.parse(
+      readFileSync(join(themeDir, 'blocks', 'ExampleBlock', 'block.json'), 'utf-8'),
+    )
+    const service = readFileSync(join(themeDir, 'src', 'Theme', 'BlocksService.php'), 'utf-8')
+
+    // Saved content and acf-json locations reference acf/example-block, so the name never changes.
+    expect(block.name).toBe('acf/example-block')
+    expect(block.acf.renderCallback).toBe('MySite\\Theme\\Services\\BlocksService::renderAcfBlock')
+    expect(block.textdomain).toBe('my-domain')
+    expect(block.category).toBe('my-site-blocks')
+    expect(service).toContain("'my-site-blocks'")
+    expect(service).toContain("__('My Site Blocks', 'my-domain')")
   })
 
   it('updates composer.json name and autoload', () => {

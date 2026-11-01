@@ -138,8 +138,9 @@ describe('WooCommerce init contracts', () => {
     )
 
     const results = await checkProjectPlugins(dir)
-    expect(results).toHaveLength(6)
+    expect(results).toHaveLength(7)
     expect(results.every(({ status }) => status === 'error')).toBe(true)
+    expect(results.map(({ name }) => name)).toContain('Plugin: Advanced Custom Fields PRO')
     expect(results.map(({ name }) => name)).toContain('Plugin: WooCommerce')
     expect(results.map(({ name }) => name)).toContain('Plugin: WPML Multilingual CMS')
   })

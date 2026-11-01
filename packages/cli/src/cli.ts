@@ -23,6 +23,7 @@ program
   .option('--wishlist <value>', 'Woo wishlist: yes or no')
   .option('--seo <choice>', 'SEO: module (built-in), yoast, rank-math or later')
   .option('--packs <list>', 'knowledge packs: all (default) or design,slicing,wordpress')
+  .option('--acf-zip <path>', 'licensed ACF PRO zip to install (default: $WPKIT_ACF_PRO_ZIP)')
   .action(async (options: InitCommandOptions) => {
     try {
       await runInit(options)

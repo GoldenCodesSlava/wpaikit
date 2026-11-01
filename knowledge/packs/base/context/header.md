@@ -10,3 +10,4 @@ to change the selection.
 
 Read the relevant file from `knowledge/` before acting on any wpaikit-related task.
 When the user writes `/command-name [args]`, read the linked prompt file and follow it exactly.
+In Codex, invoke installed project skills with `$skill-name`; they live in `.agents/skills/`.

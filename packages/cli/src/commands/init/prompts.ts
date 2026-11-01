@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs'
 import { promptText, confirm, select } from '@veaceslav-golden/wp-ai-kit-core'
 import type { SeoProfile, WooCommerceProjectConfig } from '@veaceslav-golden/wp-ai-kit-core'
 import {
@@ -9,6 +10,7 @@ import { toSlug, toPascalCase } from './normalize-name.js'
 import { getPreset, PRESETS } from '../../presets.js'
 import type { PresetId } from '../../presets.js'
 import { SEO_CHOICES } from '../../seo.js'
+import { ACF_PRO_ZIP_ENV, resolveUserPath } from '../../acf-pro.js'
 
 export type LocationChoice = 'new-folder' | 'current-dir'
 
@@ -19,6 +21,7 @@ export interface InitCommandOptions {
   wishlist?: string
   seo?: string
   packs?: string
+  acfZip?: string
 }
 
 export interface InitAnswers {
@@ -30,6 +33,8 @@ export interface InitAnswers {
   preset: PresetId
   woocommerce?: WooCommerceProjectConfig
   seo: SeoProfile
+  /** Absolute path to the licensed ACF PRO zip; undefined means install it later. */
+  acfZip?: string
 }
 
 function parseWishlist(value: string): boolean {
@@ -114,6 +119,34 @@ export async function askSeoQuestion(options: InitCommandOptions): Promise<SeoPr
   })
 }
 
+/**
+ * ACF PRO is licensed and never bundled: take the zip from --acf-zip, then WPKIT_ACF_PRO_ZIP,
+ * otherwise ask (an empty answer leaves the install for later).
+ */
+export async function askAcfZip(
+  options: InitCommandOptions,
+  env: NodeJS.ProcessEnv = process.env,
+): Promise<string | undefined> {
+  const provided = options.acfZip ?? env[ACF_PRO_ZIP_ENV]
+
+  if (provided !== undefined && provided.trim() !== '') {
+    const path = resolveUserPath(provided)
+    if (!existsSync(path)) throw new Error(`ACF PRO zip not found: ${path}`)
+    return path
+  }
+
+  const answer = await promptText({
+    message: 'Path to the licensed ACF PRO zip (leave empty to install it later):',
+    placeholder: '~/Downloads/advanced-custom-fields-pro.zip',
+    defaultValue: '',
+    validate: (v) => {
+      if (v.trim() && !existsSync(resolveUserPath(v))) return 'File not found'
+    },
+  })
+
+  return answer.trim() ? resolveUserPath(answer) : undefined
+}
+
 export async function askInitQuestions(options: InitCommandOptions = {}): Promise<InitAnswers> {
   const location = await select<LocationChoice>({
     message: 'Where do you want to set up the project?',
@@ -173,6 +206,7 @@ export async function askInitQuestions(options: InitCommandOptions = {}): Promis
 
   const woocommerce = await askWooCommerceQuestions(preset, options)
   const seo = await askSeoQuestion(options)
+  const acfZip = await askAcfZip(options)
 
   const ready = await confirm(
     `Ready to scaffold "${projectName}"${location === 'new-folder' ? ` in ./${slug}/` : ' in the current directory'}?`,
@@ -191,5 +225,6 @@ export async function askInitQuestions(options: InitCommandOptions = {}): Promis
     preset,
     ...(woocommerce ? { woocommerce } : {}),
     seo,
+    ...(acfZip ? { acfZip } : {}),
   }
 }

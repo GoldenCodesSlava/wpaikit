@@ -1,0 +1,21 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "acf/example-block",
+    "title": "Example Block",
+    "description": "Reference block with layout, media, CTA, and repeated cards.",
+    "category": "boilerplate-blocks",
+    "icon": "layout",
+    "keywords": ["example", "content", "media", "cards"],
+    "textdomain": "boilerplate",
+    "supports": {
+        "align": false,
+        "anchor": true,
+        "html": false
+    },
+    "acf": {
+        "blockVersion": 3,
+        "renderCallback": "Boilerplate\\Theme\\Services\\BlocksService::renderAcfBlock",
+        "autoInlineEditing": false
+    }
+}

@@ -27,7 +27,7 @@ Follow the skill exactly. High-level summary:
 ### Phase 1 — Collect files
 - Read `main.scss` imports → get all SCSS partials
 - Scan `views/components/`, `views/blocks/`, `views/partials/` → get all Twig files
-- Scan `blocks/` → get all PHP block class files
+- Scan `blocks/` → get all PHP block class files and `block.json` files (ACF Blocks v3)
 
 ### Phase 2 — Validate
 - Run each file through its checklist from `figma-to-code.md` Rule 10

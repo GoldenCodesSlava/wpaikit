@@ -2,15 +2,17 @@
 
 ## Bundled ACF blocks
 
-Only two blocks ship with the WooCommerce boilerplate:
+Three blocks ship with the WooCommerce boilerplate:
 
 - `ExampleBlock`, the implementation reference for future project blocks;
+- `ColumnsBlock` with its inner `ColumnBlock`, `ContentBlock`, `MediaBlock` and `ButtonsBlock`, the generic 1–6 column layout shared with the standard profile (see `knowledge/wordpress/rules/boilerplate/php.md`);
 - `ProductsListingBlock`, the reusable commerce listing described below.
 
 ## ProductsListingBlock
 
-Files:
+An ACF Blocks v3 block (`acf/products-listing-block`). Files:
 
+- `blocks/ProductsListingBlock/block.json`
 - `blocks/ProductsListingBlock/ProductsListingBlock.php`
 - `views/blocks/ProductsListingBlock/ProductsListingBlock.twig`
 - `acf-json/group_products_listing_block.json`
@@ -20,6 +22,8 @@ Files:
 - `views/partials/woocommerce/product-filters.twig`
 - `frontend/src/css/woocommerce/catalog.scss`
 - `frontend/src/js/components/product-catalog.js`
+
+In the editor preview (`$this->isPreview`) the block caps the query at `PREVIEW_PER_PAGE` (4) products, because v3 re-renders the preview on every field change. Keep that cap when extending the block, and do the same in any other block that runs heavy queries.
 
 Context:
 

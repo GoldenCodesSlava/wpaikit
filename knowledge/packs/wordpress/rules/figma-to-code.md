@@ -205,7 +205,7 @@ Every block's ACF field group uses tabs to organise fields. Tabs are `type: "tab
 
 | Tab | Required | Fields |
 |---|---|---|
-| **Settings** | Always | `is_active` (true_false), `block_custom_id` (text) |
+| **Settings** | Always | `is_active` (true_false); the anchor comes from the block sidebar (`supports.anchor`) |
 | **Content** | If content fields exist | text, textarea, wysiwyg, link |
 | **Media** | If media fields exist | image, video, file |
 | **Appearance** | If appearance fields exist | select, radio, color_picker, button_group |
@@ -217,7 +217,7 @@ Every block's ACF field group uses tabs to organise fields. Tabs are `type: "tab
 - Each repeater gets its own tab named after the repeater (e.g. `Items`, `Team Members`)
 - Sub-fields inside a repeater are flat — no nested tabs
 - `endpoint: 1` on the last tab in the group; `endpoint: 0` on all others
-- Standard Settings fields (`is_active`, `block_custom_id`) are added automatically — never omit them
+- The standard Settings field `is_active` is added automatically — never omit it. Do not add `block_custom_id` to new blocks (deprecated in favour of the HTML anchor)
 
 ## 10. Per-file validation loop
 
@@ -258,20 +258,31 @@ This applies to every SCSS partial, every Twig file, every PHP class, and every 
 - [ ] Wysiwyg content uses `{{ field|raw }}`
 - [ ] Every optional field wrapped in `{% if field %}...{% endif %}`
 - [ ] No PHP logic or expressions inside Twig
+- [ ] Root element opens with `{{ block_wrapper_attributes({id: ..., class: ...}) }}` (blocks only)
+- [ ] Text-only elements use `{{ acf_inline_text('field') }}`, other editable fields `{{ acf_inline_toolbar('field') }}` (blocks only)
 - [ ] Known components from `.wpaikit/components-registry.md` use `{% include %}` — never re-implemented
+
+### block.json checklist (blocks only, ACF Blocks v3)
+
+- [ ] `blocks/{BlockName}/block.json` exists with `apiVersion: 3`, `name: acf/{block-name}`, `category: boilerplate-blocks`, `textdomain: boilerplate`
+- [ ] `acf.blockVersion: 3` and `acf.renderCallback: "Boilerplate\\Theme\\Services\\BlocksService::renderAcfBlock"`
+- [ ] `supports.anchor: true`; no `mode`, `supports.mode`, `supports.jsx`, `renderTemplate` or `example`
 
 ### PHP checklist (blocks only)
 
 - [ ] `declare(strict_types=1)` is the first statement
-- [ ] Namespace is `Boilerplate\Theme\Blocks`
-- [ ] All ACF fields fetched with `get_field()`
+- [ ] Namespace is `Boilerplate\Theme\Blocks\{BlockName}` and the class extends `AbstractBlock`
+- [ ] No `init()` / `acf_register_block_type()` — metadata lives in block.json
+- [ ] All ACF fields fetched with `$this->getField('name', $default, $block)` in `getContext()`
 - [ ] String fields default to `''`, objects/arrays default to `null` or `[]`
-- [ ] Image fields wrapped in `new \Timber\Image()`
+- [ ] Image fields normalized with `$this->sanitizeImage()` in `sanitizeContext()`; Twig renders them through `components/image.twig`
+- [ ] Inserter preview data returned from `getExample()`
 - [ ] No HTML output in PHP — all markup in Twig
 
 ### ACF JSON checklist (blocks only)
 
-- [ ] Settings tab always present and first, with `is_active` and `block_custom_id`
+- [ ] Location rule is `block == acf/{block-name}`
+- [ ] Settings tab always present and first, with `is_active` (no new `block_custom_id`: editors use the HTML anchor)
 - [ ] Tabs created only for field types that exist
 - [ ] Last tab has `endpoint: 1`, all others have `endpoint: 0`
 - [ ] `new_tab_group` is never `true` on any tab — always `false` or omitted

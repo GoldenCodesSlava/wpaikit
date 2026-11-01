@@ -41,6 +41,16 @@ All Twig images must use `views/components/image.twig`. Direct `<img>` markup el
 
 Keep the first viewport image eager with `fetchpriority: high`; keep offscreen images lazy. The component emits dimensions to reduce layout shift.
 
+## Video
+
+Render video only through `views/components/video.twig` with data from `VideoService::normalize()` (source `embed` = YouTube/Vimeo link, or `file` = MP4/WebM attachment, plus poster, title, ratio, playback flags).
+
+- YouTube and Vimeo are lite embeds: a poster button; `js/components/video.js` creates the iframe (`youtube-nocookie.com`, Vimeo `dnt=1`) only after a click and `external_media` consent, and starts it automatically once consent is given.
+- Never load provider thumbnails (`i.ytimg.com`, Vimeo CDN) before consent. Without a poster the component shows a neutral placeholder.
+- Files: `preload="none"` behind the poster; autoplay is muted, plays only in view, never with `prefers-reduced-motion`, and gets a pause button when controls are off.
+- Pass `preview: is_preview` in blocks: the editor shows a static poster without players.
+- The JS module is loaded with a dynamic `import()` only on pages with `[data-video]`.
+
 ## System states
 
 - `404.twig` uses the shared empty-state component.

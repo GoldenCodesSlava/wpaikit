@@ -5,6 +5,7 @@ import { downloadWordPress } from './steps/download-wp.js'
 import { cloneBoilerplate } from './steps/clone-boilerplate.js'
 import { renameBoilerplate } from './steps/rename.js'
 import { runPostInstall } from './steps/post-install.js'
+import { installAcfPro } from './steps/install-acf-pro.js'
 import { writeProjectConfig } from './steps/write-config.js'
 import {
   configureBoilerplate,
@@ -22,7 +23,8 @@ export async function runInit(options: InitCommandOptions = {}): Promise<void> {
   const knowledgePacks = options.packs ? parsePacksOption(options.packs) : [...PACK_IDS]
   const answers = await askInitQuestions(options)
 
-  const { location, projectName, slug, namespace, textDomain, preset, woocommerce, seo } = answers
+  const { location, projectName, slug, namespace, textDomain, preset, woocommerce, seo, acfZip } =
+    answers
   const presetDefinition = getPreset(preset)
 
   const cwd = process.cwd()
@@ -52,6 +54,12 @@ export async function runInit(options: InitCommandOptions = {}): Promise<void> {
     } catch (err) {
       s2.stop('Clone failed')
       throw err
+    }
+
+    // 3b. Install the licensed ACF PRO plugin (theme blocks are ACF Blocks v3)
+    let acfProVersion: string | undefined
+    if (acfZip) {
+      acfProVersion = await installAcfPro(targetDir, acfZip, rollback)
     }
 
     // 4. Rename theme + namespace + text domain
@@ -116,7 +124,12 @@ export async function runInit(options: InitCommandOptions = {}): Promise<void> {
       `  ${stepNum++}. Configure wp-config.php (DB_NAME, DB_USER, DB_PASSWORD, DB_HOST)`,
     )
     nextSteps.push(`  ${stepNum++}. Open the site in a browser and complete WordPress setup`)
-    nextSteps.push(`  ${stepNum}. Activate the "${slug}" theme in wp-admin`)
+    nextSteps.push(`  ${stepNum++}. Activate the "${slug}" theme in wp-admin`)
+    nextSteps.push(
+      acfProVersion
+        ? `  ${stepNum}. Activate Advanced Custom Fields PRO ${acfProVersion} in wp-admin → Plugins`
+        : `  ${stepNum}. Install and activate Advanced Custom Fields PRO 6.7+ (licensed zip) in wp-content/plugins`,
+    )
 
     const requiredPlugins = getProjectPluginRequirements({ woocommerce, seo })
 

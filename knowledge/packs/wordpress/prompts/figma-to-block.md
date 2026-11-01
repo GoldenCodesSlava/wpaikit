@@ -1,6 +1,6 @@
 # Figma to Block
 
-Generate a WordPress ACF block from a Figma frame. Produces three files: PHP class, Twig template, ACF JSON field group.
+Generate a WordPress ACF block from a Figma frame. Produces an ACF Blocks v3 block: block.json, PHP class, Twig template, ACF JSON field group (plus the SCSS partial).
 
 ## Arguments
 
@@ -24,7 +24,7 @@ Responsive classes are always generated. If `mobile-url` is provided → use exa
 Before starting, read:
 1. `knowledge/wordpress/rules/figma-to-code.md` — universal rules for all Figma-to-code generation (**mandatory**)
 2. `knowledge/wordpress/rules/boilerplate/architecture.md` — file paths and structure
-3. `knowledge/wordpress/rules/boilerplate/php.md` — PHP class conventions
+3. `knowledge/wordpress/rules/boilerplate/php.md` — PHP class conventions and the ACF Blocks v3 contract (block.json, `AbstractBlock`, Twig helpers)
 4. `knowledge/wordpress/rules/boilerplate/twig.md` — Twig autoescape and sanitization rules
 5. `knowledge/wordpress/rules/boilerplate/frontend.md` — SCSS and style conventions
 6. `knowledge/shared/rules/figma-blocks.md` — layer naming → ACF field mapping
@@ -52,7 +52,7 @@ Follow the skill exactly. High-level summary:
 Show proposed fields. Let user edit interactively before generating.
 
 ### Phase 5 — Generate files
-Write three files to the theme directory.
+Write `block.json`, the PHP class, the Twig template, the ACF JSON group and the SCSS partial to the theme directory (ACF Blocks v3).
 
 ### Phase 6 — Report
 
@@ -62,4 +62,5 @@ Write three files to the theme directory.
 - Never call `esc_html()` before passing plain text to Twig (autoescape handles it)
 - Use `{{ url|raw }}` for pre-sanitized URLs
 - No queries or logic in Twig — keep it in the PHP class
+- ACF Blocks v3: metadata in `block.json`, no `acf_register_block_type()`, no `mode`/`jsx`; root element through `block_wrapper_attributes()`
 - Always generate responsive classes even without a mobile frame

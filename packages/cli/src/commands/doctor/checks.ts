@@ -3,6 +3,12 @@ import { readConfig } from '@veaceslav-golden/wp-ai-kit-core'
 import { accessSync, constants, existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { getProjectPluginRequirements, KNOWN_SEO_PLUGIN_SLUGS } from '../../project-plugins.js'
+import {
+  ACF_PRO_MIN_VERSION,
+  ACF_PRO_SLUG,
+  isSupportedAcfProVersion,
+  readAcfProVersion,
+} from '../../acf-pro.js'
 
 export type CheckStatus = 'ok' | 'warn' | 'error'
 
@@ -243,6 +249,36 @@ export async function checkProjectPlugins(cwd: string): Promise<CheckResult[]> {
   return results
 }
 
+/** Theme blocks are ACF Blocks v3: an installed ACF PRO must be recent enough to register them. */
+export function checkAcfProVersion(cwd: string): CheckResult[] {
+  const pluginDir = resolve(cwd, 'wp-content', 'plugins', ACF_PRO_SLUG)
+  if (!existsSync(pluginDir)) return []
+
+  const version = readAcfProVersion(pluginDir)
+
+  if (!version) {
+    return [
+      {
+        name: 'ACF PRO version',
+        status: 'error',
+        message: `wp-content/plugins/${ACF_PRO_SLUG} has no readable acf.php header`,
+        fix: 'Reinstall Advanced Custom Fields PRO from the licensed zip.',
+      },
+    ]
+  }
+
+  return isSupportedAcfProVersion(version)
+    ? [{ name: 'ACF PRO version', status: 'ok', message: `${version} (ACF Blocks v3)` }]
+    : [
+        {
+          name: 'ACF PRO version',
+          status: 'error',
+          message: `${version} (minimum: ${ACF_PRO_MIN_VERSION}); theme blocks will not register`,
+          fix: 'Update Advanced Custom Fields PRO in wp-admin → Plugins or replace it with a newer licensed zip.',
+        },
+      ]
+}
+
 /** The built-in SEO module was removed at init, so some SEO plugin has to take over. */
 export function checkSeoPluginChosenLater(cwd: string): CheckResult {
   const installed = KNOWN_SEO_PLUGIN_SLUGS.find((slug) =>
@@ -269,6 +305,7 @@ export async function runAllChecks(cwd: string): Promise<CheckResult[]> {
   ])
   const write = checkWriteAccess(cwd)
   const plugins = await checkProjectPlugins(cwd)
+  const acf = checkAcfProVersion(cwd)
   const php = await checkCatalogPhpRuntime(cwd)
-  return [node, git, composer, npm, ssh, write, ...plugins, ...php]
+  return [node, git, composer, npm, ssh, write, ...plugins, ...acf, ...php]
 }

@@ -49,6 +49,9 @@ Store as `TWIG_FILES`.
 Scan `blocks/` recursively (or path from project.md) for `*.php` files — block class files only, skip `functions.php` or service files.
 Store as `PHP_FILES`.
 
+### 1.3a Block metadata
+Collect every `blocks/*/block.json` and store as `BLOCK_JSON_FILES`. A folder in `blocks/` without `block.json` is itself a violation (ACF Blocks v3).
+
 ### 1.4 Read validation context
 Read:
 - `knowledge/wordpress/rules/figma-to-code.md` — checklist in Rule 10
@@ -61,11 +64,12 @@ Files to validate:
   SCSS:  N files
   Twig:  N files
   PHP:   N files
+  block.json: N files
 ```
 
 ## Phase 2 — Validate each file
 
-Process files in this order: SCSS → Twig → PHP.
+Process files in this order: SCSS → Twig → PHP → block.json.
 For each file, read its content and run the relevant checklist.
 
 ### SCSS validation
@@ -99,6 +103,8 @@ For each file in `TWIG_FILES`, check:
 | 6 | Optional fields wrapped in `{% if %}` | Fields that could be null/empty used directly without guard |
 | 7 | No PHP expressions in Twig | No `<?php` tags, no direct function calls |
 | 8 | Known components use `{% include %}` | Check against `.wpaikit/components-registry.md` — if registry exists |
+| 9 | Block root uses `block_wrapper_attributes()` (`views/blocks/` only) | Root element has a hard-coded `class=`/`id=` instead of `{{ block_wrapper_attributes({...}) }}` |
+| 10 | No raw ACF inline helpers | `acf_inline_text_editing_attrs` / `acf_inline_toolbar_editing_attrs` in Twig — use `acf_inline_text()` / `acf_inline_toolbar()` (they leak `data-acf-*` and `role="button"` to the frontend) |
 
 ### PHP validation
 
@@ -107,11 +113,27 @@ For each file in `PHP_FILES`, check:
 | # | Rule | How to detect |
 |---|---|---|
 | 1 | `declare(strict_types=1)` first | First non-empty line after `<?php` |
-| 2 | Correct namespace | `namespace Boilerplate\Theme\Blocks` present |
-| 3 | String fields default to `''` | `get_field('x')` without `?: ''` for text/textarea fields |
-| 4 | Object fields default to `null` | `get_field('x')` without `?: null` for image/link fields |
-| 5 | Image fields wrapped in `Timber\Image` | Image field values passed to context without `new \Timber\Image()` |
-| 6 | No HTML output in PHP | `echo`, `?>...<?php`, heredoc HTML strings |
+| 2 | Correct namespace and base class | `namespace Boilerplate\Theme\Blocks\{BlockName};` and `class {BlockName} extends AbstractBlock` |
+| 3 | No legacy registration | `acf_register_block_type`, `function init(` or `function register(` in a block class — metadata belongs to `block.json` |
+| 4 | Fields read through `getField()` | Direct `get_field('x')` or raw `$block['data']['x']` in `getContext()` instead of `$this->getField('x', $default, $block)` |
+| 5 | Defaults: strings `''`, link/image `null`, repeater `[]` | `getField()` call with a missing or mismatched default |
+| 6 | Images normalized | Image values reach the context without `$this->sanitizeImage()` |
+| 7 | No HTML output in PHP | `echo`, `?>...<?php`, heredoc HTML strings |
+
+### block.json validation
+
+For each file in `BLOCK_JSON_FILES`, check:
+
+| # | Rule | How to detect |
+|---|---|---|
+| 1 | v3 versions | `apiVersion` is `3` and `acf.blockVersion` is `3` |
+| 2 | Name | `name` is `acf/{kebab-case of the folder name}` and matches the `location` of an `acf-json/group_*.json` |
+| 3 | Render dispatcher | `acf.renderCallback` is `Boilerplate\\Theme\\Services\\BlocksService::renderAcfBlock`; no `acf.renderTemplate` |
+| 4 | No legacy v2 settings | No `acf.mode`, `supports.mode`, `supports.jsx` |
+| 5 | No `example` | Inserter preview data belongs in the class (`getExample()`) |
+| 6 | Theme metadata | `category: boilerplate-blocks`, `textdomain: boilerplate`, `supports.anchor: true` |
+
+If the theme has `tests/blocks-v3.php`, also run `composer test:blocks` and include its result.
 
 ## Phase 3 — Report
 
@@ -139,6 +161,9 @@ Twig
 
 PHP
   ✓ blocks/HeroBlock/HeroBlock.php — clean
+
+block.json
+  ✓ blocks/HeroBlock/block.json — clean
 
 ---
 Total: N violations in N files

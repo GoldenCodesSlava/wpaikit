@@ -74,8 +74,16 @@ describe('SEO init choice', () => {
         seo,
       }).map(({ slug }) => slug)
 
-    expect(slugs('module')).toEqual(['woocommerce', 'wpaikit-product-catalog-io'])
-    expect(slugs('later')).toEqual(['woocommerce', 'wpaikit-product-catalog-io'])
+    expect(slugs('module')).toEqual([
+      'advanced-custom-fields-pro',
+      'woocommerce',
+      'wpaikit-product-catalog-io',
+    ])
+    expect(slugs('later')).toEqual([
+      'advanced-custom-fields-pro',
+      'woocommerce',
+      'wpaikit-product-catalog-io',
+    ])
     expect(slugs('yoast')).toContain('wordpress-seo')
     expect(slugs('rank-math')).toContain('seo-by-rank-math')
   })
@@ -85,6 +93,11 @@ describe('SEO init choice', () => {
 
     const results = await checkProjectPlugins(dir)
     expect(results).toEqual([
+      expect.objectContaining({
+        name: 'Plugin: Advanced Custom Fields PRO',
+        status: 'error',
+        message: 'not installed',
+      }),
       expect.objectContaining({
         name: 'Plugin: Yoast SEO',
         status: 'error',
@@ -97,19 +110,31 @@ describe('SEO init choice', () => {
     writeStandardConfig('later')
     expect(await checkProjectPlugins(dir)).toEqual([
       expect.objectContaining({ name: 'SEO plugin', status: 'warn' }),
+      expect.objectContaining({
+        name: 'Plugin: Advanced Custom Fields PRO',
+        status: 'error',
+        message: 'not installed',
+      }),
     ])
 
     mkdirSync(join(dir, 'wp-content', 'plugins', 'wp-seopress'), { recursive: true })
     expect(await checkProjectPlugins(dir)).toEqual([
       expect.objectContaining({ name: 'SEO plugin', status: 'ok' }),
+      expect.objectContaining({
+        name: 'Plugin: Advanced Custom Fields PRO',
+        status: 'error',
+        message: 'not installed',
+      }),
     ])
   })
 
-  it('has nothing to check for the built-in module or legacy configs', async () => {
+  it('only requires ACF PRO for the built-in module or legacy configs', async () => {
+    const onlyAcf = [expect.objectContaining({ name: 'Plugin: Advanced Custom Fields PRO' })]
+
     writeStandardConfig('module')
-    expect(await checkProjectPlugins(dir)).toEqual([])
+    expect(await checkProjectPlugins(dir)).toEqual(onlyAcf)
 
     writeStandardConfig()
-    expect(await checkProjectPlugins(dir)).toEqual([])
+    expect(await checkProjectPlugins(dir)).toEqual(onlyAcf)
   })
 })

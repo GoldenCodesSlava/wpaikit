@@ -100,6 +100,37 @@ describe('knowledge packs', () => {
     expect(existsSync(join(dir, 'knowledge', 'woocommerce'))).toBe(false)
     expect(existsSync(join(dir, 'knowledge', 'shared', 'prompts'))).toBe(false)
     expect(existsSync(join(dir, 'knowledge', 'shared', 'rules', 'figma-blocks.md'))).toBe(true)
+    expect(listFiles(join(dir, '.agents', 'skills')).sort()).toEqual([
+      'case-study-mockups/SKILL.md',
+      'case-study-mockups/assets/devices/iphone-front.png',
+      'case-study-mockups/assets/devices/iphone-iso-mask.png',
+      'case-study-mockups/assets/devices/iphone-iso-over.png',
+      'case-study-mockups/assets/devices/iphone-iso-under.png',
+      'case-study-mockups/package.json',
+      'case-study-mockups/scripts/capture.js',
+      'case-study-mockups/scripts/devices.py',
+      'case-study-mockups/scripts/discover.js',
+      'case-study-mockups/scripts/lib.js',
+      'case-study-mockups/scripts/logo.js',
+      'case-study-mockups/scripts/logo_split.py',
+      'case-study-mockups/scripts/render.js',
+      'case-study-mockups/scripts/screens.js',
+      'case-study-mockups/templates/compose.html',
+      'case-study-mockups/templates/screen.html',
+      'design-quality-check/SKILL.md',
+      'figma-components/SKILL.md',
+      'figma-create-design-system/SKILL.md',
+      'figma-design-analysis/SKILL.md',
+      'figma-prep/SKILL.md',
+      'figma-seo-structure/SKILL.md',
+      'figma-seo-texts/SKILL.md',
+      'figma-sync-tokens/SKILL.md',
+      'figma-update-design-system/SKILL.md',
+      'generate-design/SKILL.md',
+    ])
+    expect(read(dir, '.agents/skills/generate-design/SKILL.md')).toBe(
+      read(dir, 'knowledge/design/skills/generate-design/SKILL.md'),
+    )
     expect(commandFiles(dir)).toEqual([
       'analyze-figma.md',
       'case-study-mockups.md',
@@ -164,6 +195,7 @@ describe('knowledge packs', () => {
       'design-system-to-code.md',
       'figma-to-block.md',
       'get-comment-for-frontend.md',
+      'migrate-blocks-v3.md',
       'scan-components.md',
       'scan-project.md',
       'setup-fonts.md',
@@ -215,6 +247,21 @@ describe('knowledge packs', () => {
 
     expect(result.commands.filter((command) => command === 'setup-fonts')).toHaveLength(1)
     expect(read(dir, 'knowledge/context.md').match(/\| `\/setup-fonts`/g)).toHaveLength(1)
+    expect(listFiles(join(dir, '.agents', 'skills')).sort()).toEqual([
+      'design-system-to-code/SKILL.md',
+      'figma-to-block-html/SKILL.md',
+      'figma-to-block/SKILL.md',
+      'get-comment-for-frontend/SKILL.md',
+      'migrate-blocks-v3/SKILL.md',
+      'migrate-blocks-v3/reference/AbstractBlock.php',
+      'migrate-blocks-v3/reference/BlocksService.php',
+      'migrate-blocks-v3/reference/ExampleBlock.block.json',
+      'migrate-blocks-v3/reference/blocks-v3.php',
+      'scan-components/SKILL.md',
+      'scan-project/SKILL.md',
+      'setup-fonts/SKILL.md',
+      'validate-code/SKILL.md',
+    ])
   })
 
   it('removes managed files of deselected packs', async () => {
@@ -231,6 +278,8 @@ describe('knowledge packs', () => {
     expect(existsSync(join(dir, 'knowledge', 'wordpress'))).toBe(false)
     expect(existsSync(join(dir, 'knowledge', 'woocommerce'))).toBe(false)
     expect(existsSync(join(dir, '.claude', 'commands', 'figma-to-block.md'))).toBe(false)
+    expect(existsSync(join(dir, '.agents', 'skills', 'figma-to-block', 'SKILL.md'))).toBe(false)
+    expect(existsSync(join(dir, '.agents', 'skills', 'generate-design', 'SKILL.md'))).toBe(true)
   })
 
   it('protects locally modified files of a deselected pack', async () => {
@@ -260,6 +309,18 @@ describe('knowledge packs', () => {
 
     await installKnowledge({ targetDir: dir, knowledgeSource, packs: ['design'], force: true })
     expect(read(dir, 'AGENTS.md')).not.toContain('Local project rule')
+  })
+
+  it('protects locally modified Codex skills unless force is used', async () => {
+    await installKnowledge({ targetDir: dir, knowledgeSource, packs: ['design'] })
+    appendFileSync(join(dir, '.agents', 'skills', 'generate-design', 'SKILL.md'), '\nLocal\n')
+
+    await expect(
+      installKnowledge({ targetDir: dir, knowledgeSource, packs: ['design'] }),
+    ).rejects.toThrow(/\.agents\/skills\/generate-design\/SKILL\.md contains local changes/)
+
+    await installKnowledge({ targetDir: dir, knowledgeSource, packs: ['design'], force: true })
+    expect(read(dir, '.agents/skills/generate-design/SKILL.md')).not.toContain('\nLocal\n')
   })
 
   it('is idempotent and reports the previous version', async () => {

@@ -1,8 +1,8 @@
 ---
 name: figma-to-block
-description: Use when generating a WordPress ACF block (PHP class + Twig template + ACF JSON) from a Figma block frame. Requires .wpaikit/design-system.json and must run from the theme root.
+description: Use when generating a WordPress ACF Blocks v3 block (block.json + PHP class + Twig template + ACF JSON) from a Figma block frame. Requires .wpaikit/design-system.json and must run from the theme root.
 metadata:
-  short-description: Generate PHP + Twig + ACF JSON for a WordPress block from Figma
+  short-description: Generate block.json + PHP + Twig + ACF JSON for a WordPress block from Figma
 ---
 
 # Figma to Block
@@ -95,7 +95,7 @@ After mapping all layers to fields, assign each field to a tab:
 
 | Tab | Field types | Created when |
 |---|---|---|
-| **Settings** | `true_false`, `text` (is_active, block_custom_id) | Always — these two fields are always added |
+| **Settings** | `true_false` (is_active) | Always — `is_active` is always added; the anchor comes from the block sidebar (`supports.anchor`) |
 | **Content** | `text`, `textarea`, `wysiwyg`, `link` | Only if block has at least one content field |
 | **Media** | `image`, `video`, `file` | Only if block has at least one media field |
 | **Appearance** | `select`, `radio`, `color_picker`, `button_group` | Only if block has at least one appearance field |
@@ -169,7 +169,6 @@ Show the proposed ACF field structure and Twig structure preview. Let the user e
 ACF Tabs & Fields:
   [Settings]
     is_active          true_false   (always present)
-    block_custom_id    text         (always present)
 
   [Content]
     #  Name              Type       Twig variable
@@ -211,10 +210,41 @@ Store `CONTAINER = true` (default) or `false` based on user input.
 
 ## Phase 5 — Generate files
 
-Write three files. Use the boilerplate `ExampleBlock` as the structural reference.
+If the section is a row of 1–6 columns made of text, images, video or buttons, configure the bundled `ColumnsBlock` with its `ColumnBlock` columns and their Content / Media / Buttons blocks (width preset, gap, alignment, background) instead of generating a new block, and tell the user which settings reproduce the design.
+
+Otherwise write the block files (block.json, PHP class, Twig template, ACF JSON) and the SCSS partial. Use the boilerplate `ExampleBlock` as the structural reference and follow the ACF Blocks v3 contract in `knowledge/wordpress/rules/boilerplate/php.md` (section "Blocks").
 
 **After writing each file** — run the per-file validation loop from `knowledge/wordpress/rules/figma-to-code.md` Rule 10.
 Fix all violations before moving to the next file.
+
+### 5.0 block.json
+
+Path: `blocks/{BLOCK_NAME_PASCAL}/block.json`
+
+```json
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "acf/{BLOCK_NAME_KEBAB}",
+    "title": "{Block Name With Spaces}",
+    "description": "{One sentence for editors}",
+    "category": "boilerplate-blocks",
+    "icon": "{dashicon, e.g. cover-image}",
+    "keywords": ["{keyword}"],
+    "textdomain": "boilerplate",
+    "supports": { "align": false, "anchor": true, "html": false },
+    "acf": {
+        "blockVersion": 3,
+        "renderCallback": "Boilerplate\\Theme\\Services\\BlocksService::renderAcfBlock",
+        "autoInlineEditing": false
+    }
+}
+```
+
+Rules:
+- `name` is always `acf/{BLOCK_NAME_KEBAB}`
+- `renderCallback` is always the `BlocksService::renderAcfBlock` dispatcher — never `renderTemplate`
+- Never add `mode`, `supports.mode`, `supports.jsx` or `example` (preview data goes to `getExample()` in PHP)
 
 ### 5.1 PHP class
 
@@ -222,44 +252,69 @@ Path: `blocks/{BLOCK_NAME_PASCAL}/{BLOCK_NAME_PASCAL}.php`
 
 ```php
 <?php
-
 declare(strict_types=1);
 
-namespace Boilerplate\Theme\Blocks;
+namespace Boilerplate\Theme\Blocks\{BLOCK_NAME_PASCAL};
 
-use Timber\Timber;
+use Boilerplate\Theme\Blocks\AbstractBlock;
 
-class {BLOCK_NAME_PASCAL} extends \Boilerplate\Theme\Blocks\Block
+class {BLOCK_NAME_PASCAL} extends AbstractBlock
 {
-    public function render(array $block, string $content, bool $is_preview): void
+    protected function getContext(array $block): array
     {
-        $context = \Timber\Timber::context();
+        $context = parent::getContext($block);
+        $items = $this->getField('items', [], $block);
 
-        // ACF fields
-        $context['heading']          = get_field('heading') ?: '';
-        $context['description']      = get_field('description') ?: '';
-        $context['cta']              = get_field('cta') ?: null;
-        $context['background_image'] = get_field('background_image') ?: null;
+        $context['heading'] = $this->getField('heading', '', $block);
+        $context['description'] = $this->getField('description', '', $block);
+        $context['cta'] = $this->getField('cta', null, $block);
+        $context['background_image'] = $this->getField('background_image', null, $block);
+        $context['items'] = is_array($items) ? $items : [];
 
-        // image fields: pass as Timber\Image for url/alt access
-        if ($context['background_image']) {
-            $context['background_image'] = new \Timber\Image($context['background_image']);
-        }
+        return $context;
+    }
 
-        Timber::render('views/blocks/{BLOCK_NAME_PASCAL}/{BLOCK_NAME_PASCAL}.twig', $context);
+    protected function sanitizeContext(array $context): array
+    {
+        $sanitized = $context;
+        $sanitized['block_id'] = $this->sanitizeAttribute($context['block_id'] ?? '');
+        $sanitized['block_anchor'] = $this->sanitizeAttribute($context['block_anchor'] ?? '');
+        $sanitized['heading'] = $this->sanitizeText($context['heading'] ?? '');
+        $sanitized['description'] = $this->sanitizeHtml($context['description'] ?? '');
+        $sanitized['cta'] = $this->sanitizeLink($context['cta'] ?? null);
+        $sanitized['background_image'] = $this->sanitizeImage($context['background_image'] ?? null);
+        $sanitized['items'] = array_map(
+            fn (array $item): array => ['title' => $this->sanitizeText($item['title'] ?? '')],
+            $context['items'] ?? []
+        );
+
+        return $sanitized;
+    }
+
+    protected function getExample(): array
+    {
+        return [
+            'attributes' => [
+                'mode' => 'preview',
+                'data' => [
+                    'heading' => __('Example heading', 'boilerplate'),
+                    'description' => __('Example description.', 'boilerplate'),
+                ],
+            ],
+        ];
     }
 }
 ```
 
 Rules:
 - `declare(strict_types=1)` first
-- Namespace `Boilerplate\Theme\Blocks`
-- Extend `Block` base class
-- `get_field()` for every ACF field
-- String fields default to `''`, link/image/repeater default to `null`
-- Wrap image field values in `new \Timber\Image()`
-- Repeater: `get_field('items') ?: []`
-- Pass `$context` to `Timber::render()`
+- Namespace `Boilerplate\Theme\Blocks\{BLOCK_NAME_PASCAL}`, extend `AbstractBlock`
+- No `init()`, no `acf_register_block_type()`, no `render()` override — `AbstractBlock` renders `views/blocks/{BLOCK_NAME_PASCAL}/{BLOCK_NAME_PASCAL}.twig`
+- `$this->getField('name', $default, $block)` for every ACF field (never raw `$block['data']`)
+- String fields default to `''`, link/image default to `null`, repeater to `[]`
+- Normalize in `sanitizeContext()`: `sanitizeText`, `sanitizeHtml` (wysiwyg), `sanitizeLink`, `sanitizeImage`, `sanitizeChoice` (select/radio)
+- Heavy queries: limit them while `$this->isPreview` is true
+- `getExample()` returns neutral, translatable preview data
 
 ### 5.2 Twig template
 
@@ -268,9 +323,11 @@ Path: `views/blocks/{BLOCK_NAME_PASCAL}/{BLOCK_NAME_PASCAL}.twig`
 Follow `knowledge/wordpress/rules/figma-to-code.md` — BEM class names only, no Tailwind utilities in Twig.
 
 Rules:
+- Root element: `<section {{ block_wrapper_attributes({id: block_anchor ?: block_id, class: '{block-name-kebab}'}) }}>` — never a hard-coded `class`/`id` on the root
+- Inline editing: `{{ acf_inline_text('field') }}` on elements whose only content is a Text/Textarea field; `{{ acf_inline_toolbar('field') }}` on wysiwyg, image, link elements. Never call the raw `acf_inline_*_editing_attrs()` functions
 - Plain text: `{{ heading }}` (no `|raw`)
 - Pre-sanitized URL: `{{ cta.url|raw }}`
-- Image URL: `{{ image.url|raw }}`
+- Images: `{% include 'components/image.twig' with {image: background_image, size: 'boilerplate-large'} only %}`
 - HTML content (wysiwyg): `{{ content|raw }}`
 - Wrap optional fields in `{% if field %}...{% endif %}`
 - Repeater: `{% for item in items %}...{% endfor %}`
@@ -294,11 +351,11 @@ Wrap inner content in `<div class="{block-name-kebab}__inner container">`.
 The `container` class is a Tailwind layout primitive — allowed in Twig as a structural exception.
 
 ```twig
-<section class="hero-block">
+<section {{ block_wrapper_attributes({id: block_anchor ?: block_id, class: 'hero-block'}) }}>
   <div class="hero-block__inner container">
     <div class="hero-block__content">
-      <h1 class="hero-block__heading">{{ heading }}</h1>
-      <p class="hero-block__description">{{ description }}</p>
+      <h1 class="hero-block__heading" {{ acf_inline_text('heading') }}>{{ heading }}</h1>
+      <div class="hero-block__description" {{ acf_inline_toolbar('description') }}>{{ description|raw }}</div>
     </div>
   </div>
 </section>
@@ -309,10 +366,10 @@ The `container` class is a Tailwind layout primitive — allowed in Twig as a st
 No `__inner` wrapper. Content fills full width.
 
 ```twig
-<section class="hero-block">
+<section {{ block_wrapper_attributes({id: block_anchor ?: block_id, class: 'hero-block'}) }}>
   <div class="hero-block__content">
-    <h1 class="hero-block__heading">{{ heading }}</h1>
-    <p class="hero-block__description">{{ description }}</p>
+    <h1 class="hero-block__heading" {{ acf_inline_text('heading') }}>{{ heading }}</h1>
+    <div class="hero-block__description" {{ acf_inline_toolbar('description') }}>{{ description|raw }}</div>
   </div>
 </section>
 ```
@@ -400,7 +457,7 @@ Path: `acf-json/group_{BLOCK_NAME_SNAKE}.json`
 Generate a valid ACF local JSON field group:
 - `key`: `group_{BLOCK_NAME_SNAKE}`
 - `title`: block name with spaces (e.g. `Hero Block`)
-- `location`: rule matching the block name
+- `location`: `[[{ "param": "block", "operator": "==", "value": "acf/{BLOCK_NAME_KEBAB}" }]]`
 - `fields`: tabs first, then the fields belonging to that tab (flat array — ACF reads tabs positionally)
 
 Field key format: `field_{BLOCK_NAME_SNAKE}_{field_name}` (e.g. `field_hero_block_heading`)
@@ -437,16 +494,8 @@ Omit any tab (except Settings) if it has no fields.
     "type": "true_false",
     "default_value": 1,
     "ui": 1,
-    "wrapper": { "width": "20", "class": "", "id": "" }
-  },
-  {
-    "key": "field_hero_block_block_custom_id",
-    "label": "Block Custom ID",
-    "name": "block_custom_id",
-    "type": "text",
-    "placeholder": "#my-section",
-    "instructions": "Optional HTML id for anchor links",
-    "wrapper": { "width": "80", "class": "", "id": "" }
+    "instructions": "Disable to hide this block on the frontend while keeping it in the editor.",
+    "wrapper": { "width": "100", "class": "", "id": "" }
   },
   {
     "key": "field_hero_block_tab_content",
@@ -504,9 +553,8 @@ Omit any tab (except Settings) if it has no fields.
 
 **Rules:**
 - `endpoint: 0` on **every** tab without exception. Never set `endpoint: 1` on any tab.
-- Settings tab always present with `is_active` + `block_custom_id`
-- `is_active` always has `"wrapper": { "width": "20" }` — never any other value
-- `block_custom_id` always has `"wrapper": { "width": "80" }` — never any other value
+- Settings tab always present with `is_active`
+- Never generate `block_custom_id` — editors set the anchor in the block sidebar (Advanced → HTML anchor, `supports.anchor`)
 - Repeater field sits inside its own tab — the tab contains only that repeater entry
 
 ## Phase 6 — Update project knowledge base
@@ -517,7 +565,7 @@ Find the `## Components & Blocks` section.
 Add a new row to the table for the generated block:
 
 ```
-| {BLOCK_NAME_PASCAL} | block | `blocks/{BLOCK_NAME_PASCAL}/{BLOCK_NAME_PASCAL}.php`, `views/blocks/{BLOCK_NAME_PASCAL}/{BLOCK_NAME_PASCAL}.twig` |
+| {BLOCK_NAME_PASCAL} | block | `blocks/{BLOCK_NAME_PASCAL}/block.json`, `blocks/{BLOCK_NAME_PASCAL}/{BLOCK_NAME_PASCAL}.php`, `views/blocks/{BLOCK_NAME_PASCAL}/{BLOCK_NAME_PASCAL}.twig` |
 ```
 
 If the block already exists in the table → update its row.
@@ -532,6 +580,7 @@ If `.wpaikit/project.md` does not exist → skip silently. Note in Phase 7 repor
 === Block generated: HeroBlock ===
 
 Files written:
+  blocks/HeroBlock/block.json
   blocks/HeroBlock/HeroBlock.php
   views/blocks/HeroBlock/HeroBlock.twig
   frontend/src/blocks/_hero-block.scss  (imported in main.scss)
@@ -544,9 +593,10 @@ Project knowledge base:
   .wpaikit/project.md updated ✓   (or: "Run /scan-project to enable auto-updates")
 
 Next steps:
-  1. Run `composer phpstan` to check the PHP class
+  1. Run `composer phpstan` and `composer test:blocks` (ACF Blocks v3 contract)
   2. Open WordPress admin → Custom Fields → sync JSON
   3. Run `npm run build` to verify SCSS compiles
+  4. Insert the block in the editor: check the preview, sidebar fields and inline editing
 ```
 
 ## Boundaries
@@ -554,6 +604,7 @@ Next steps:
 - Never generate queries or data logic in Twig
 - Never call `esc_html()` before passing plain text to PHP context
 - Always use `declare(strict_types=1)`
+- Never register blocks with `acf_register_block_type()` or add `mode` / `jsx` to block.json (ACF Blocks v3)
 - Always generate responsive SCSS via @apply, never inline Tailwind in Twig
 - Always add SCSS partial import to main.scss
 - Do not proceed past Phase 4 without `done` from user

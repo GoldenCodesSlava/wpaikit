@@ -1,5 +1,5 @@
 ---
-description: Validate existing SCSS and Twig files against project coding rules
+description: Validate existing SCSS, Twig, block PHP and block.json files against project coding rules
 argument-hint: (no arguments — reads main.scss imports and scans views/)
 ---
 
