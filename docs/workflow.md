@@ -448,6 +448,49 @@ De la un site la altul se schimbă doar capturile de ecran, logo-ul și culorile
 
 ---
 
+### `/case-study-app-mockups`
+
+**Scop:** Generează imaginile cu mockup-uri pentru studiul de caz al unei aplicații mobile din ecranele aplicației din Figma și le pune în Figma. Este varianta pentru aplicații a `/case-study-mockups`: nu există un site de capturat, așa că ecranele se iau din designul aplicației.
+
+```
+/case-study-app-mockups <figma-url-cu-ecranele-aplicației> [<figma-url-studiu-de-caz>]
+```
+
+- `<figma-url-cu-ecranele-aplicației>` — pagina, secțiunea sau cadrul cu ecranele aplicației, ca frame-uri de mărimea unui telefon (lățime 360–430 px) (obligatoriu)
+- `<figma-url-studiu-de-caz>` — cadrul studiului de caz care trebuie actualizat (opțional). Dacă lipsește sau duce la o pagină goală, comanda copiază acolo șablonul studiului de caz
+
+**Ce imagini se generează (structura e fixă):**
+
+| Șablon | Locul în case study | Dimensiune | Conținut |
+|---|---|---|---|
+| **A** Overview | imaginea din `OverviewBlock` | 1312×940 | logo-ul aplicației în stânga, trei iPhone frontale în evantai în dreapta, cel din mijloc deasupra |
+| **B** Showcase lat | imaginea din `ShowcaseBlock` | 1312×720 | cinci iPhone frontale într-un rând decalat, care arată fluxul utilizatorului de la stânga la dreapta |
+
+Fundalul e un gradient gri-deschis, dispozitivul e iPhone 15 Pro frontal. De la o aplicație la alta se schimbă doar ecranele și logo-ul. Studiul de caz al unei aplicații nu are rândul `Two Shots`: dacă șablonul îl are, comanda îl șterge în Desktop și Mobile.
+
+**Ce face:**
+
+1. Găsește în nodul dat frame-urile de mărimea unui telefon și notează care au deja status bar iOS
+2. Afișează ce ecrane intră în A și B, logo-ul și dacă se adaugă status bar-ul — **și așteaptă confirmarea** (singura oprire)
+3. Exportă ecranele din Figma la rezoluție completă prin noduri temporare, pe care apoi le șterge
+4. Adaugă status bar-ul iOS doar ecranelor care nu îl au, separă logo-ul în icon + text și pune ecranele în iPhone 15 Pro
+5. Randează cele 2 imagini la 3x și le verifică vizual: Dynamic Island nu acoperă conținutul, nu există ecrane goale
+6. Le încarcă în sloturile Desktop și Mobile ale studiului de caz și le copiază în `assets/generated/case-studies/<aplicație>/`
+
+**Alegerea ecranelor:** A — cele 3 ecrane cheie (home, funcția principală, profil sau rezultat); B — 5 ecrane care arată fluxul utilizatorului. Fără stări goale, loadere sau dialoguri de sistem. A și B au cel mult un ecran comun.
+
+**Cerințe:** Google Chrome, Node 20, Python 3 cu Pillow și numpy. O singură dată, în folderul skill-ului (`knowledge/design/skills/case-study-app-mockups/`): `npm i`.
+
+**Note:**
+
+- Doar ecranele reale ale aplicației din Figma — fără imagini generate de AI
+- Nu modifică compozițiile, modelul dispozitivului sau dimensiunile; schimbă doar ecranele și logo-ul
+- Nu lasă noduri temporare de export în fișierul Figma
+
+**Când se folosește:** Când pregătești studiul de caz al unei aplicații mobile pe site-ul CreativSoft.
+
+---
+
 ### `/figma-design-system`
 
 **Scop:** Extrage toate token-urile de design din Figma și creează un Design System complet.
@@ -829,6 +872,7 @@ cd {slug}                          # dacă init a creat un folder nou; knowledge
 /figma-seo-structure <url>        # audit SEO structural + blocuri lipsă în Figma
 /figma-seo-texts <url>            # texte SEO multilingve pentru blocurile editoriale
 /case-study-mockups <site-url>    # imagini mockup pentru un studiu de caz, din site-ul live
+/case-study-app-mockups <figma-url> # imagini mockup pentru studiul de caz al unei aplicații mobile
 /scan-components                  # după adăugarea de componente noi
 /validate-code                    # verificare cod după orice modificare
 /get-comment-for-frontend <url>   # referință pentru developer la review/bugfix

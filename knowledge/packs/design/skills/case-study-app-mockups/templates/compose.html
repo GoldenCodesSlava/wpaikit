@@ -1,0 +1,48 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{overflow:hidden}
+.scene{position:relative;overflow:hidden}
+.abs{position:absolute}
+.glow{position:absolute;border-radius:50%;filter:blur(60px)}
+</style></head><body><div id="root"></div>
+<script>
+// CONFIG is injected by render.js: { template, work, background, palette:{dark,light,accent}, logo:{icon,text,iconAspect,textAspect}, slots:{...} }
+// background: any CSS background (colour or gradient) = studio background without glow (default: cool light-grey gradient); null = gradient + glow from the palette.
+const C = window.CONFIG;
+const W = C.work + '/';
+const mix = (a, b, t) => { const p = h => [1,3,5].map(i => parseInt(h.slice(i, i+2), 16)); const x = p(a), y = p(b);
+  return '#' + x.map((v, i) => Math.round(v + (y[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
+const rgba = (h, a) => { const p = [1,3,5].map(i => parseInt(h.slice(i, i+2), 16)); return `rgba(${p.join(',')},${a})`; };
+const bg = {
+  dark: `radial-gradient(110% 90% at 70% 15%,${mix(C.palette.dark,'#ffffff',.09)} 0%,${C.palette.dark} 55%,${mix(C.palette.dark,'#000000',.25)} 100%)`,
+  light: `radial-gradient(120% 100% at 20% 0%,${mix(C.palette.light,'#ffffff',.5)} 0%,${C.palette.light} 60%,${mix(C.palette.light,'#000000',.06)} 100%)`,
+};
+const FLAT = C.background === undefined ? 'linear-gradient(160deg,#f3f5fa 0%,#eff1f7 50%,#e7ecf2 100%)' : C.background;
+if (FLAT) bg.light = FLAT;
+const glow = (w, h, x, y, a) => FLAT ? '' : `<div class="glow" style="width:${w}px;height:${h}px;left:${x}px;top:${y}px;background:${rgba(C.palette.accent, a)}"></div>`;
+const fphone = (k, w) => `<img src="${W}devices/front-${k}.png" style="display:block;width:${w}px;filter:drop-shadow(0 30px 40px rgba(20,14,8,.45)) drop-shadow(0 8px 12px rgba(20,14,8,.3))">`;
+const at = (x, y, html) => `<div class="abs" style="left:${x}px;top:${y}px">${html}</div>`;
+// Horizontal logo (icon + wordmark) that fits into maxW px; falls back to the whole logo if it could not be split.
+const hlogo = (hIcon, hText, gap, maxW) => { if (!C.logo) return ''; const L = C.logo;
+  const full = L.text ? hIcon*L.iconAspect + gap + hText*L.textAspect : (L.height||hIcon)*L.iconAspect; const k = L.text ? Math.min(1, maxW / full) : 1;
+  const hi = hIcon*k, ht = hText*k, g = gap*k;
+  return L.text
+    ? `<div style="display:flex;align-items:center;gap:${g}px"><img src="${W}${L.icon}" style="height:${hi}px;width:${hi*L.iconAspect}px"><img src="${W}${L.text}" style="height:${ht}px;width:${ht*L.textAspect}px"></div>`
+    : `<img src="${W}${L.icon}" style="height:${L.height||hi}px;width:${(L.height||hi)*L.iconAspect}px">`; };
+
+const S = C.slots;
+const T = {
+  // A — Overview: logo on the left, three front iPhones fanned on the right, centre phone on top (1312x940, light).
+  //     Without a logo the three phones are centred.
+  A() { return { w: 1312, h: 940, bg: bg.light, html:
+      glow(760, 620, 470, 160, .3) +
+      `<div class="abs" style="left:72px;top:0;height:940px;display:flex;align-items:center">${hlogo(96, 74, 26, 340)}</div>` +
+      (() => { const dx = C.logo ? 0 : -210; return at(452+dx, 214, fphone(S.overview[1], 300)) + at(980+dx, 214, fphone(S.overview[2], 300)) + at(696+dx, 104, fphone(S.overview[0], 360)); })() }; },
+  // B — Showcase wide: five front iPhones in a staggered row (1312x720, light).
+  B() { const w = 232, gap = 26, x0 = (1312 - (5*w + 4*gap)) / 2;
+    return { w: 1312, h: 720, bg: bg.light, html: glow(1000, 520, 156, 160, .26) +
+      S.row.map((k, i) => at(x0 + i*(w+gap), i % 2 ? 176 : 64, fphone(k, w))).join('') }; },
+};
+const sc = T[C.template]();
+document.getElementById('root').innerHTML = `<div class="scene" style="width:${sc.w}px;height:${sc.h}px;background:${sc.bg}">${sc.html}</div>`;
+</script></body></html>

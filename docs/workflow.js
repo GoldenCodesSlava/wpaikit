@@ -581,6 +581,8 @@ const fullDocumentationTranslations = {
       'Generates multilingual SEO texts for the editorial blocks of a Figma page: meta, H1, section copy. Skips dynamic blocks and never modifies Figma. Run after /figma-seo-structure.',
     'full.commands.caseStudyMockups':
       'Captures a live site and renders the 4 case study images in fixed compositions (browser, iPhone, isometric grid) with the site colours and logo, then places them into the Figma case study. Access to closed sites is passed as a separate parameter.',
+    'full.commands.caseStudyAppMockups':
+      'Takes the real app screens from Figma and renders 2 mobile app case study images in fixed iPhone 15 Pro compositions (Overview with the logo, wide showcase with five phones), then places them into the Figma case study.',
     'full.workflows.title': 'Full workflows',
     'full.workflows.description':
       'Two base scenarios: a project with an existing design and a project where the design is generated in Figma first.',
@@ -650,6 +652,8 @@ cd wp-content/themes/{slug}
     'full.situations.seoPageComment': 'Structure first (blocks, links, schema), then texts.',
     'full.situations.caseStudy': 'Case study needs images',
     'full.situations.caseStudyComment': 'Live-site screenshots in browser and iPhone mockups, placed straight into Figma.',
+    'full.situations.caseStudyApp': 'Mobile app case study needs images',
+    'full.situations.caseStudyAppComment': 'App screens from Figma in iPhone mockups, placed straight into Figma.',
     'full.keyFiles.title': 'Key project files',
     'full.keyFiles.description':
       'These files and folders are most often needed during development and debugging.',
@@ -779,6 +783,8 @@ cd wp-content/themes/{slug}
       'Генерирует мультиязычные SEO-тексты для editorial-блоков страницы Figma: meta, H1, тексты секций. Динамические блоки пропускает, Figma не меняет. Запускать после /figma-seo-structure.',
     'full.commands.caseStudyMockups':
       'Снимает живой сайт и рендерит 4 картинки кейса в фиксированных композициях (браузер, iPhone, изометрическая сетка) с цветами и логотипом сайта, затем ставит их в кейс в Figma. Для закрытых сайтов доступ передаётся отдельным параметром.',
+    'full.commands.caseStudyAppMockups':
+      'Берёт настоящие экраны приложения из Figma и рендерит 2 картинки кейса мобильного приложения в фиксированных композициях с iPhone 15 Pro (Overview с логотипом и широкий showcase с пятью телефонами), затем ставит их в кейс в Figma.',
     'full.workflows.title': 'Полные workflow',
     'full.workflows.description':
       'Два базовых сценария: проект с готовым дизайном и проект, где дизайн сначала генерируется в Figma.',
@@ -847,6 +853,8 @@ cd wp-content/themes/{slug}
     'full.situations.seoPageComment': 'Сначала структура (блоки, ссылки, schema), затем тексты.',
     'full.situations.caseStudy': 'Нужны картинки для кейса',
     'full.situations.caseStudyComment': 'Скриншоты живого сайта в мокапах браузера и iPhone, сразу в Figma.',
+    'full.situations.caseStudyApp': 'Нужны картинки для кейса приложения',
+    'full.situations.caseStudyAppComment': 'Экраны приложения из Figma в мокапах iPhone, сразу в Figma.',
     'full.keyFiles.title': 'Ключевые файлы проекта',
     'full.keyFiles.description': 'Эти файлы и папки чаще всего нужны при разработке и отладке.',
     'full.keyFiles.metadataTitle': 'Metadata и AI',
@@ -978,6 +986,8 @@ cd wp-content/themes/{slug}
       'Genereaza texte SEO multilingve pentru blocurile editoriale ale unei pagini Figma: meta, H1, texte de sectiune. Sare peste blocurile dinamice si nu modifica Figma. Se ruleaza dupa /figma-seo-structure.',
     'full.commands.caseStudyMockups':
       'Face capturi ale unui site live si randeaza cele 4 imagini ale studiului de caz in compozitii fixe (browser, iPhone, grila izometrica) cu culorile si logo-ul site-ului, apoi le pune in studiul de caz din Figma. Accesul la site-urile inchise se transmite ca parametru separat.',
+    'full.commands.caseStudyAppMockups':
+      'Ia ecranele reale ale aplicatiei din Figma si randeaza 2 imagini pentru studiul de caz al unei aplicatii mobile in compozitii fixe cu iPhone 15 Pro (Overview cu logo-ul si showcase lat cu cinci telefoane), apoi le pune in studiul de caz din Figma.',
     'full.workflows.title': 'Workflow-uri complete',
     'full.workflows.description':
       'Doua scenarii de baza: proiect cu design existent si proiect in care designul se genereaza mai intai in Figma.',
@@ -1048,6 +1058,8 @@ cd wp-content/themes/{slug}
     'full.situations.seoPageComment': 'Intai structura (blocuri, link-uri, schema), apoi textele.',
     'full.situations.caseStudy': 'Studiul de caz are nevoie de imagini',
     'full.situations.caseStudyComment': 'Capturi ale site-ului live in mockup-uri de browser si iPhone, direct in Figma.',
+    'full.situations.caseStudyApp': 'Studiul de caz al unei aplicatii are nevoie de imagini',
+    'full.situations.caseStudyAppComment': 'Ecranele aplicatiei din Figma in mockup-uri de iPhone, direct in Figma.',
     'full.keyFiles.title': 'Fisiere cheie ale proiectului',
     'full.keyFiles.description':
       'Aceste fisiere si foldere sunt cel mai des necesare la dezvoltare si debugging.',

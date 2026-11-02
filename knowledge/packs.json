@@ -15,7 +15,8 @@
         "design-quality-check",
         "figma-seo-structure",
         "figma-seo-texts",
-        "case-study-mockups"
+        "case-study-mockups",
+        "case-study-app-mockups"
       ],
       "sharedCommands": [],
       "sharedFiles": ["rules/figma-blocks.md", "contracts/design-system.md"]
@@ -104,6 +105,11 @@
       "usage": "/figma-seo-texts <figma-url>",
       "description": "Generate multilingual SEO texts from a Figma page — skips dynamic blocks, localizes per language",
       "constraint": "read-only from Figma; never modifies Figma layers; never skips confirmation of block list or keywords; only writes the output `.md` file."
+    },
+    "case-study-app-mockups": {
+      "usage": "/case-study-app-mockups <figma-url-with-app-screens> [figma-url-of-case-study]",
+      "description": "Generate mobile app case study mockup images (iPhone 15 Pro) from app screens in Figma and place them into the Figma case study",
+      "constraint": "real app screens only; never changes the fixed compositions — only screens and logo; one confirmation stop before exporting; removes every temporary export node from Figma."
     },
     "case-study-mockups": {
       "usage": "/case-study-mockups <site-url> [figma-url] [--auth user:pass | --login-url URL --user U --pass P]",

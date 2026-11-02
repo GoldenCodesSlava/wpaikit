@@ -830,9 +830,9 @@
             <h1><l-en>What's new</l-en><l-ru>Что нового</l-ru><l-ro>Noutăți</l-ro></h1>
             <p><l-en>Updates for WPAIKit (CLI and knowledge together) and both boilerplates in one place. Newest first. Use the tabs to filter by product.</l-en><l-ru>Обновления WPAIKit (CLI и knowledge вместе) и обоих boilerplate в одном месте. Сначала новые. Табы фильтруют по продукту.</l-ru><l-ro>Actualizările pentru WPAIKit (CLI și knowledge împreună) și ambele boilerplate într-un singur loc. Cele mai noi primele. Tab-urile filtrează după produs.</l-ro></p>
             <div class="cl-current">
-              <div><span class="cl-current__label">WPAIKit CLI</span><strong>1.2.0</strong></div>
+              <div><span class="cl-current__label">WPAIKit CLI</span><strong>1.3.0</strong></div>
               <div><span class="cl-current__label">Core</span><strong>0.2.0</strong></div>
-              <div><span class="cl-current__label">Knowledge</span><strong>2.2.0</strong></div>
+              <div><span class="cl-current__label">Knowledge</span><strong>2.3.0</strong></div>
             </div>
             <div class="cmd"><pre><code>npm install -g @veaceslav-golden/wp-ai-kit@latest
 wpaikit knowledge install</code></pre></div>
@@ -844,13 +844,36 @@ wpaikit knowledge install</code></pre></div>
 
           <div class="cl-list" id="cl-list">
 
+            <!-- ============ 2026-11-02 ============ -->
+            <article class="entry" data-product="wpaikit" id="wpaikit-1-3-0">
+              <header class="entry__head">
+                <span class="badge badge--wpaikit">WPAIKit</span>
+                <h2><a class="anchor" href="#wpaikit-1-3-0">1.3.0</a></h2>
+                <time datetime="2026-11-02">2026-11-02</time>
+                <span class="tag tag--latest"><l-en>latest</l-en><l-ru>актуальная</l-ru><l-ro>curentă</l-ro></span>
+              </header>
+              <p class="entry__versions">CLI <code>1.3.0</code> · Knowledge <code>2.3.0</code> · <l-en>Design pack</l-en><l-ru>набор Design</l-ru><l-ro>pachetul Design</l-ro></p>
+              <p class="entry__lead"><l-en>New Design command: case study mockups for a mobile app, made from its screens in Figma.</l-en><l-ru>Новая команда в наборе Design: мокапы для кейса мобильного приложения из его экранов в Figma.</l-ru><l-ro>Comandă nouă în pachetul Design: mockup-uri pentru studiul de caz al unei aplicații mobile, din ecranele ei din Figma.</l-ro></p>
+
+              <h3><span class="tag tag--added"><l-en>Added</l-en><l-ru>Добавлено</l-ru><l-ro>Adăugat</l-ro></span></h3>
+              <ul>
+                <li><l-en><code>/case-study-app-mockups &lt;figma-url-with-app-screens&gt; [&lt;figma-url-of-case-study&gt;]</code> — the mobile app version of <code>/case-study-mockups</code>. Takes the real app screens from Figma and renders 2 case study images with iPhone 15 Pro on a light-grey background: Overview (app logo + three fanned iPhones) and a wide showcase (five iPhones in a staggered row that follow the user flow). Uploads them to the Desktop and Mobile case study in Figma.</l-en><l-ru><code>/case-study-app-mockups &lt;figma-url-with-app-screens&gt; [&lt;figma-url-of-case-study&gt;]</code> — версия <code>/case-study-mockups</code> для мобильных приложений. Берёт настоящие экраны приложения из Figma и рендерит 2 картинки кейса с iPhone 15 Pro на светло-сером фоне: Overview (логотип приложения + три iPhone веером) и широкий showcase (пять iPhone в ряд со смещением, по ходу пользовательского сценария). Загружает их в десктопную и мобильную версии кейса в Figma.</l-ru><l-ro><code>/case-study-app-mockups &lt;figma-url-with-app-screens&gt; [&lt;figma-url-of-case-study&gt;]</code> — varianta pentru aplicații mobile a <code>/case-study-mockups</code>. Ia ecranele reale ale aplicației din Figma și randează 2 imagini ale studiului de caz cu iPhone 15 Pro pe fundal gri-deschis: Overview (logo-ul aplicației + trei iPhone în evantai) și showcase lat (cinci iPhone într-un rând decalat, care urmează fluxul utilizatorului). Le încarcă în studiul de caz Desktop și Mobile din Figma.</l-ro></li>
+                <li><l-en>Fixed compositions: only the screens and the logo change. One confirmation stop before export: screens for each image, the logo and whether to add an iOS status bar.</l-en><l-ru>Композиции фиксированы: меняются только экраны и логотип. Одна остановка перед экспортом: какие экраны в какую картинку, логотип и нужно ли добавить статус-бар iOS.</l-ru><l-ro>Compoziții fixe: se schimbă doar ecranele și logo-ul. O singură confirmare înainte de export: ecranele pentru fiecare imagine, logo-ul și dacă se adaugă status bar-ul iOS.</l-ro></li>
+                <li><l-en>Screens are exported from Figma at full resolution through temporary nodes, which are always removed from the file afterwards.</l-en><l-ru>Экраны экспортируются из Figma в полном разрешении через временные узлы, которые потом всегда удаляются из файла.</l-ru><l-ro>Ecranele se exportă din Figma la rezoluție completă prin noduri temporare, care apoi se șterg mereu din fișier.</l-ro></li>
+              </ul>
+              <h3><span class="tag tag--breaking"><l-en>Upgrade notes</l-en><l-ru>Как обновиться</l-ru><l-ro>Note de actualizare</l-ro></span></h3>
+              <ul>
+                <li><l-en>Requires Google Chrome, Node 20 and Python 3 with Pillow and numpy. Run <code>npm i</code> once in <code>knowledge/design/skills/case-study-app-mockups/</code>.</l-en><l-ru>Нужны Google Chrome, Node 20 и Python 3 с Pillow и numpy. Один раз выполните <code>npm i</code> в <code>knowledge/design/skills/case-study-app-mockups/</code>.</l-ru><l-ro>Necesită Google Chrome, Node 20 și Python 3 cu Pillow și numpy. Rulează o dată <code>npm i</code> în <code>knowledge/design/skills/case-study-app-mockups/</code>.</l-ro></li>
+              </ul>
+              <div class="cmd"><pre><code>wpaikit knowledge install --packs design</code></pre></div>
+            </article>
+
             <!-- ============ 2026-11-01 ============ -->
             <article class="entry" data-product="wpaikit" id="wpaikit-1-2-0">
               <header class="entry__head">
                 <span class="badge badge--wpaikit">WPAIKit</span>
                 <h2><a class="anchor" href="#wpaikit-1-2-0">1.2.0</a></h2>
                 <time datetime="2026-11-01">2026-11-01</time>
-                <span class="tag tag--latest"><l-en>latest</l-en><l-ru>актуальная</l-ru><l-ro>curentă</l-ro></span>
               </header>
               <p class="entry__versions">CLI <code>1.2.0</code> · Knowledge <code>2.2.0</code> · <l-en>WordPress pack</l-en><l-ru>набор WordPress</l-ru><l-ro>pachetul WordPress</l-ro></p>
               <p class="entry__lead"><l-en>ACF Blocks v3: blocks are registered from <code>block.json</code>, ACF PRO moves from the theme to a per-project plugin, and existing projects get a guided migration. Codex now finds the WPAIKit skills on its own.</l-en><l-ru>ACF Blocks v3: блоки регистрируются из <code>block.json</code>, ACF PRO переезжает из темы в плагин проекта, а для существующих проектов есть пошаговая миграция. Codex теперь сам находит скиллы WPAIKit.</l-ru><l-ro>ACF Blocks v3: blocurile se înregistrează din <code>block.json</code>, ACF PRO trece din temă într-un plugin per proiect, iar proiectele existente primesc o migrare ghidată. Codex găsește acum singur skill-urile WPAIKit.</l-ro></p>

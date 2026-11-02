@@ -1373,6 +1373,32 @@ wpaikit knowledge install --packs design</code></pre></div>
                 </p>
               </li>
             </ol>
+
+            <h3 id="design-app-mockups"><l-en>Mobile app</l-en><l-ru>Мобильное приложение</l-ru><l-ro>Aplicație mobilă</l-ro></h3>
+            <p>
+              <l-en>Two images made from the app screens in Figma: Overview (app logo + three iPhones) and a wide showcase (five iPhones that follow the user flow). iPhone 15 Pro on a light-grey background; the compositions are fixed — only the screens and the logo change.</l-en><l-ru>Две картинки из экранов приложения в Figma: Overview (логотип приложения + три iPhone) и широкий showcase (пять iPhone по ходу пользовательского сценария). iPhone 15 Pro на светло-сером фоне; композиции фиксированы — меняются только экраны и логотип.</l-ru><l-ro>Două imagini din ecranele aplicației din Figma: Overview (logo-ul aplicației + trei iPhone) și showcase lat (cinci iPhone care urmează fluxul utilizatorului). iPhone 15 Pro pe fundal gri-deschis; compozițiile sunt fixe — se schimbă doar ecranele și logo-ul.</l-ro>
+            </p>
+            <ol class="steps">
+              <li>
+                <strong><l-en>Run the command with the Figma link to the app screens</l-en><l-ru>Запустите команду со ссылкой на экраны приложения в Figma</l-ru><l-ro>Rulează comanda cu linkul Figma spre ecranele aplicației</l-ro></strong>
+                <p>
+                  <l-en>A page, section or frame with phone-sized frames (360–430 px wide). Optionally add the case study frame; without it the case study template is copied to the page.</l-en><l-ru>Страница, секция или фрейм с экранами размером с телефон (ширина 360–430 px). При желании добавьте ссылку на кадр кейса; без неё на страницу копируется шаблон кейса.</l-ru><l-ro>O pagină, secțiune sau cadru cu ecrane de mărimea unui telefon (lățime 360–430 px). Opțional adaugă cadrul studiului de caz; fără el pe pagină se copiază șablonul studiului de caz.</l-ro>
+                </p>
+                <div class="cmd"><pre><code>/case-study-app-mockups &lt;figma-url-with-app-screens&gt; [&lt;figma-url-of-case-study&gt;]</code></pre></div>
+              </li>
+              <li>
+                <strong><l-en>Confirm screens, logo and status bar</l-en><l-ru>Подтвердите экраны, логотип и статус-бар</l-ru><l-ro>Confirmă ecranele, logo-ul și status bar-ul</l-ro></strong>
+                <p>
+                  <l-en>The assistant shows which screens go into each image, the logo and whether an iOS status bar will be added — then waits for your OK. This is the only stop.</l-en><l-ru>Ассистент показывает, какие экраны пойдут в каждую картинку, логотип и будет ли добавлен статус-бар iOS, — и ждёт подтверждения. Это единственная остановка.</l-ru><l-ro>Asistentul arată ce ecrane intră în fiecare imagine, logo-ul și dacă se adaugă status bar-ul iOS — apoi așteaptă confirmarea. Este singura oprire.</l-ro>
+                </p>
+              </li>
+              <li>
+                <strong><l-en>Get the images in Figma</l-en><l-ru>Получите картинки в Figma</l-ru><l-ro>Primește imaginile în Figma</l-ro></strong>
+                <p>
+                  <l-en>Images are rendered at 3x and placed into the Desktop and Mobile case study. Copies are saved to <code>assets/generated/case-studies/&lt;app&gt;/</code>. Requires Google Chrome, Node 20 and Python 3 with Pillow and numpy; run <code>npm i</code> once in <code>knowledge/design/skills/case-study-app-mockups/</code>.</l-en><l-ru>Картинки рендерятся в 3x и ставятся в десктопную и мобильную версии кейса. Копии сохраняются в <code>assets/generated/case-studies/&lt;app&gt;/</code>. Нужны Google Chrome, Node 20 и Python 3 с Pillow и numpy; один раз выполните <code>npm i</code> в <code>knowledge/design/skills/case-study-app-mockups/</code>.</l-ru><l-ro>Imaginile se randează la 3x și se pun în studiul de caz Desktop și Mobile. Copiile se salvează în <code>assets/generated/case-studies/&lt;app&gt;/</code>. Necesită Google Chrome, Node 20 și Python 3 cu Pillow și numpy; rulează o dată <code>npm i</code> în <code>knowledge/design/skills/case-study-app-mockups/</code>.</l-ro>
+                </p>
+              </li>
+            </ol>
           </section>
 
           <section id="design-commands">
@@ -1440,6 +1466,11 @@ wpaikit knowledge install --packs design</code></pre></div>
                   <tr>
                     <td><code>/case-study-mockups</code></td>
                     <td><l-en>Case study mockup images from a live site</l-en><l-ru>Картинки с мокапами для кейса с живого сайта</l-ru><l-ro>Imagini mockup pentru studiu de caz din site-ul live</l-ro></td>
+                    <td><span class="pill"><l-en>image slots</l-en><l-ru>слоты картинок</l-ru><l-ro>sloturile de imagini</l-ro></span></td>
+                  </tr>
+                  <tr>
+                    <td><code>/case-study-app-mockups</code></td>
+                    <td><l-en>Mobile app case study mockups from Figma screens</l-en><l-ru>Мокапы для кейса мобильного приложения из экранов в Figma</l-ru><l-ro>Mockup-uri pentru studiul de caz al unei aplicații mobile, din ecranele din Figma</l-ro></td>
                     <td><span class="pill"><l-en>image slots</l-en><l-ru>слоты картинок</l-ru><l-ro>sloturile de imagini</l-ro></span></td>
                   </tr>
                 </tbody>

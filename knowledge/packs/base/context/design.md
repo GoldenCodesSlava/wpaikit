@@ -16,6 +16,7 @@
 
 # Case studies:
 /case-study-mockups     ← mockup images from a live site, placed into the Figma case study
+/case-study-app-mockups ← mockup images of a mobile app from its Figma screens
 ```
 
 - When in doubt about how a block should be structured or named in Figma, check

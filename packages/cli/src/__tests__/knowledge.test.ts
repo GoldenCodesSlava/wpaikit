@@ -101,6 +101,19 @@ describe('knowledge packs', () => {
     expect(existsSync(join(dir, 'knowledge', 'shared', 'prompts'))).toBe(false)
     expect(existsSync(join(dir, 'knowledge', 'shared', 'rules', 'figma-blocks.md'))).toBe(true)
     expect(listFiles(join(dir, '.agents', 'skills')).sort()).toEqual([
+      'case-study-app-mockups/SKILL.md',
+      'case-study-app-mockups/assets/devices/iphone-front.png',
+      'case-study-app-mockups/assets/devices/iphone-iso-mask.png',
+      'case-study-app-mockups/assets/devices/iphone-iso-over.png',
+      'case-study-app-mockups/assets/devices/iphone-iso-under.png',
+      'case-study-app-mockups/package.json',
+      'case-study-app-mockups/scripts/devices.py',
+      'case-study-app-mockups/scripts/lib.js',
+      'case-study-app-mockups/scripts/logo_split.py',
+      'case-study-app-mockups/scripts/palette.py',
+      'case-study-app-mockups/scripts/prepare_screens.py',
+      'case-study-app-mockups/scripts/render.js',
+      'case-study-app-mockups/templates/compose.html',
       'case-study-mockups/SKILL.md',
       'case-study-mockups/assets/devices/iphone-front.png',
       'case-study-mockups/assets/devices/iphone-iso-mask.png',
@@ -133,6 +146,7 @@ describe('knowledge packs', () => {
     )
     expect(commandFiles(dir)).toEqual([
       'analyze-figma.md',
+      'case-study-app-mockups.md',
       'case-study-mockups.md',
       'design-quality-check.md',
       'figma-components.md',
