@@ -1,0 +1,29 @@
+{
+  "file": "lQPJj2qNkhHO70ArdD5raV",
+  "page": { "id": "69:6", "name": "Layout lint" },
+  "broken": {
+    "id": "69:7",
+    "expected": [
+      { "check": "clip", "name": "Cut text", "severity": "critical" },
+      { "check": "clip", "name": "Button/primary", "severity": "important" },
+      { "check": "clip", "name": "Focus ring", "severity": "important" },
+      { "check": "gap", "name": "Button A", "severity": "important" },
+      { "check": "gap", "name": "Button C", "severity": "moderate" },
+      { "check": "overlap", "name": "Flow card 1", "severity": "moderate" },
+      { "check": "overlap", "name": "Layout Broken", "severity": "important", "note": "sibling Stray note 69:77" },
+      { "check": "icon-align", "name": "Feature row", "severity": "moderate" },
+      { "check": "radius", "name": "Layout Broken", "severity": "info", "note": "Filter chip 16 vs buttons 8" },
+      { "check": "band", "name": "Band text", "severity": "important" },
+      { "check": "truncation", "name": "Long title", "severity": "moderate" },
+      { "check": "truncation", "name": "Squashed text", "severity": "important" }
+    ],
+    "mustNotFlag": ["Badge", "Short row", "Tab 1", "Tab 2", "Below band text", "Label"]
+  },
+  "clean": { "id": "69:42", "expectedFindings": 0 },
+  "realDesign": {
+    "file": "ApxMhEvxkbCaBb2c5bMDY1",
+    "targets": ["150:258", "374:4818"],
+    "date": "2026-11-07",
+    "result": "10 findings in ~2000 nodes, ~3.9 s. Confirmed by screenshot or bounds: label «Кофе на месте и с собой» cut (378:5348); mobile journal excerpts cut by 4 px (378:5441, 378:5451); «Читать» links touch the card bottom (699:10654, 699:10658). Mobile hero chips row named «scroll-x» is a horizontal scroll and must not be flagged."
+  }
+}

@@ -110,6 +110,8 @@ For each kept font file, determine what conversions are needed:
 
 Skip conversion if the target file already exists.
 
+**License check before converting.** If `.wpaikit/design-direction.md` lists a font's license, read it. Fonts under the ITF Free Font License (Fontshare) must not be converted or subsetted. Use the woff2/woff files from the official download as they are, and tell the user that the client should download the font and hold the license. When the license is unknown and the font is not from Google Fonts, ask before converting.
+
 ### Conversion commands
 
 Check that `fonttools` and `brotli` are available:

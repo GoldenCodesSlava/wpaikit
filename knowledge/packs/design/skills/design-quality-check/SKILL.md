@@ -1,252 +1,119 @@
 ---
 name: design-quality-check
-description: Use when auditing a design brief or existing Figma design for predictable AI patterns, category reflexes, absolute bans, and color/typography quality issues. Has two modes — brief mode (checks intent before generation) and design mode (reads Figma frames and audits visual output).
+description: Review a design brief or Figma frames for brief fit, clarity, distinctiveness, consistency, accessibility visible in static frames, responsive behavior, and states. Distinguish observed defects from stylistic preferences, and offer named refinement passes.
 metadata:
-  short-description: Audit a design brief or Figma frames for AI slop patterns and design quality issues
+  short-description: Review a brief or Figma design with evidence-based findings and refinement passes
 ---
 
 # Design Quality Check
 
-## Purpose
+Use **brief mode** when given a text brief and **design mode** when given a Figma URL. This command reviews design decisions; it does not generate implementation code.
 
-Catch predictable AI design patterns — category reflexes, banned visual patterns, and
-weak design decisions — before they reach Figma or after a design already exists.
+In design mode, read frame structure and inspect screenshots. Follow the prerequisites for Figma tools, and load the figma-use skill before any use_figma call. A screenshot is required to claim a visual finding. If one cannot be obtained, report which checks remain unverified.
 
-Two modes auto-detected by input:
-- **Brief mode** — no Figma URL → checks a text brief/plan (pre-generation)
-- **Design mode** — Figma URL provided → reads actual frames and audits visual output
+## Brief mode
 
----
+Check whether the brief identifies:
 
-## Mode Detection
+- the audience and their context;
+- the primary task or message;
+- the register (brand or product);
+- content sources and brand constraints;
+- pages or views;
+- the language or languages of the design text;
+- the desired degree of change (new, redesign preserving the brand, new identity).
 
-```
-/design-quality-check                     → Brief mode  (interactive, reads current brief)
-/design-quality-check <figma-url>         → Design mode (reads Figma frames)
-```
+The conversation language and --lang do not settle the design language. For a store, confirm the display currency. Ask about missing decisions that would lead to materially different designs.
 
-In Brief mode: checks design intent and strategy before anything is generated.
-In Design mode: checks what was actually created in Figma.
+Check that the client's must-haves are listed: mandatory colors and logo variants, usage rules for signature brand elements, forbidden styles, mandatory blocks. Missing must-haves are the most common reason a good design gets rejected.
 
----
+Check the scene sentence and the three brand-voice words. Push vague words ("modern, clean, premium") toward concrete ones. Check the planned direction against the references and anti-references. Flag a familiar industry formula only when it would weaken distinctiveness for this project (knowledge/design/rules/anti-slop.md, reflex checks); explain the specific resemblance and an alternative.
 
-## Checks (both modes)
+When called from /generate-design, brief mode runs in stage 1, before any foundation or block decision. Return a concise list of decisions, assumptions, and open questions for stage 2. Do not require a separate approval ritual for low-impact stylistic warnings.
 
-### Check 1 — Category Reflex (first-order)
+For an online store, apply knowledge/design/rules/commerce.md. A missing catalog may call for demo product content; it does not justify omitting the product shopping block.
 
-Detect if the industry + color strategy = an immediately predictable outcome.
+## Design mode
 
-Known first-order reflexes to flag:
+Inspect the target page as a whole, and key frames at their intended viewport sizes. Compare with the brief and, when available, `.wpaikit/design-direction.md` and `.wpaikit/copy-deck.md`. Use knowledge/design/rules/visual-qa.md for the screenshot inspection and knowledge/design/rules/figma-lint.md for mechanical evidence.
 
-| Industry | Reflex pattern |
-|----------|---------------|
-| Healthcare | White background + teal/mint accent |
-| Fintech / Finance | Navy + gold |
-| Restaurant / Food | Dark background + warm amber/gold |
-| Real estate | White + dark blue |
-| SaaS / Tech | Blue-to-purple gradient hero |
-| Crypto / Web3 | Neon colors on black |
-| Luxury / Fashion | Black + gold |
-| Eco / Sustainability | White + green |
-| Education | Blue + yellow |
-| Legal | Navy + serif typography |
+When called from /generate-design, first confirm that the generated frames follow the approved foundations (gate B), block list (gate C), and concept (gate D).
 
-**Brief mode:** compare industry + stated colors/style against the table.
-**Design mode:** extract dominant colors from `get_screenshot`, compare against table.
+Evaluate:
 
-If match found → flag as `⚠ Category reflex (first-order)` and propose an alternative.
+1. **Brief fit.** Can the intended audience understand the offer or complete the primary task? Is the chosen direction still recognizable? Are all approved required blocks present? Is every must-have visible in a meaningful role, and every forbidden item absent?
+2. **Content.** Are headings, CTAs, imagery, and evidence specific and credible, in the approved tone? Identify draft copy, demo data, proof slots, generated stand-in images, and unverified claims. Flag the banned filler from knowledge/design/rules/copy-and-tone.md.
+3. **Hierarchy and typography.** Check the first view, the squint test, line breaks, reading order, type roles, line length, and text over imagery. A fixed heading ratio does not substitute for visual hierarchy.
+4. **Composition and rhythm.** Do sections have distinct jobs? Flag repeated layouts, identical cards, decorative labels, or empty space when they obscure content, with frame-specific evidence.
+5. **System cohesion.** Check the approved palette, fonts, and locks; token and component reuse; shapes; image treatment; and real vector icons from one set. Variation is acceptable when it serves a reason.
+6. **Accessibility visible in frames.** Check contrast, focus states, target sizes, visible labels, errors not conveyed by color alone, and a pause control on moving media. Take the numbers from the WCAG lint and its thresholds in knowledge/design/rules/wcag-figma-checks.md, not from a visual guess. For a full WCAG report with computed fixes, offer /wcag-design-test. Record keyboard, screen-reader, zoom, motion timing, and performance as browser verification tasks rather than Figma passes.
+7. **Responsive views.** Inspect every requested viewport separately for clipping, overflow, lost content or functions, and unusable controls. Do not claim mobile was checked when no mobile frame exists.
+8. **Primary journey and cognitive load.**
+   - Trace the task through the visible frames.
+   - Flag decision points with more than about 4 equal-weight options, places where the user must remember earlier information, and missing "where am I" cues.
+   - For an online store, check that a product, displayed price, purchase action, and cart are visible in the agreed scope.
+9. **Distinctiveness.** Give a one-line verdict: would a reviewer say "AI made this" at a glance? If yes, name the two or three tells that cause it (anti-slop.md), ignoring recorded exceptions.
 
----
+### Heuristic lens
 
-### Check 2 — Category Reflex (second-order)
+For a standalone audit, or when the designer asks for a deeper critique, also score Nielsen's 10 usability heuristics from 0 to 4. Each score needs one line of visible evidence; omit a heuristic that does not apply to static frames rather than guessing.
 
-After avoiding the first-order reflex, designs often fall into a predictable "anti-reflex":
+The ten heuristics:
 
-| Avoided | Common fallback (also reflex) |
-|---------|-------------------------------|
-| Not navy fintech | Terminal-native dark mode |
-| Not white healthcare | Editorial typographic with serif |
-| Not SaaS blue gradient | Warm cream / beige SaaS |
-| Not black luxury | Minimalist all-white luxury |
-| Not neon crypto | Brutalist high-contrast crypto |
+1. Visibility of system status
+2. Match with the real world
+3. User control
+4. Consistency
+5. Error prevention
+6. Recognition rather than recall
+7. Flexibility
+8. Aesthetic and minimalist design
+9. Error recovery
+10. Help
 
-Flag if the proposed or actual direction matches a known anti-reflex.
+Then walk the primary path as 2–3 relevant personas, for example:
 
----
+- a first-time visitor in a hurry on a phone;
+- a careful comparer checking price and trust;
+- a keyboard or screen-reader user (static evidence only).
 
-### Check 3 — Absolute Bans
+Report each persona's concrete red flags.
 
-Detect and reject these patterns unconditionally:
+## Severity and response
 
-| Pattern | What to look for |
-|---------|-----------------|
-| **Side-stripe borders** | `border-left` or `border-right` as a colored accent on cards, alerts, list items |
-| **Gradient text** | Text using gradient fill (background-clip: text equivalent in Figma) |
-| **Decorative glassmorphism** | Blur + transparency used as default card style without clear reason |
-| **Hero metric template** | Big number + small label + supporting stats + gradient accent (SaaS cliché) |
-| **Identical card grid** | 3+ same-sized cards with icon + heading + text, repeated without variation |
-| **Modal as default** | Primary interaction hidden in a modal when inline alternatives exist |
+- **Critical:** unreadable or clipped content, failed text contrast, a missing approved required block or primary action, a requested viewport that does not work, fabricated claims presented as fact, or a substantial mismatch with the agreed brief. Fix before delivery when the changes are in scope.
+- **Important:** a lock violation or inconsistent system, drift from the approved concept, generic repetition that weakens the page, unsuitable imagery, or a missing key state. Fix or explain the deliberate trade-off.
+- **Preference:** a viable alternative style. Offer it without blocking progress.
 
-**Brief mode:** detect from section descriptions and stated patterns.
-**Design mode:** detect visually from `get_design_context` layer structure and `get_screenshot`.
+For each finding provide:
 
-Each detected ban → flag as `✗` with a concrete alternative.
+- the frame;
+- the visible evidence (before);
+- the smallest useful change (after);
+- why it matters to the user.
 
----
+Separate observed facts from inference. Group repeated instances under one root cause. Keep scores, if used, tied to evidence; never use a score to replace a finding.
 
-### Check 4 — Color Strategy Validation
+When called from /generate-design, correct high-impact issues in the generated target frames, re-run the lint, and inspect a fresh screenshot. Do not silently change the selected concept. As a standalone audit, remain read-only unless the designer asks for fixes; if fixes are requested, work only in the specified file and follow the Figma tool prerequisites.
 
-Four valid strategies — check that the chosen strategy is being honored:
+Finish with what was inspected, what was fixed, what remains unresolved, and what requires browser verification. Never report a clean visual audit without inspecting screenshots.
 
-| Strategy | Rule |
-|----------|------|
-| **Restrained** | Tinted neutrals + one accent at ≤10% of the surface |
-| **Committed** | One saturated color carries 30–60% of the page |
-| **Full palette** | 3–4 named color roles, each used with purpose |
-| **Drenched** | The surface IS the color — appropriate for hero pages, campaigns |
+## Refinement passes
 
-**Brief mode:** verify the stated strategy is consistent with stated colors/style.
-**Design mode:** measure color distribution from `get_screenshot`, check against stated strategy.
+After verification, offer these named passes when the result suggests them. Run one only when the designer asks. Each pass keeps the approved concept, foundations, and locks, unless the designer agrees to change them.
 
-Flag if the execution contradicts the stated strategy.
-Also flag if pure `#000000` or `#FFFFFF` is used — every neutral should be tinted toward the brand hue.
-
----
-
-### Check 5 — Register Consistency
-
-| Register | Expected treatment |
-|----------|--------------------|
-| **Brand** | Design IS the product. Full visual expression, typographic boldness, high craft. |
-| **Product** | Design SERVES the product. Clarity, efficiency, hierarchy over decoration. |
-
-Flag if:
-- Brand register + overly utilitarian, undifferentiated style
-- Product register + heavy decoration that competes with content
+- **Bolder:** the design is safe or bland.
+  - Pick one focal moment and amplify it: larger scale contrast (3–5×), stronger weight contrast, a committed color field, an image that escapes its container.
+  - Bold means distinctive, not more effects.
+- **Quieter:** the design is loud or busy.
+  - Fewer colors and less saturation; lighter weights; more space; remove decorative shadows, gradients, and borders.
+  - Quiet still needs intent.
+- **Distill:** the design is complex.
+  - One primary action per view; remove redundant sections and copy; flatten containers; keep one alignment logic.
+- **Clarify:** the copy is vague.
+  - Rewrite headings, CTAs, labels, errors, and empty states per knowledge/design/rules/copy-and-tone.md.
+- **Polish:** the design is complete but rough.
+  - Alignment to the grid, consistent spacing tokens, optical alignment of icons, widows in headings, consistent capitalization and terminology, complete states.
 
 ---
-
-### Check 6 — Theme Logic
-
-A theme (light/dark) should follow from the use-scene, not be chosen by reflex.
-
-**Brief mode:** verify the theme follows logically from the scene description provided.
-If the designer didn't provide a scene → ask: *"Describe in one sentence who uses this, where, and under what light."*
-
-**Design mode:** check if the chosen theme makes sense for the stated audience and context.
-
-Flag if: dark chosen "because it looks cool" or light chosen "to be safe."
-
----
-
-### Check 7 — Anti-reference Proximity
-
-If `ANTI_REFS` is set (designer provided brands/sites to avoid):
-
-**Brief mode:** Compare the stated direction (style, color strategy, layout approach) against the anti-references.
-Flag if the brief would naturally produce something visually similar to what should be avoided.
-
-**Design mode:** Compare `get_screenshot` visual output against anti-reference screenshots (if URLs available).
-Flag if the overall aesthetic reads as similar.
-
-Output format for this check:
-```
-⚠ Anti-reference proximity
-  Brief direction resembles "[anti-ref name]":
-  → Both use [shared characteristic]
-  → Proposed adjustment: [specific change to differentiate]
-  [accept] [suggest different] [keep original]
-```
-
-This check is always `⚠` (warning), never `✗` (critical) — the designer may intentionally
-be close to a reference for strategic reasons.
-
----
-
-### Check 9 — Typography Hierarchy (Design mode only)
-
-- Body text line length: 65–75 characters per line
-- At least 1.25× ratio between heading levels
-- Minimum 2 distinct weight levels used
-
----
-
-### Check 10 — Layout Rhythm (Design mode only)
-
-- Spacing must vary across sections (not uniform padding everywhere)
-- Sections should not all use the same visual density
-- Cards used only when truly the best affordance — nested cards are always wrong
-
----
-
-## Output Format
-
-Same format for both modes. Mode is labeled at the top.
-
-```
-Design Quality Check — [Brief Mode / Design Mode]
-──────────────────────────────────────────────────
-
-✓ Color strategy: Committed — single dominant color, correct
-✓ Register: Brand — full visual expression appropriate
-
-⚠ Category reflex (first-order)
-  Healthcare + white + teal = immediately predictable
-  → Proposed: warm off-white (#FAFAF7) + deep slate (#1E293B) as primary surface
-  Reason: breaks the association without losing professionalism
-  [accept] [suggest different] [keep original]
-
-✗ Identical card grid detected
-  "3 cards: icon + heading + text" in Features section
-  → Proposed: 1 large feature spotlight (left-right split) + 2 secondary in a list
-  [accept] [suggest different] [keep original]
-
-✗ Gradient text detected
-  CTA heading described with gradient fill
-  → Proposed: solid brand color at full weight, size contrast for emphasis
-  [accept] [suggest different] [keep original]
-
-──────────────────────────────────────────────────
-Summary: 2 critical  ✗ · 1 warning  ⚠ · 2 passed  ✓
-
-Fix all critical issues before proceeding.
-Warnings can be accepted or overridden by the designer.
-```
-
----
-
-## Fix Flow
-
-For each flagged issue, wait for the designer's choice before moving to the next:
-
-- **[accept]** → apply the proposed alternative, note the change
-- **[suggest different]** → designer describes their preferred alternative → confirm and note
-- **[keep original]** → note as designer override, mark with `⚑ designer override`
-
-After all issues are resolved → show final summary:
-
-```
-Quality Check Complete
-──────────────────────────────────────────────────
-Fixed:            2 issues resolved
-Designer overrides: 1 (gradient text — kept intentionally)
-Passed:           2 checks clean
-──────────────────────────────────────────────────
-```
-
-In **Brief mode** (called from `/generate-design`):
-→ Return control to generate-design, which shows the Design Brief Summary next.
-
-In **Design mode** (standalone):
-→ Ask: `Fix the issues in Figma? [yes] [no — report only]`
-If [yes] → load figma-use skill and apply fixes.
-
----
-
-## Boundaries
-
-- Never block generation over a designer override — document it and proceed
-- Warn about second-order reflexes but do not treat them as critical (⚠ not ✗)
-- Never invent color tokens — only reference values from DS_TOKENS or BRAND_COLORS
-- In Design mode: load figma-use skill before any use_figma call
-- Maximum 1 round of fixes per issue — do not loop indefinitely
+The heuristic lens, persona walk, and refinement passes are adapted from Impeccable (Apache-2.0).

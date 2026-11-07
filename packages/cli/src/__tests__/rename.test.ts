@@ -102,6 +102,18 @@ function makeThemeDir(base: string): string {
     "window.themeAnalytics = {}; localStorage.setItem('theme_analytics_dedupe_v1', '{}');\n",
   )
 
+  writeFileSync(
+    join(themesDir, 'frontend', 'src', 'js', 'toast.js'),
+    "window.boilerplateToast = {}; window.boilerplateRecentlyViewed?.getIds?.();\n",
+  )
+
+  writeFileSync(join(themesDir, 'frontend', '.eslintrc.cjs'), "module.exports = { globals: { boilerplateTheme: 'readonly' } }\n")
+
+  writeFileSync(
+    join(themesDir, 'src', 'Theme', 'WishlistService.php'),
+    "<?php\nconst META = 'boilerplate_wishlist_v1';\nadd_action('wp_ajax_boilerplate_sync_wishlist', '_boilerplate_get_wishlist');\n$seo = new Boilerplate\\Theme\\Seo\\SeoService();\n/** @package Boilerplate */\n",
+  )
+
   return base
 }
 
@@ -259,5 +271,34 @@ describe('renameBoilerplate', () => {
     expect(javascript).toContain('window.themeAnalytics')
     expect(javascript).toContain('theme_analytics_dedupe_v1')
     expect(javascript).not.toContain('my-siteAnalytics')
+  })
+
+  it('keeps every derived identifier valid for a hyphenated slug', () => {
+    renameBoilerplate(dir, 'My Site', 'my-site', 'MySite', 'my-site')
+    const themeDir = join(dir, 'wp-content', 'themes', 'my-site')
+    const js = readFileSync(join(themeDir, 'frontend', 'src', 'js', 'toast.js'), 'utf-8')
+    const php = readFileSync(join(themeDir, 'src', 'Theme', 'WishlistService.php'), 'utf-8')
+
+    expect(js).toBe('window.mySiteToast = {}; window.mySiteRecentlyViewed?.getIds?.();\n')
+    expect(php).toContain("'my_site_wishlist_v1'")
+    expect(php).toContain("'wp_ajax_my_site_sync_wishlist', '_my_site_get_wishlist'")
+    expect(php).toContain('new MySite\\Theme\\Seo\\SeoService()')
+    expect(php).toContain('@package MySite')
+    expect(php).not.toMatch(/my-site_|_my-site|[A-Za-z]my-site/)
+  })
+
+  it('renames hidden config files such as .eslintrc.cjs', () => {
+    renameBoilerplate(dir, 'My Site', 'my-site', 'MySite', 'my-site')
+    const eslint = readFileSync(join(dir, 'wp-content', 'themes', 'my-site', 'frontend', '.eslintrc.cjs'), 'utf-8')
+    expect(eslint).toContain('mySiteTheme')
+  })
+
+  it('replaces a prefixed preset theme name', () => {
+    const style = join(dir, 'wp-content', 'themes', 'boilerplate', 'style.css')
+    writeFileSync(style, '/*\nTheme Name: WooCommerce Boilerplate\nText Domain: boilerplate\n*/')
+    renameBoilerplate(dir, 'Stapinul Mesei', 'stapinul-mesei', 'StapinulMesei', 'stapinul-mesei')
+    const css = readFileSync(join(dir, 'wp-content', 'themes', 'stapinul-mesei', 'style.css'), 'utf-8')
+    expect(css).toContain('Theme Name: Stapinul Mesei')
+    expect(css).not.toContain('Boilerplate')
   })
 })

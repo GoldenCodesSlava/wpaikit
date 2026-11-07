@@ -322,6 +322,39 @@ Summary: 1 critical ✗ · 1 warning ⚠ · 1 passed ✓
 
 ---
 
+### `/wcag-design-test`
+
+**Scop:** Verifică un frame Figma după WCAG 2.2 (AA implicit, AAA cu flag) și pune lângă el un raport cu ce trebuie reparat. Fiecare problemă are o corecție calculată: culoare (token sau cea mai apropiată nuanță care trece), opacitate, padding sau text.
+
+```
+/wcag-design-test <figma-url>
+/wcag-design-test <figma-url-desktop> <figma-url-mobile> --level AAA --lang ro --no-annotations
+```
+
+**Trei grupuri de verificări, separate în raport:**
+
+| Grup                    | Ce include                                                                                                                                                                       |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Măsurat (lint)          | Contrast text (inclusiv opacitate, gradient, pixeli de imagine), contrast non-text, mărimea țintelor, variante Focus, label-uri, erori, text cu înălțime fixă, ordinea de citire |
+| Din screenshot          | Text în imagini, informație doar prin culoare, ierarhia titlurilor, drag fără alternativă, carusele fără pauză, controale nedetectate                                            |
+| De verificat în browser | Tastatură, nume accesibile, mesaje de stare, zoom 200 % și 320px, `prefers-reduced-motion`, `lang` și `title`                                                                    |
+
+**Ce apare:**
+
+- un frame `WCAG Report — <nume>` lângă frame-ul verificat: snapshot cu pini numerotați, întrebări, liste de verificare și câte un card pentru fiecare problemă;
+- adnotări Accessibility pe straturile cu probleme (vizibile în Dev Mode; se pot dezactiva cu `--no-annotations`);
+- `.wpaikit/wcag/<frame>.md` pentru handoff și un rezumat în chat.
+
+**Note:**
+
+- Designul verificat nu se modifică. O nouă rulare înlocuiește raportul și adnotările anterioare.
+- Toate cifrele vin din lint. Ce e evaluat după screenshot e marcat ca atare; ce nu poate fi verificat în Figma nu e raportat ca trecut.
+- Controalele fără nume de strat sunt detectate după formă și confirmate pe screenshot. Numirea straturilor (`Button`, `Input`, `Link`) dă cel mai precis rezultat.
+
+**Când se folosește:** Înainte de handoff-ul unui design către dezvoltare și după corecturi, pentru a vedea ce s-a rezolvat.
+
+---
+
 ### `/figma-seo-structure`
 
 **Scop:** Auditează o pagină Figma din punct de vedere SEO structural — ce blocuri lipsesc, cum leagă pagina alte pagini, E-E-A-T, SEO local, Schema.org și stările de layout. După aprobarea planului, construiește blocurile lipsă direct în Figma și adaugă adnotări SEO pentru developeri.
@@ -917,6 +950,7 @@ cd {slug}                          # dacă init a creat un folder nou; knowledge
 | Verificare cod după modificări             | `/validate-code`                                         |
 | Audit design generat pentru pattern-uri AI | `/design-quality-check <url>`                            |
 | Verificare brief înainte de generare       | `/design-quality-check` (fără URL)                       |
+| Audit de accesibilitate WCAG 2.2 în Figma  | `/wcag-design-test <url>`                                |
 | Audit SEO structural al unei pagini        | `/figma-seo-structure <url>`                             |
 | Texte SEO pentru o pagină                  | `/figma-seo-texts <url>`                                 |
 | Developer caută fișierele unui bloc        | `/get-comment-for-frontend <url>`                        |

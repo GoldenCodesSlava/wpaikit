@@ -1,3 +1,5 @@
+At the start of each session, read `.wpaikit/project.md` if it exists: it holds this project's
+context, records and working rules.
 Read the relevant rule before changing that area. Put project-specific discoveries in
 `.wpaikit/project.md`; do not fork the installed base rules without a project-specific reason.
 

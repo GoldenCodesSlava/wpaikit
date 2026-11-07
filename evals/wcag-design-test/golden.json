@@ -1,0 +1,621 @@
+{
+  "schemaVersion": 1,
+  "created": "2026-11-06",
+  "figma": {
+    "fileKey": "lQPJj2qNkhHO70ArdD5raV",
+    "fileUrl": "https://www.figma.com/design/lQPJj2qNkhHO70ArdD5raV",
+    "page": "WCAG fixtures",
+    "frames": {
+      "broken": {
+        "nodeId": "2:7",
+        "name": "WCAG Broken",
+        "url": "https://www.figma.com/design/lQPJj2qNkhHO70ArdD5raV?node-id=2-7"
+      },
+      "clean": {
+        "nodeId": "3:3",
+        "name": "WCAG Clean",
+        "url": "https://www.figma.com/design/lQPJj2qNkhHO70ArdD5raV?node-id=3-3"
+      }
+    },
+    "components": {
+      "Button": {
+        "nodeId": "2:6",
+        "variants": [
+          "State=Default",
+          "State=Hover"
+        ],
+        "note": "no Focus variant; used by WCAG Broken"
+      },
+      "Button Accessible": {
+        "nodeId": "3:112",
+        "variants": [
+          "State=Default",
+          "State=Hover",
+          "State=Focus"
+        ],
+        "note": "used by WCAG Clean"
+      }
+    }
+  },
+  "level": "WCAG 2.2 AA",
+  "groups": {
+    "lint": "must be found by the read-only use_figma script (deterministic)",
+    "screenshot": "found by visual judgment; must be marked as screenshot-based",
+    "component": "found by inspecting the main component / variants"
+  },
+  "broken": {
+    "expected": [
+      {
+        "id": "B01",
+        "nodeId": "2:24",
+        "layer": "Hero / Hero Subtitle",
+        "criterion": "1.4.3",
+        "severity": "critical",
+        "group": "lint",
+        "observed": "#9CA3AF on #FFFFFF = 2.54:1, 20px regular",
+        "required": ">= 4.5:1"
+      },
+      {
+        "id": "B02",
+        "nodeId": "I2:26;2:3",
+        "layer": "Hero / Hero Actions / Button Primary / Label",
+        "criterion": "1.4.3",
+        "severity": "critical",
+        "group": "lint",
+        "observed": "#FFFFFF on #60A5FA = 2.54:1, 16px semibold",
+        "required": ">= 4.5:1"
+      },
+      {
+        "id": "B03",
+        "nodeId": "2:29",
+        "layer": "Hero / Hero Actions / Button Ghost / Label",
+        "criterion": "1.4.3",
+        "severity": "critical",
+        "group": "lint",
+        "observed": "#93C5FD on #FFFFFF = 1.80:1",
+        "required": ">= 4.5:1"
+      },
+      {
+        "id": "B04",
+        "nodeId": "2:30",
+        "layer": "Hero / Hero Note",
+        "criterion": "1.4.3",
+        "severity": "critical",
+        "group": "lint",
+        "observed": "#111827 at layer opacity 0.35 -> effective #ACAEB3 on #FFFFFF = 2.22:1",
+        "required": ">= 4.5:1",
+        "tests": "layer opacity compositing"
+      },
+      {
+        "id": "B05",
+        "nodeId": "2:32",
+        "alsoNodeIds": [
+          "2:33"
+        ],
+        "layer": "Promo Banner / Promo Title, Promo Caption",
+        "criterion": "1.4.3",
+        "severity": "critical",
+        "group": "screenshot",
+        "observed": "white text over the light left part of an IMAGE fill (~#E0F2FE..#F8FAFC)",
+        "required": ">= 4.5:1 (caption), >= 3:1 (40px title)",
+        "tests": "text over image; the dark right part of the image must not hide the failure"
+      },
+      {
+        "id": "B06",
+        "nodeId": "2:35",
+        "layer": "Gradient CTA / Gradient Text",
+        "criterion": "1.4.3",
+        "severity": "critical",
+        "group": "lint",
+        "observed": "#FFFFFF over linear gradient #FDE68A -> #FFFBEB: 1.25:1 .. 1.04:1",
+        "required": ">= 3:1 (28px bold is large)",
+        "tests": "gradient: worst gradient stop"
+      },
+      {
+        "id": "B07",
+        "nodeId": "2:37",
+        "layer": "Features / Section Title",
+        "criterion": "1.4.3",
+        "severity": "critical",
+        "group": "lint",
+        "observed": "#A8A8A8 on #F5F5F5 = 2.18:1, 32px semibold",
+        "required": ">= 3:1 (large)",
+        "note": "lint base severity is serious (2.18 vs 3:1); the report upgrades headings to critical"
+      },
+      {
+        "id": "B08",
+        "nodeId": "2:38",
+        "layer": "Features / Features Intro",
+        "criterion": "1.4.3",
+        "severity": "serious",
+        "group": "lint",
+        "observed": "#767676 on #F5F5F5 = 4.17:1",
+        "required": ">= 4.5:1",
+        "tests": "same color passes on white (see N04) — background must come from the nearest parent fill"
+      },
+      {
+        "id": "B09",
+        "nodeId": "2:39",
+        "layer": "Features / Features Body",
+        "criterion": "1.4.12",
+        "severity": "advisory",
+        "group": "lint",
+        "observed": "16px text, line-height 17.6px (1.1)",
+        "required": "body line-height >= 1.5 recommended"
+      },
+      {
+        "id": "B10",
+        "nodeId": "2:40",
+        "layer": "Features / Inline Link Paragraph (range 'accessibility statement')",
+        "criterion": "1.4.1",
+        "severity": "serious",
+        "group": "lint",
+        "observed": "link #2563EB vs body #374151 = 1.99:1, no underline",
+        "required": "underline, or >= 3:1 against surrounding text",
+        "tests": "mixed fills in one text node (getStyledTextSegments)"
+      },
+      {
+        "id": "B11",
+        "nodeId": "2:41",
+        "layer": "Features / Feature Cards",
+        "criterion": "1.3.2",
+        "severity": "moderate",
+        "group": "lint",
+        "observed": "layer order Card 3, Card 1, Card 2; visual order left-to-right Card 1, Card 2, Card 3 (absolute positioning)",
+        "required": "layer order = reading order"
+      },
+      {
+        "id": "B12",
+        "nodeId": "2:60",
+        "layer": "Stats / Stat 3 / Stat Label Regular",
+        "criterion": "1.4.3",
+        "severity": "serious",
+        "group": "lint",
+        "observed": "#8A8A8A on #FFFFFF = 3.45:1, 18.67px REGULAR (not large)",
+        "required": ">= 4.5:1",
+        "tests": "18.67px counts as large only when bold (see N02)"
+      },
+      {
+        "id": "B13",
+        "nodeId": "2:15",
+        "layer": "Header / Icon Button Search",
+        "criterion": "1.4.11",
+        "severity": "serious",
+        "group": "lint",
+        "observed": "icon stroke #D1D5DB on #FFFFFF = 1.47:1",
+        "required": ">= 3:1"
+      },
+      {
+        "id": "B14",
+        "nodeId": "2:19",
+        "layer": "Header / Icon Button Close",
+        "criterion": "2.5.5",
+        "severity": "advisory",
+        "group": "lint",
+        "observed": "20x20 target",
+        "required": ">= 24x24 or 24px spacing",
+        "note": "Undersized, but no other target within the 24px circle: passes 2.5.8 via the spacing exception; AAA 2.5.5 advisory only"
+      },
+      {
+        "id": "B15",
+        "nodeId": "2:6",
+        "layer": "Button (component set) used by Button Primary",
+        "criterion": "2.4.7",
+        "severity": "serious",
+        "group": "component",
+        "observed": "variants: Default, Hover — no Focus",
+        "required": "visible focus state designed (2.4.7; 2.4.13 AAA for indicator size)"
+      },
+      {
+        "id": "B16",
+        "nodeId": "2:68",
+        "layer": "Signup Form / Form Instruction",
+        "criterion": "1.3.3",
+        "severity": "moderate",
+        "group": "screenshot",
+        "observed": "\"click the green button to continue\" — instruction relies on color",
+        "required": "refer to the button by its label"
+      },
+      {
+        "id": "B17",
+        "nodeId": "2:69",
+        "layer": "Signup Form / Input Email",
+        "criterion": "3.3.2",
+        "severity": "critical",
+        "group": "lint",
+        "observed": "no visible label; only placeholder \"Email\"",
+        "required": "persistent visible label"
+      },
+      {
+        "id": "B18",
+        "nodeId": "2:69",
+        "layer": "Signup Form / Input Email (border)",
+        "criterion": "1.4.11",
+        "severity": "serious",
+        "group": "lint",
+        "observed": "border #E5E7EB on #FFFFFF = 1.24:1",
+        "required": ">= 3:1"
+      },
+      {
+        "id": "B19",
+        "nodeId": "2:70",
+        "layer": "Signup Form / Input Email / Placeholder",
+        "criterion": "1.4.3",
+        "severity": "critical",
+        "group": "lint",
+        "observed": "#C4C4C4 on #FFFFFF = 1.74:1",
+        "required": ">= 4.5:1"
+      },
+      {
+        "id": "B20",
+        "nodeId": "2:72",
+        "layer": "Signup Form / Input Name",
+        "criterion": "3.3.1",
+        "alsoCriteria": [
+          "1.4.1"
+        ],
+        "severity": "critical",
+        "group": "screenshot",
+        "observed": "error shown only by a red 2px border; no error text or icon",
+        "required": "error identified in text"
+      },
+      {
+        "id": "B21",
+        "nodeId": "2:75",
+        "layer": "Signup Form / Checkbox Row / Checkbox",
+        "criterion": "1.4.11",
+        "severity": "serious",
+        "group": "lint",
+        "observed": "border #D1D5DB on #FFFFFF = 1.47:1",
+        "required": ">= 3:1"
+      },
+      {
+        "id": "B22",
+        "nodeId": "2:78",
+        "layer": "Signup Form / Submit Button / Label",
+        "criterion": "1.4.3",
+        "severity": "critical",
+        "group": "lint",
+        "observed": "#FFFFFF on #22C55E = 2.28:1",
+        "required": ">= 4.5:1"
+      },
+      {
+        "id": "B23",
+        "nodeId": "2:79",
+        "layer": "Signup Form / Legal Text",
+        "criterion": "best-practice",
+        "severity": "advisory",
+        "group": "lint",
+        "observed": "11px text (contrast 4.83:1 passes)",
+        "required": "nothing below 12px; body >= 16px"
+      },
+      {
+        "id": "B24",
+        "nodeId": "2:80",
+        "layer": "Signup Form / Helper Text",
+        "criterion": "1.4.12",
+        "alsoCriteria": [
+          "1.4.4"
+        ],
+        "severity": "moderate",
+        "group": "lint",
+        "observed": "textAutoResize NONE, fixed 400x20 while content wraps to 3 lines",
+        "required": "hug height / min-height so text spacing and zoom do not clip"
+      },
+      {
+        "id": "B25",
+        "nodeId": "2:86",
+        "alsoNodeIds": [
+          "2:87"
+        ],
+        "layer": "Price Filter / Price Range Slider / Slider Thumb Min, Max",
+        "criterion": "1.4.11",
+        "severity": "serious",
+        "group": "lint",
+        "observed": "thumb border #D1D5DB on #FFFFFF = 1.47:1",
+        "required": ">= 3:1"
+      },
+      {
+        "id": "B26",
+        "nodeId": "2:86",
+        "alsoNodeIds": [
+          "2:87"
+        ],
+        "layer": "Price Filter / Price Range Slider / Slider Thumb Min, Max",
+        "criterion": "2.5.5",
+        "severity": "advisory",
+        "group": "lint",
+        "observed": "20x20 thumbs",
+        "required": ">= 24x24",
+        "note": "Undersized, but no other target within the 24px circle: passes 2.5.8 via the spacing exception; AAA 2.5.5 advisory only"
+      },
+      {
+        "id": "B27",
+        "nodeId": "2:83",
+        "layer": "Price Filter / Price Range Slider",
+        "criterion": "2.5.7",
+        "severity": "serious",
+        "group": "screenshot",
+        "observed": "range set only by dragging; no inputs or steppers",
+        "required": "single-pointer alternative (min/max inputs)"
+      },
+      {
+        "id": "B28",
+        "nodeId": "2:85",
+        "layer": "Price Filter / Price Range Slider / Range",
+        "criterion": "1.4.11",
+        "severity": "moderate",
+        "group": "lint",
+        "observed": "selected range #60A5FA on #FFFFFF = 2.54:1",
+        "required": ">= 3:1"
+      },
+      {
+        "id": "B29",
+        "nodeId": "2:90",
+        "layer": "Testimonials / Testimonials Title",
+        "criterion": "1.3.1",
+        "alsoCriteria": [
+          "2.4.6"
+        ],
+        "severity": "moderate",
+        "group": "screenshot",
+        "observed": "styled like H1 (56px bold) — second H1-sized heading after Hero Title",
+        "required": "one H1; section headings as H2"
+      },
+      {
+        "id": "B30",
+        "nodeId": "2:91",
+        "layer": "Testimonials / Carousel",
+        "criterion": "2.2.2",
+        "severity": "conditional",
+        "group": "screenshot",
+        "observed": "slider with dots and no pause/stop or prev/next controls",
+        "required": "pause control if it auto-advances; reported as conditional"
+      },
+      {
+        "id": "B31",
+        "nodeId": "2:95",
+        "layer": "Testimonials / Carousel / Carousel Dots",
+        "criterion": "2.5.8",
+        "severity": "serious",
+        "group": "lint",
+        "observed": "8x8 dots with 8px gap",
+        "required": ">= 24x24 or 24px spacing"
+      },
+      {
+        "id": "B32",
+        "nodeId": "2:97",
+        "alsoNodeIds": [
+          "2:98"
+        ],
+        "layer": "Testimonials / Carousel / Carousel Dots / Dot 2, Dot 3",
+        "criterion": "1.4.11",
+        "severity": "moderate",
+        "group": "lint",
+        "observed": "inactive dot #D1D5DB on #FFFFFF = 1.47:1",
+        "required": ">= 3:1 (state indicator)"
+      },
+      {
+        "id": "B33",
+        "nodeId": "2:100",
+        "layer": "Footer / Footer Text",
+        "criterion": "1.4.3",
+        "severity": "serious",
+        "group": "lint",
+        "observed": "#6B7280 on #1F2937 = 3.04:1, 14px",
+        "required": ">= 4.5:1",
+        "tests": "dark background"
+      },
+      {
+        "id": "B34",
+        "nodeId": "2:101",
+        "layer": "Footer / Social Links",
+        "criterion": "2.5.8",
+        "severity": "serious",
+        "group": "lint",
+        "observed": "three 16x16 links with 4px gap",
+        "required": ">= 24x24 or 24px spacing"
+      },
+      {
+        "id": "B35",
+        "nodeId": "2:7",
+        "layer": "WCAG Broken (root)",
+        "criterion": "1.3.1",
+        "severity": "advisory",
+        "group": "lint",
+        "observed": "no Text Styles: heading levels are not encoded in the file",
+        "required": "handoff: proposed h1/h2/h3 map"
+      }
+    ],
+    "optional": [
+      {
+        "id": "O01",
+        "nodeId": "2:6",
+        "layer": "Button / State=Hover / Label",
+        "criterion": "1.4.3",
+        "observed": "#FFFFFF on #3B82F6 = 3.68:1",
+        "note": "inside the component set, outside the audited frame — bonus if variants are inspected"
+      },
+      {
+        "id": "O02",
+        "nodeId": "2:84",
+        "layer": "Price Range Slider / Track",
+        "criterion": "1.4.11",
+        "observed": "#E5E7EB on #FFFFFF = 1.24:1",
+        "note": "track boundary is not strictly required when thumbs and range are visible"
+      },
+      {
+        "id": "O03",
+        "nodeId": "2:75",
+        "layer": "Signup Form / Checkbox Row / Checkbox",
+        "criterion": "2.5.5",
+        "observed": "16x16 target, passes 2.5.8 via spacing",
+        "note": "valid AAA advisory"
+      }
+    ],
+    "mustNotFlag": [
+      {
+        "id": "N01",
+        "nodeId": "2:54",
+        "layer": "Stats / Stat 1 / Stat Caption",
+        "observed": "#949494 on #FFFFFF = 3.03:1 at 24px regular — large text, passes 3:1",
+        "criteria": [
+          "1.4.3"
+        ]
+      },
+      {
+        "id": "N02",
+        "nodeId": "2:57",
+        "layer": "Stats / Stat 2 / Stat Label Bold",
+        "observed": "#8A8A8A on #FFFFFF = 3.45:1 at 18.67px bold — large text, passes 3:1",
+        "criteria": [
+          "1.4.3"
+        ]
+      },
+      {
+        "id": "N03",
+        "nodeId": "2:63",
+        "layer": "Stats / Stat 4 / Icon Button Share",
+        "observed": "exactly 24x24, icon #374151 = 10.31:1",
+        "criteria": [
+          "2.5.8",
+          "2.5.5",
+          "1.4.11"
+        ]
+      },
+      {
+        "id": "N04",
+        "nodeId": "2:62",
+        "layer": "Stats / Stat 4 / Shipping Note",
+        "observed": "#767676 on #FFFFFF = 4.54:1 — passes (borderline)",
+        "criteria": [
+          "1.4.3"
+        ]
+      },
+      {
+        "id": "N05",
+        "nodeId": "2:72",
+        "layer": "Signup Form / Input Name (border contrast)",
+        "observed": "#EF4444 on #FFFFFF = 3.76:1 — passes 1.4.11 (the defect is B20, not contrast)",
+        "criteria": [
+          "1.4.11"
+        ]
+      },
+      {
+        "id": "N06",
+        "nodeId": "2:102",
+        "layer": "Footer / Social Links / icons (contrast)",
+        "observed": "#F9FAFB on #1F2937 = 14.05:1 — contrast passes (the defect is B34 size)",
+        "criteria": [
+          "1.4.11"
+        ]
+      },
+      {
+        "id": "N07",
+        "nodeId": "2:44",
+        "layer": "Feature Cards / Card Text",
+        "observed": "#4B5563 on #FFFFFF = 7.56:1 (card fill, not section #F5F5F5)",
+        "criteria": [
+          "1.4.3"
+        ]
+      },
+      {
+        "id": "N08",
+        "nodeId": "2:12",
+        "layer": "Header / Nav links",
+        "observed": "#374151 on #FFFFFF = 10.31:1",
+        "criteria": [
+          "1.4.3",
+          "2.5.8"
+        ]
+      }
+    ]
+  },
+  "clean": {
+    "expect": "0 critical and 0 serious findings from lint; screenshot group may report nothing or advisories only",
+    "allowedAdvisories": [
+      "focus states of non-component interactive frames (Button Ghost, icon buttons, inputs, carousel controls) listed as browser checks",
+      "Promo Banner text over image with a 0.75 #0F172A scrim: worst-case bound against white image pixels = 7.95:1; must be labeled as estimated or screenshot-based, not as an exact ratio",
+      "no Text Styles (B35 equivalent)",
+      "handoff checklist items (keyboard, screen reader, zoom, motion)"
+    ],
+    "mustNotFlag": [
+      {
+        "nodeId": "3:35",
+        "layer": "Inline Link Paragraph",
+        "observed": "link #1D4ED8 vs text #374151 = 1.54:1 BUT underlined — passes 1.4.1",
+        "criteria": [
+          "1.4.1"
+        ]
+      },
+      {
+        "nodeId": "3:55",
+        "layer": "Stat Label Regular",
+        "observed": "#6B7280 on #FFFFFF = 4.83:1",
+        "criteria": [
+          "1.4.3"
+        ]
+      },
+      {
+        "nodeId": "3:67",
+        "layer": "Input Name",
+        "observed": "red border plus error text \"Error: enter your full name…\" — passes 3.3.1",
+        "criteria": [
+          "3.3.1",
+          "1.4.11",
+          "3.3.2"
+        ]
+      },
+      {
+        "nodeId": "3:22",
+        "layer": "Button Primary",
+        "observed": "Button Accessible has a Focus variant (3px #111827 outside ring); label 6.70:1",
+        "criteria": [
+          "2.4.7",
+          "1.4.3"
+        ]
+      },
+      {
+        "nodeId": "3:36",
+        "layer": "Feature Cards",
+        "observed": "layer order Card 1, Card 2, Card 3 matches visual order",
+        "criteria": [
+          "1.3.2"
+        ]
+      },
+      {
+        "nodeId": "3:78",
+        "layer": "Price Range Slider",
+        "observed": "24x24 thumbs with #6B7280 2px border (4.83:1) and Min/Max inputs as drag alternative",
+        "criteria": [
+          "1.4.11",
+          "2.5.8",
+          "2.5.7"
+        ]
+      },
+      {
+        "nodeId": "3:126",
+        "layer": "Carousel Controls",
+        "observed": "44x44 prev/next/pause buttons",
+        "criteria": [
+          "2.5.8",
+          "2.2.2"
+        ]
+      },
+      {
+        "nodeId": "3:96",
+        "layer": "Social Links",
+        "observed": "44x44 targets, 8px gap",
+        "criteria": [
+          "2.5.8"
+        ]
+      }
+    ]
+  },
+  "scoring": {
+    "recallTarget": "lint group >= 90% of broken.expected (criterion + node match)",
+    "falsePositiveTarget": "0 hits on broken.mustNotFlag; 0 critical/serious on clean",
+    "nodeMatch": "a finding matches when criterion equals criterion/alsoCriteria and its nodeId equals nodeId/alsoNodeIds, or its parentId does (finding on a direct child)",
+    "falsePositive": "a finding whose criterion is listed in a mustNotFlag entry on the same node (or a direct child)"
+  }
+}

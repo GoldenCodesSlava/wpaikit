@@ -100,6 +100,9 @@ describe('knowledge packs', () => {
     expect(existsSync(join(dir, 'knowledge', 'woocommerce'))).toBe(false)
     expect(existsSync(join(dir, 'knowledge', 'shared', 'prompts'))).toBe(false)
     expect(existsSync(join(dir, 'knowledge', 'shared', 'rules', 'figma-blocks.md'))).toBe(true)
+    expect(existsSync(join(dir, 'knowledge', 'design', 'rules', 'design-direction.md'))).toBe(true)
+    expect(existsSync(join(dir, 'knowledge', 'design', 'rules', 'commerce.md'))).toBe(true)
+    expect(existsSync(join(dir, 'knowledge', 'design', 'rules', 'visual-qa.md'))).toBe(true)
     expect(listFiles(join(dir, '.agents', 'skills')).sort()).toEqual([
       'case-study-app-mockups/SKILL.md',
       'case-study-app-mockups/assets/devices/iphone-front.png',
@@ -140,6 +143,11 @@ describe('knowledge packs', () => {
       'figma-sync-tokens/SKILL.md',
       'figma-update-design-system/SKILL.md',
       'generate-design/SKILL.md',
+      'generate-design/scripts/layout-lint.js',
+      'wcag-design-test/SKILL.md',
+      'wcag-design-test/scripts/wcag-lint.js',
+      'wcag-design-test/scripts/wcag-lint.min.js',
+      'wcag-design-test/scripts/wcag-report.js',
     ])
     expect(read(dir, '.agents/skills/generate-design/SKILL.md')).toBe(
       read(dir, 'knowledge/design/skills/generate-design/SKILL.md'),
@@ -157,6 +165,7 @@ describe('knowledge packs', () => {
       'figma-update-design-system.md',
       'generate-design.md',
       'prep-figma.md',
+      'wcag-design-test.md',
     ])
 
     for (const file of listFiles(dir).filter((path) => path.endsWith('.md'))) {
@@ -166,6 +175,21 @@ describe('knowledge packs', () => {
     }
     expect(read(dir, 'AGENTS.md')).not.toContain('boilerplate')
     expect(read(dir, 'knowledge/context.md')).not.toMatch(/\| `\/figma-to-block/)
+  })
+
+  it('keeps wcag-lint.min.js in sync with wcag-lint.js', async () => {
+    const buildScript = join(knowledgeSource, '..', 'evals', 'wcag-design-test', 'build-lint.mjs')
+    const { buildLint } = (await import(buildScript)) as { buildLint: () => Promise<string> }
+    const min = join(
+      knowledgeSource,
+      'packs',
+      'design',
+      'skills',
+      'wcag-design-test',
+      'scripts',
+      'wcag-lint.min.js',
+    )
+    expect(await buildLint()).toBe(readFileSync(min, 'utf-8'))
   })
 
   it('keeps the Slicing pack free of WordPress specifics', () => {

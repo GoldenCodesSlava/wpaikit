@@ -13,6 +13,7 @@
         "figma-update-design-system",
         "generate-design",
         "design-quality-check",
+        "wcag-design-test",
         "figma-seo-structure",
         "figma-seo-texts",
         "case-study-mockups",
@@ -88,13 +89,18 @@
     },
     "generate-design": {
       "usage": "/generate-design",
-      "description": "Interactively collect design materials and generate a UI design directly in Figma",
-      "constraint": "writes only to the designer-specified target Figma file; never modifies the DS file; never generates Mobile without explicit request; always runs quality check before generating."
+      "description": "Research, agree tone, foundations, fonts and copy, explore concepts, then build and verify a Figma design on approved tokens",
+      "constraint": "writes only to the designer-specified target Figma file and `.wpaikit/` design records; never modifies a separate DS file; never generates Mobile without explicit request; stops at four approval gates; announces paid image generation; verifies with screenshots and a read-only lint."
     },
     "design-quality-check": {
       "usage": "/design-quality-check [<figma-url>]",
-      "description": "Audit a design brief (no URL) or existing Figma design (with URL) for AI slop patterns and quality issues",
-      "constraint": "brief mode: read-only on text input; design mode: read-only on Figma unless designer confirms fixes; never blocks generation over a designer override."
+      "description": "Review a brief or Figma design for clarity, originality, consistency, and visible defects",
+      "constraint": "brief mode: text review; standalone design mode: read-only unless fixes are requested; generation mode may correct created target frames; never claims visual QA without a screenshot."
+    },
+    "wcag-design-test": {
+      "usage": "/wcag-design-test <figma-url> [<second-figma-url>] [--level AA|AAA] [--lang ru|ro|en] [--no-annotations]",
+      "description": "Audit a Figma frame against WCAG 2.2 with measured contrast, targets, focus and labels, a screenshot pass, a browser checklist, and a computed fix for every finding",
+      "constraint": "never changes the audited design; adds only a report frame next to it (replacing its own earlier report) and `**WCAG` Accessibility annotations (skip with --no-annotations); writes `.wpaikit/wcag/*.md`; every number comes from the lint; labels screenshot-based findings and lists browser-only checks separately."
     },
     "figma-seo-structure": {
       "usage": "/figma-seo-structure <figma-url> [--lang en|ro|ru]",

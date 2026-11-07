@@ -7,8 +7,8 @@
 /prep-figma             ← dev-ready copy: decompose, rename, tokens, Auto Layout
 
 # Design-first (alternative starting point):
-/generate-design        ← generate a Figma design from brief, DS and references
-/design-quality-check   ← audit a brief or a design for quality issues
+/generate-design        ← research, foundations, concepts, Figma build, lint + screenshot QA
+/design-quality-check   ← review brief fit and observed design quality
 
 # SEO (before implementation):
 /figma-seo-structure    ← which blocks, links, schema the page needs (run first)

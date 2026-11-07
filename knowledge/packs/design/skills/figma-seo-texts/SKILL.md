@@ -13,6 +13,8 @@ Analyze a Figma page and generate SEO-optimized texts for all editorial blocks i
 
 **All texts in Figma are placeholders** — none are kept as-is. Everything is replaced with real, SEO-optimized copy.
 
+**Exception: copy approved in /generate-design.** If `.wpaikit/copy-deck.md` exists, or a section frame carries the annotation "Copy: approved", that copy was approved by the designer. Do not replace it silently. Propose SEO edits as a diff and apply them only after confirmation. Copy marked `draft` is replaced as usual. Keep the tone and form of address from `.wpaikit/design-brief.md` when it exists.
+
 **Dynamic data blocks are skipped** — product cards, category grids, testimonials, and any block whose content comes from the client's database are never touched.
 
 ---

@@ -1,5 +1,5 @@
 ---
-description: Interactively collect design materials and project context, then generate a UI design directly in Figma
+description: Explore visual directions, generate Figma pages, and verify screenshots
 argument-hint: (no arguments — interactive)
 ---
 

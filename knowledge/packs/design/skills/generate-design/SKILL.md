@@ -1,747 +1,212 @@
 ---
 name: generate-design
-description: Use when a designer wants to generate a UI design in Figma from scratch or from existing materials (design system, references, brand assets). Collects project context through interactive questions, runs a design quality check on the brief, then generates frames in Figma using use_figma.
+description: Generate a Figma page or site from a brief, brand materials, and references. Research competitors and references, agree on tone, foundations, fonts, blocks and key copy, explore distinct concepts, build the chosen direction on approved tokens, and verify it with screenshots and a mechanical lint.
 metadata:
-  short-description: Generate a Figma UI design from design system, references, and project brief
+  short-description: Research, agree foundations, explore concepts, build and verify a Figma design
 ---
 
 # Generate Design
 
-## Purpose
+Create a coherent, distinctive, usable design in a designer-specified Figma file. This skill is for designers and does not generate implementation code. Respond in the designer's language; --lang overrides the response language only. Confirm the language or languages of the text inside the design separately.
 
-Interactively collect design materials and project context, run a quality check on the brief,
-then generate a complete UI design directly in Figma — page by page or block by block.
+Before every use_figma call, load the figma-use skill. Never run use_figma calls in parallel. Follow the prerequisites of any other Figma tool used. If a required tool is unavailable, explain the specific limitation; never claim that a file, image, or screenshot was created or checked when it was not.
 
-Intended audience: Designers.
+## How the flow works
 
----
+Nine stages, four gates. A gate is a stop: present a proposal and wait for an explicit answer. Silence or elapsed time is not approval. Between gates, work without asking for permission on every step.
 
-## Language
+- **Assert, then confirm.** Propose a concrete recommendation with its reason ("I propose X because Y; confirm or adjust"). Do not offer menus of options with no recommendation.
+- **Gate format.** List the gate's decisions as a numbered list, one line each: the decision, your recommendation, and the alternatives shown. End with one question: "Approve all, or which item should change?".
+  - Data questions (missing facts, prices, times) go in a separate short block marked "does not block the gate"; use placeholders until they are answered.
+  - An answer to the data questions alone does not approve the gate. One approval covers only the decisions that were listed. Never ask about only one decision and let the rest pass by default.
+- **Must-haves.** Keep the client's mandatory and forbidden items in `.wpaikit/design-brief.md`. At every gate, state where each must-have appears; if one is not visible, say so.
+- **Ask little.** Ask 2–3 questions per round, normally one round per stage, and only what changes the result. Infer the rest from the brief and materials.
+- **Fast path.** If the designer supplies an approved item (references, palette, fonts, icon set, final copy, an existing design system), record it as approved and skip its proposal. Still run its checks: fonts available in Figma, glyphs, contrast. Say which stages were shortened.
+- **Delegation.** Choose a direction yourself only when the designer explicitly delegated that choice.
+- **State your reading of ambiguous requests.** When a request has two plausible readings (for example "redo the photo": the frame around it or the badge on it), write one line "I read this as …" before building. If the readings lead to different work, ask instead.
+- **Keep the status file.** From gate C onward, `.wpaikit/status.md` tracks every block, state and utility piece. After each finished item, show the next two or three open items. Answer "what is left?" from the file, not from memory.
 
-Respond in the language of the designer's messages.
-If a `--lang` flag is provided (e.g. `--lang ro`), use that language for all output.
-The skill content is written in English — this does not affect the language you use to respond.
-
----
-
-## Prerequisites
-
-Load the `figma-use` skill **before every `use_figma` call**.
-Never call `use_figma` directly without it.
-
----
-
-## Phase 1 — Collect Materials
-
-Run sub-steps sequentially. Never skip to Phase 2 until all relevant steps are done.
-
-### 1.1 Target Figma project
-
-Ask:
-```
-Which Figma file/page should the design be generated into?
-Figma URL →
-```
-
-Call `get_metadata` on the URL to confirm the file is accessible.
-If the file cannot be read — show the error and re-ask.
-Store as `TARGET_URL`.
-
----
-
-### 1.2 References / Examples
-
-Ask:
-```
-Is there a Figma URL with references or examples? (moodboard, similar project, screenshots)
-  [URL] or [none]
-```
-
-**If URL provided:**
-- Call `get_screenshot` and `get_design_context` on the reference URL
-- Extract: layout density, visual style, color mood, typography feel, spacing rhythm
-- Store extracted context as `REFERENCE_CONTEXT`
-- Confirm: `References loaded ✓`
-
-**If [none]:**
-Ask:
-```
-Is the project completely empty — no materials at all?
-  [yes, empty] or [no, I have something]
-```
-Set `EMPTY_PROJECT = true` or `false`.
-
----
-
-### 1.3 Design System
-
-_(Skip this step if `EMPTY_PROJECT = true`)_
-
-Ask:
-```
-Is there a Figma URL with a Design System (variables, tokens, components)?
-  [URL] or [none]
-```
-
-**If URL provided:**
-- Call `get_variable_defs` and `get_design_context` on the DS URL
-- Extract: color tokens, typography scale, spacing scale, radius, shadows
-- Store as `DS_TOKENS`
-- Confirm: `Design System loaded ✓ — N color tokens, N type styles`
-
-**If [none]:**
-Show:
-```
-Design System not found. What should we do?
-  [1] Run /figma-design-system first (recommended)
-  [2] Continue — I'll extract colors from the logo/brand
-  [3] Continue with a neutral palette
-```
-
-- `[1]` → Stop. Show: `Run /figma-design-system, then come back to /generate-design.`
-- `[2]` or `[3]` → Set `DS_TOKENS = null`, continue to 1.4
-
----
-
-### 1.4 Brand Assets
-
-_(Ask only if `DS_TOKENS = null` — no design system was loaded)_
-
-Ask:
-```
-Is there a logo or image with a color palette in Figma?
-  [URL] or [none]
-```
-
-**If URL provided:**
-- Call `get_screenshot` and `get_design_context`
-- Extract dominant colors (primary, secondary, background, text)
-- Store as `BRAND_COLORS`
-- Confirm: `Brand colors extracted ✓ — Primary: #XXX, Secondary: #XXX, ...`
-
-**If [none]:**
-Show:
-```
-I'll use a neutral palette:
-  Text:        #1A1A1A
-  Primary:     #2563EB
-  Background:  #FFFFFF
-  Surface:     #F5F5F5
-You can change this after generation.
-```
-Set `BRAND_COLORS = neutral`.
-
----
-
-### 1.5 Icon Library
-
-Show:
-```
-Do you have an icon library in Figma?
-
-  [1] Yes — I'll add icons to a page in the target file (recommended)
-  [3] Skip — Figma will generate shapes automatically
-
-Tip: using a real icon library keeps all icons consistent across the design.
-Popular free sources on Figma Community: Heroicons, Lucide, Feather, Tabler.
-```
-
-**If [1]:**
-Ask:
-```
-Add your icons to a page in the target Figma file, then share the URL of that page.
-Icons URL →
-```
-- Call `get_design_context` on the provided URL
-- Extract all component names (e.g. `icon/arrow-right`, `icon/check`, `icon/star`)
-- Store as `ICON_COMPONENTS`
-- Confirm: `Icon library loaded ✓ — N icons found`
-- In Phase 4, pass component names to `use_figma`: "use icon components: [list]"
-
-**If [3]:**
-Set `ICON_COMPONENTS = null`.
-Figma will generate vector shapes automatically during generation.
-
----
-
-### 1.6 Photo Source (Pexels)
-
-Ask:
-```
-Do you have a Pexels API key for real photos matched to the project style?
-  [key]    — paste your API key (free at pexels.com/api)
-  [skip]   — Figma will use placeholder rectangles for images
-```
-
-**If key provided:**
-- Store as `PEXELS_API_KEY`
-- Confirm: `Pexels connected ✓ — photos will be fetched and matched to project style`
-
-**If [skip]:**
-- Set `PEXELS_API_KEY = null`
-- Images will be placeholder rectangles labeled by content type
-
----
-
-## Phase 2 — Project Brief
-
-Ask the following as a **single structured block** — all at once, not one question at a time:
-
-```
-Tell me about the project — answer everything in one message:
-
-1.  Business           — what does the company do? (1-2 sentences)
-2.  Industry           — restaurant / fintech / saas / healthcare / real estate /
-                         e-commerce / portfolio / agency / other
-3.  Audience           — who is the end customer?
-4.  Register           — brand (design = the product: landing, portfolio) /
-                         product (design serves the product: SaaS, dashboard, app)
-5.  Style              — minimal / bold / luxury / playful / corporate / editorial
-6.  Color strategy     — restrained (neutral + 1 accent ≤10%) /
-                         committed (1 saturated color covers 30–60%) /
-                         full (3-4 color roles, each intentional) /
-                         drenched (the surface IS the color, hero / campaigns)
-7.  Scene              — one sentence: who uses this, where, in what lighting,
-                         in what mood?
-                         Example: "A doctor reviews records on a tablet in a waiting room at noon"
-                         (theme, density, and tone are derived from this — don't ask separately)
-8.  Quality            — wireframe (structure, no detail) / hi-fi (full design)
-9.  Generation         — page-by-page / block-by-block
-10. Mobile             — mobile version needed? (yes / no, default: no)
-11. Pages              — which to create? (e.g. Home, About, Services, Contact)
-12. Sections           — key blocks for each page, or [standard]
-13. Language           — en / ro / ru / other
-14. Inspiration        — sites/brands you like? (URL or name, optional)
-15. Anti-references    — sites/brands you DON'T like or don't want to resemble?
-                         (URL or name, optional — but very helpful)
-16. Container width    — 1200 / 1280 / 1440 / 1536 px
-17. Full-width blocks  — should some sections break out of the container to fill the full
-                         screen width for visual contrast? (yes / no)
-18. Column grid        — use a column grid inside the container? (yes / no)
-```
-
-### Derive full context from scene
-
-After receiving the brief, derive `THEME`, `DENSITY`, and `TONE` from the scene — never ask directly.
-Run the sentence through all three derivations independently.
-
-**Theme:**
-
-| Scene signals | THEME |
-|---|---|
-| Daylight · outdoor · public space · quick glance · retail | Light |
-| Night shift · dim room · monitoring · focused work · extended sessions | Dark |
-| Mixed or no clear signal | Light (default) |
-
-**Visual density** — how much information and spacing per screen:
-
-| Scene signals | DENSITY |
-|---|---|
-| Quick glance · mobile-first · customer-facing · leisure | Spacious — generous padding, large type, few elements per section |
-| Professional · office · desktop-primary · task-focused | Balanced — moderate spacing, clear hierarchy |
-| Expert user · monitoring · data-heavy · dashboard-like | Compact — dense layout, smaller type, more elements visible |
-
-**Tone** — emotional character guiding decoration level and warmth:
-
-| Scene signals | TONE |
-|---|---|
-| Luxury · leisure · premium product · home browsing | Premium — rich materials, large imagery, high craft on details |
-| Healthcare · legal · financial · institutional | Clean — no decoration, trust through clarity and whitespace |
-| SaaS · productivity · developer tool · B2B | Utilitarian — function-first, decoration only when it aids comprehension |
-| Creative · portfolio · agency · culture | Expressive — personality through type and unexpected layout choices |
-| Restaurant · hospitality · lifestyle · retail | Warm — inviting, textured, photography-led |
-| Neutral / no strong signal | Balanced |
-
-Store as:
-```
-THEME   = light | dark
-DENSITY = spacious | balanced | compact
-TONE    = premium | clean | utilitarian | expressive | warm | balanced
-```
-
-Show derivation briefly to the designer before the quality check:
-```
-Derived from scene:
-  Theme:    Light
-  Density:  Spacious (customer at home, leisurely)
-  Tone:     Premium (luxury product)
-Correct? [yes / no — I'll adjust]
-```
-If [no] — ask what to correct, update the values.
-
-### Anti-references
-
-Store the anti-references as `ANTI_REFS`. They are used in two ways:
-1. In Phase 3 quality check — check that the direction doesn't resemble them
-2. In Phase 4 generation — passed as negative constraints to `use_figma`
-
-If anti-references were provided, show them explicitly in the Design Brief summary.
-
-### Default sections by industry
-
-If designer answers `[standard]` for sections, use this table:
-
-| Industry | Sections |
-|----------|----------|
-| Restaurant | Hero · Menu Preview · About / Story · Gallery · Booking CTA · Location · Footer |
-| Fintech / SaaS | Hero · Features (3-col) · Social Proof · Pricing · FAQ · CTA · Footer |
-| Healthcare | Hero · Services · Why Us · Team · Testimonials · CTA · Contacts · Footer |
-| Real Estate | Hero · Search / Filter · Featured Listings · How It Works · Testimonials · CTA · Footer |
-| E-commerce | Hero · Categories · Featured Products · Benefits · Newsletter CTA · Footer |
-| Portfolio | Hero · Work / Cases · About · Skills · Testimonials · Contact · Footer |
-| Agency | Hero · Services · Case Studies · Team · Clients · CTA · Footer |
-| Other | Hero · About · Services / Features · CTA · Footer |
-
-Store `CONTAINER_WIDTH` (number).
-
-**If answer to question 17 is yes:**
-Ask as a follow-up (separate message, not part of the brief block):
-```
-Which sections should be full-width?
-  [list them] or [agent decides]
-```
-- If designer lists sections → store as `FULL_WIDTH_BLOCKS`
-- If [agent decides] → AI selects 1–3 sections that benefit most from full-width treatment
-  (typically: Hero, full-bleed gallery, dark CTA banner); store the chosen list as `FULL_WIDTH_BLOCKS`
-
-**If answer to question 17 is no:**
-Set `FULL_WIDTH_BLOCKS = []`.
-
-**If answer to question 18 is yes:**
-Ask as a follow-up (separate message):
-```
-Column grid settings:
-  Columns  — how many? (e.g. 12)
-  Gap      — space between columns in px? (e.g. 24)
-```
-Store as `COLUMNS` (number) and `COLUMN_GAP` (number).
-
-Calculate and store:
-```
-COLUMN_WIDTH = (CONTAINER_WIDTH - COLUMN_GAP * (COLUMNS - 1)) / COLUMNS
-```
-
-Show the result to the designer:
-```
-Column grid:
-  Container:    [CONTAINER_WIDTH]px
-  Columns:      [COLUMNS]
-  Gap:          [COLUMN_GAP]px
-  Column width: [COLUMN_WIDTH]px
-```
-
-**If answer to question 18 is no:**
-Set `COLUMNS = null`, `COLUMN_GAP = null`, `COLUMN_WIDTH = null`.
-
-Store all answers as `BRIEF`.
-
----
-
-## Phase 3 — Design Quality Check
-
-**Before showing the Design Brief summary, run the quality check on the collected brief.**
-
-Read `knowledge/design/skills/design-quality-check/SKILL.md` and execute it in **Brief mode**
-using `BRIEF` as the input. Do not ask the designer for a Figma URL — the input is the text brief.
-
-Show the quality check results with all flags and proposed alternatives.
-Wait for the designer to resolve each issue (`[accept]`, `[suggest different]`, or `[keep original]`).
-
-After all issues are resolved, update `BRIEF` with accepted changes.
-
-Then show the Design Brief Summary:
-
-```
-╔══════════════════════════════════════════════════════╗
-║  DESIGN BRIEF
-╠══════════════════════════════════════════════════════╣
-║  Target:       [Figma file name]
-║  Register:     [brand / product]
-║  Style:        [style] · [color strategy] · [quality level]
-║
-║  Scene:        "[scene sentence]"
-║  Theme:        [Light / Dark]
-║  Density:      [Spacious / Balanced / Compact]
-║  Tone:         [Premium / Clean / Utilitarian / Expressive / Warm / Balanced]
-║
-║  Mode:         [page-by-page / block-by-block]
-║  Mobile:       [yes / no]
-║  Page frame:   [PAGE_WIDTH]px
-║  Container:    [CONTAINER_WIDTH]px
-║  Grid:         [COLUMNS] cols · [COLUMN_GAP]px gap · [COLUMN_WIDTH]px/col  (or: none)
-║  Full-width:   [none / Hero · Gallery · ...]
-║
-║  Colors:       [from DS: N tokens / from logo: #XXX #XXX / neutral]
-║  Typography:   [from DS: FontName / system default: Inter]
-║  Language:     [en / ro / ru]
-║
-║  Inspiration:  [urls or none]
-║  Anti-refs:    [urls/names or none]
-║
-║  Photos:       [Pexels ✓ / placeholders]
-║  References:   [✓ loaded / none]
-║  QC applied:   [N fixes · M overrides]
-║
-║  Pages (N):
-║    1. [PageName]  →  [Section · Section · Section]
-║    2. [PageName]  →  [Section · Section · Section]
-║    ...
-╚══════════════════════════════════════════════════════╝
-
-Continue?
-  [yes]    — start generation
-  [adjust] — change parameters
-  [cancel] — cancel
-```
-
-**If [adjust]:**
-Ask: `What would you like to change?`
-Re-apply only the changed parameter, then re-show the summary.
-Maximum 3 adjustment rounds before proceeding.
-
-**If [cancel]:** Stop cleanly.
-
----
-
-## Phase 4 — Generate in Figma
-
-Load the `figma-use` skill before any `use_figma` call.
-
-### Page frame width
-
-Derive `PAGE_WIDTH` from `CONTAINER_WIDTH`:
-
-| CONTAINER_WIDTH | PAGE_WIDTH |
-|-----------------|------------|
-| 1440px or 1536px | 1920px |
-| 1200px or 1280px | 1440px |
-
-Store as `PAGE_WIDTH`.
-
-### General rules
-
-- Desktop frame: **`PAGE_WIDTH`px** wide, height = auto (content)
-- Mobile frame: **375px** wide — **only if `MOBILE = yes`**
-- Frame naming: `[PageName] / Desktop` and `[PageName] / Mobile`
-- All text content: **Lorem ipsum** at realistic lengths
-- Colors: prefer `DS_TOKENS` → fallback `BRAND_COLORS` → fallback neutral
-- Typography: prefer DS font styles → fallback Inter (body) + appropriate heading font
-- All frames go into `TARGET_URL`
-- Apply `THEME`, `DENSITY`, and `TONE` consistently across all frames
-- If `ANTI_REFS` is set — pass them explicitly to `use_figma` as "avoid the visual language of [X]"
-- If `COLUMNS` is set — apply a column grid to the Container frame: `COLUMNS` columns, `COLUMN_GAP`px gutter, each column `COLUMN_WIDTH`px wide. Align all content elements to the column grid.
-- If `ICON_COMPONENTS` is set — pass component names to `use_figma`: "use these icon components: [list]. Do not create custom vector shapes for icons."
-- If `ICON_COMPONENTS = null` — Figma generates vector shapes automatically
-
-### Pexels image fetching
-
-If `PEXELS_API_KEY` is set — fetch real photos before generating any section that contains an image.
-
-**Query construction:**
-
-Build the search query by combining signals from the brief:
-
-| Signal | Source | Examples |
-|--------|--------|---------|
-| Subject | section type | `restaurant interior`, `team portrait`, `product`, `office`, `food` |
-| Mood | `TONE` | `luxury`, `moody`, `warm`, `clean`, `minimal`, `editorial` |
-| Lighting | `THEME` | `dark` (dark theme) · `bright` (light theme) |
-| Style | `BRIEF.style` | `cinematic`, `lifestyle`, `architectural` |
-
-Examples:
-```
-Hero — restaurant, premium, dark  → "restaurant interior luxury dark moody cinematic"
-Gallery — food                    → "food plating editorial close-up warm"
-Team — healthcare, clean          → "doctor portrait professional bright minimal"
-Hero — fintech, minimal, light    → "office architecture minimal clean bright"
-CTA — real estate                 → "modern house exterior bright architecture"
-```
-
-**Fetch flow (per image):**
-
-```
-GET https://api.pexels.com/v1/search
-  ?query=[constructed query]
-  &per_page=3
-  &orientation=landscape
-  &size=large
-Authorization: PEXELS_API_KEY
-```
-
-- Pick `photos[0].src.large2x` URL (highest quality)
-- Call `upload_assets` with the URL to upload the image into the Figma file
-- Store the returned Figma asset reference
-- Pass it to `use_figma` as the image for that section
-
-**If fetch fails** (network error, quota exceeded, 0 results):
-- Try a simplified query (subject only, no modifiers)
-- If still fails → fall back to placeholder rectangle, note in generation log
-
-**If `PEXELS_API_KEY = null`:**
-- Use labeled placeholder rectangles: `[Hero Image]`, `[Team Photo]`, `[Gallery 1]`
-
-### Block layout structure
-
-Every section block must follow this three-layer structure:
-
-```
-Page frame     (PAGE_WIDTH px — fixed)
-  [SectionName]  (Fill = PAGE_WIDTH, Auto Layout, padding-x 20px, center)
-    Container    (fixed = CONTAINER_WIDTH px)
-      [content elements]
-```
-
-**Page frame:**
-- Width: fixed `PAGE_WIDTH` px (1920px or 1440px — derived from container choice)
-- Height: auto (sum of all section heights)
-
-**Top-level block frame `[SectionName]`:**
-- Width: Fill — stretches to full `PAGE_WIDTH`
-- Layout: Horizontal Auto Layout, `justifyContent: CENTER`
-- Padding: 20px left, 20px right; top/bottom depends on density (see Density rules)
-- This ensures the block always covers the full page width while centering the container
-
-**Container frame:**
-- Width: Fixed — exactly `CONTAINER_WIDTH` px
-- Height: Hug contents
-- All content goes inside Container, never directly in the block frame
-
-**Example with CONTAINER_WIDTH = 1440, PAGE_WIDTH = 1920:**
-```
-Page frame [1920px]
-  HeroBlock [Fill=1920px | padding-x 20px | justify center]
-    Container [1440px fixed]
-      Heading, CTA, Image...
-```
-
-**Full-width blocks** (`FULL_WIDTH_BLOCKS` list):
-- Block frame: same Fill + Auto Layout rules
-- Container: width = Fill (100%) instead of fixed — content spans edge-to-edge
-- Use sparingly — 1–3 sections max — to create visual contrast against contained sections
-
-### Density rules
-
-Apply `DENSITY` to spacing, type size, and information load per section:
-
-| DENSITY | Padding between sections | Inner padding | Type scale | Elements per section |
-|---|---|---|---|---|
-| **Spacious** | 120–160px | 80–120px | Large (H1 ≥ 64px) | Few — 1 key message per section |
-| **Balanced** | 80–120px | 48–80px | Standard (H1 ≥ 48px) | Moderate — clear hierarchy |
-| **Compact** | 48–80px | 24–48px | Smaller (H1 ≥ 36px) | More — multiple elements visible |
-
-### Tone rules
-
-Apply `TONE` to decoration level, imagery treatment, and component style:
-
-| TONE | Decoration | Imagery | Components | Typography feel |
-|---|---|---|---|---|
-| **Premium** | High craft — layered, textured, refined details | Full-bleed, cinematic, high quality | Generous sizing, subtle shadows, smooth radius | Large, airy, editorial |
-| **Clean** | None beyond structure | Functional or absent | Sharp edges, minimal shadow, high contrast | Efficient, readable, no personality |
-| **Utilitarian** | Only when it aids comprehension | Data, icons, diagrams | Dense, predictable, consistent | Neutral, monospace accents ok |
-| **Expressive** | Personality through type and layout asymmetry | Art-directed, unexpected crops | Unconventional — break the grid intentionally | Strong typographic hierarchy, varied weights |
-| **Warm** | Texture, organic shapes, photography-led | Lifestyle, human, inviting | Soft radius, warm shadows | Approachable, mid-weight |
-| **Balanced** | Moderate — tasteful | Standard | Standard | Standard |
-
-### Register-specific rules
-
-**Brand register (`REGISTER = brand`):**
-- Design has full visual expression — typography is bold, colors are committed
-- Sections have distinct visual characters — not uniform
-- Spacing varies for rhythm — not the same padding everywhere
-- Hero is the centerpiece — highest craft level
-
-**Product register (`REGISTER = product`):**
-- Clarity over decoration — content hierarchy is the design
-- Consistent spacing system — predictable, not monotonous
-- Components serve the data — no decoration that competes with content
-- Whitespace is intentional — not filler
-
-### Layout Archetypes
-
-Before generating each section, select a Layout Archetype based on section type + STYLE + TONE.
-Pass the chosen archetype name and description explicitly to `use_figma`.
-
-**Three archetypes:**
-
-**Asymmetrical Bento**
-CSS Grid with mixed cell sizes — large feature block + smaller supporting blocks. No uniform columns.
-```
-┌──────────────────┬────────┐
-│  Large block     │ Small  │
-│                  ├────────┤
-├─────────┬────────│ Small  │
-│ Small   │ Small  │        │
-└─────────┴────────┴────────┘
-```
-
-**Editorial Split**
-Left half: oversized typography (H1 ≥ 80px, tight tracking). Right half: scrollable/stacked content cards, images, or interactive elements.
-```
-┌───────────────────┬────────────────────┐
-│                   │  ┌────┐  ┌────┐    │
-│  LARGE            │  └────┘  └────┘    │
-│  HEADING          │  ┌────┐  ┌────┐    │
-│  HERE             │  └────┘  └────┘    │
-└───────────────────┴────────────────────┘
-```
-
-**Z-Axis Cascade**
-Elements stacked like physical cards with offset + slight rotation (±2–3°). Creates depth and tactile feel.
-```
-    ┌───────────┐
-    │  Card 1   │
-         ┌───────────┐
-         │  Card 2   │
-              ┌───────────┐
-              │  Card 3   │
-```
-
-**Archetype selection table:**
-
-| Section type | STYLE | Recommended archetype |
+| Stage | Output | Rules to read |
 |---|---|---|
-| Features / Services | bold · expressive · luxury | Asymmetrical Bento |
-| Features / Services | minimal · clean · corporate | Simple grid (no archetype) |
-| About / Story | editorial · luxury · premium | Editorial Split |
-| Team | premium · warm | Z-Axis Cascade |
-| Testimonials | any | Z-Axis Cascade or Editorial Split |
-| Pricing | any | Simple grid (clarity first) |
-| Gallery | expressive · warm | Asymmetrical Bento |
-| Hero | bold · expressive | Editorial Split (type-led) |
-| Hero | minimal · clean | Centered or Editorial Split |
-| CTA Banner | any | Editorial Split or full-width centered |
+| 0 Setup | Access, page structure, existing records, available fonts | figma-build |
+| 1 Brief | Design read, `.wpaikit/design-brief.md` | design-quality-check (brief mode) |
+| 2 Research | Competitor matrix, tone, 3–5 references → **Gate A** | research-references, copy-and-tone |
+| 3 Foundations | Palette, fonts, locks, icons, board → **Gate B** → Variables and Text Styles | foundations, typography-and-fonts, imagery-and-icons, anti-slop |
+| 4 Structure and copy | Block plan and copy deck → **Gate C** → status file | copy-and-tone, commerce (stores), project-status |
+| 5 Concepts | 2–3 concepts on Ideas → **Gate D** → Design Direction and decision log | design-direction, anti-slop, imagery-and-icons, figma-lint |
+| 6 Build | One cycle per status item, page by page | figma-build, project-status, motion, imagery-and-icons, figma-lint, visual-qa |
+| 7 Verify | Lint, screenshots, critique, fixes | figma-lint, visual-qa, design-quality-check (design mode) |
+| 8 Handoff | Links, records, motion spec, open items, handoff note | design-direction, figma-build, motion |
 
-**Rules:**
-- Never use the same archetype for two consecutive sections — vary the rhythm
-- Simple grid is always valid when clarity matters more than expression
-- In wireframe mode: use only Simple grid — archetypes are hi-fi patterns
+Rule files, read each when its stage starts:
 
-### Absolute bans — enforced at generation time
+- knowledge/design/rules/figma-build.md
+- knowledge/design/rules/project-status.md
+- knowledge/design/rules/research-references.md
+- knowledge/design/rules/copy-and-tone.md
+- knowledge/design/rules/foundations.md
+- knowledge/design/rules/typography-and-fonts.md
+- knowledge/design/rules/imagery-and-icons.md
+- knowledge/design/rules/anti-slop.md
+- knowledge/design/rules/design-direction.md
+- knowledge/design/rules/visual-qa.md
+- knowledge/design/rules/figma-lint.md
+- knowledge/design/rules/commerce.md
+- knowledge/design/rules/motion.md
 
-Before generating any section, check it against these bans.
-If a section would naturally produce one of these → propose an alternative before calling `use_figma`:
+The quality check is in knowledge/design/skills/design-quality-check/SKILL.md.
 
-| Banned pattern | Alternative |
-|---|---|
-| `border-left/right` as colored card accent | Full border, background tint, or leading number |
-| Gradient text fill | Solid brand color, emphasis via weight or size |
-| Glassmorphism as default card style | Solid surface with subtle shadow |
-| Big number + small label + gradient accent (hero metric) | Editorial stat layout, or remove metrics entirely |
-| 3+ identical cards: icon + heading + text | Mix: 1 spotlight + list, or asymmetric grid |
-| Modal as first design choice | Inline expansion, drawer, or dedicated page |
+## 0. Setup
 
----
+- **Project folder.** Records live in `.wpaikit/` of the client project. If the session is open in another folder (for example the wpaikit repository), ask the designer to open the client project, or confirm where the records should live.
+- **Resume first.** If records exist, read them in the resume order from knowledge/design/rules/figma-build.md (`project.md`, `status.md`, the ledger, the relevant Design Direction section) and treat them as approved context unless the designer says otherwise. Other records: `design-brief.md`, `copy-deck.md`, `decision-log.md`, `design-system.json`. If `design-direction.md` is a dated log of decisions, convert it first (design-direction.md, "Converting an existing chronological file").
+- **Target file.** Collect the Figma URL and project description. Check access and inspect pages, frames, Variables, Text Styles, components. Propose the page structure from figma-build.md (Final Design, Ideas, Archive, Design System, Flows) and create the missing pages after the designer confirms. Start `.wpaikit/figma-ledger.json`.
+- **Fonts.** List available fonts with `figma.listAvailableFontsAsync()` and keep the result for stage 3.
+- Use only materials the designer supplied and sources available in the environment. Never ask the designer to paste API keys into chat.
 
-### Wireframe mode rules
+## 1. Brief
 
-When `quality = wireframe`:
-- Grayscale only: #1A1A1A · #666666 · #CCCCCC · #F5F5F5 · #FFFFFF
-- Image placeholders: filled rectangles labeled "Image" / "Photo"
-- No icons — use simple geometric shapes or labeled boxes
-- Buttons: rounded rectangles with label text only
-- No shadows, no gradients
+Record the design read. Ask only for missing decisions that change the result:
 
-### Hi-fi mode rules
+- **Mode:** new design, redesign preserving the brand, or new visual identity. For redesigns, record what must be preserved: logo, brand colors and fonts, navigation labels, information architecture, legal copy, recognizable elements.
+- **Audience and goal:** the audience, the primary action, and which page or view matters first.
+- **Register:** brand (marketing, landing, store front) or product (task UI). Assert your reading.
+- **Materials:** available pages, real copy, images, brand assets, existing icon set, references and anti-references.
+- **Languages and region:** the language or languages of the design text, always asked explicitly; the display currency for a store.
+- **Mobile frames:** required or not.
 
-When `quality = hi-fi`:
-- Full color palette from `DS_TOKENS` or `BRAND_COLORS`, honoring `COLOR_STRATEGY`
-- Real typographic hierarchy: H1 → H2 → H3 → Body → Caption — minimum 1.25× ratio between steps
-- Body text line length: target 65–75 characters
-- Every neutral tinted toward the brand hue (not pure #000/#FFF)
-- Styled components: buttons with fill/border, cards with shadow and radius
-- Background variations between sections — not all the same surface color
-- Spacing variation across sections — not uniform padding everywhere
+Write a scene sentence and three brand-voice words (knowledge/design/rules/foundations.md, knowledge/design/rules/typography-and-fonts.md).
 
----
+Start the must-have list: required brand colors and logo variants, slogans, styles the client dislikes (for example "no serifs"), and usage rules for signature brand elements. Brand books often imply such rules without stating them: when the materials include a signature element (a band, a frame, a pattern, a cut-off monogram), ask how it may be cropped, where it may end, and what it must never touch. Ask once whether anything else is mandatory or forbidden, and add every later constraint the moment it appears.
 
-### 4A — Page-by-page mode
+Run design-quality-check in brief mode before any decision depends on the brief. Resolve contradictions with the designer. Save the confirmed design read to `.wpaikit/design-brief.md`.
 
-For each page in the ordered list:
+## 2. Research: competitors, tone, references
 
-1. Announce:
-   ```
-   Generating page: [PageName]
-   Sections: [Section · Section · Section]
-   ```
-2. Call `use_figma` to create one full-page frame with all sections
-3. After generation, ask:
-   ```
-   [PageName] ready.
-     [continue]   — next page ([NextPageName])
-     [adjust]     — describe what to change
-     [stop]       — finish here
-   ```
-4. If `[adjust]`: apply change, re-show prompt (max 2 rounds per page)
-5. If last page and `[continue]`: go to Phase 5
+Follow knowledge/design/rules/research-references.md and knowledge/design/rules/copy-and-tone.md:
 
----
+1. Analyze 3–5 competitors: messaging matrix and positioning options.
+2. Define the tone of voice: the four axes, form of address per language, tone and anti-tone words, glossary.
+3. Select 3–5 visual references from different directions and present them in a table.
 
-### 4B — Block-by-block mode
+**Gate A.** Use the gate format: recommended positioning, tone profile, references with the recommended spine and accents, must-have list. Record the result in `.wpaikit/design-brief.md`. If the designer provided their own references and positioning, this gate becomes a short confirmation.
 
-For each page:
+## 3. Foundations
 
-1. Announce:
-   ```
-   Page: [PageName] — generating block by block.
-   Order: [Section 1 · Section 2 · ... · Section N]
-   ```
+Follow knowledge/design/rules/foundations.md, knowledge/design/rules/typography-and-fonts.md, and knowledge/design/rules/imagery-and-icons.md. Check the proposal against knowledge/design/rules/anti-slop.md (category reflex, aesthetic lane).
 
-2. For each section block:
+Prepare:
 
-   a. Announce: `Block: [SectionName]`
-   b. Call `use_figma` to add the section to the page frame
-   c. Ask:
-      ```
-      "[SectionName]" ready.
-        [continue]   — next block ([NextSectionName])
-        [adjust]     — describe what to change
-        [new page]   — move to next page
-        [stop]       — finish here
-      ```
-   d. If `[adjust]`: apply change, re-show (max 2 rounds per block)
-   e. If `[new page]`: skip remaining blocks, move to next page
-   f. If `[stop]`: go to Phase 5
+- the color strategy and palette by roles, with contrast pairs;
+- 2–3 font pairings, one recommended, each with source, license, glyph check, and Figma availability;
+- the spacing base and elevation;
+- at least two radius systems side by side (for example sharp and soft), unless the brand identity or an existing design system fixes the shape; even then, show one alternative when the evidence is only indirect;
+- proposed locks;
+- the icon set (ask first whether one is already chosen; one set per project);
+- the image treatment;
+- an asset inventory: which images the planned blocks need, which exist, and which gaps need a shoot, the client, or generation.
 
-3. After last block of a page → announce next page or go to Phase 5
+Build the `Foundations — proposal` board on Ideas and inspect its screenshot. Show every alternative you ask about, and where each must-have color or logo variant will be used.
 
----
+**Gate B.** Use the gate format: palette and color strategy, fonts, shape options, icon set, image treatment and asset gaps, locks. Colors the designer called "approximate" are inputs to refine, not an approved palette.
 
-### Mobile generation
+After approval, create the approved Variables and Text Styles (foundations.md, "Creating tokens after gate B") and record their IDs in the ledger. Do not invent names that conflict with an existing system. If shape was left open, create both radius options as Variables and decide at gate D.
 
-If `MOBILE = yes`, after completing all desktop frames:
+**After gate B, never add tokens silently.** Any later Variable or Text Style is provisional: list it under "New tokens to approve" at the next gate.
 
-1. Announce: `Generating mobile versions (375px)...`
-2. For each page, generate mobile frame
-3. Single column, stacked sections, larger touch targets
+## 4. Structure and copy
 
----
+- **Header and footer are decisions, not fixed rows.** For each, describe the job and the content: navigation, catalog entry, search, cart, language, contacts, delivery info. The visual pattern is explored in the concepts. For stores, catalog entry, search and cart are required.
+- **Block plan.** Present a page-by-page block plan. Mark each block as required (by the brief or product type), proposed, or optional. For each, give its job (attract, explain, prove, compare, prompt action), main content, action, and contribution to usability, sales or task completion, and rhythm. Invite the designer to add, remove, or reorder. If a requested block seems harmful or redundant, explain the concern and a viable alternative rather than silently omitting it.
+- **Stores.** Apply knowledge/design/rules/commerce.md. A gallery and a catalog link do not replace a product shopping block.
+- **Utility pieces.** Add, from the start, what pages need besides blocks, and mark what is in scope: button and link states with motion; card states (hover, in cart, sold out, favourite, skeleton); form states (invalid, sending, sent, send error); header states (sticky, menu, search, cart badge); overlays (mini cart, option pickers, toasts, cookie consent); empty states, 404, back to top; mobile versions of all of these.
+- **SEO.** If SEO matters, suggest running /figma-seo-structure before the block plan is final.
+- **Copy deck.** Write the key copy per knowledge/design/rules/copy-and-tone.md: hero, section headlines, CTAs, offer, form labels. Use the approved tone and the competitor matrix, and run the originality check. Never invent testimonials, names, logos, or statistics as facts. Mark proof slots that need real data.
+- **Store demo data.** For a store without a catalog, generate representative products with plausible prices in the agreed currency and mark them as demo data.
 
-## Phase 5 — Completion
+**Gate C.** Use the gate format: block list and order, header and footer content, key copy. Record the copy with status `approved` or `draft` in `.wpaikit/copy-deck.md`. Create `.wpaikit/status.md` from the approved blocks and the utility pieces in scope (knowledge/design/rules/project-status.md); concepts and gate D come first in it.
 
-```
-Generation complete ✓
+## 5. Concepts
 
-Created:
-  ✓ [PageName] / Desktop     N sections
-  ✓ [PageName] / Desktop     N sections
-  [✓ [PageName] / Mobile  — if applicable]
+For a new visual direction, create two or three concepts for the first important page, on the Ideas page.
 
-Next steps:
-  → /design-quality-check <url>  — audit the final design (design mode)
-  → /figma-design-system         — lock tokens from this design
-  → /prep-figma <url>            — prepare frames for handoff to development
-  → development handoff          — /figma-to-block (WordPress) or /figma-to-block-html (Slicing)
-```
+- **Scope.** Each concept shows its own header, the hero, and enough of the second screen to show the system: rhythm, section treatment, card treatment, density. It uses the approved Variables, fonts, and real or draft copy.
+- **Tokens only.** Before gate D, concepts share only tokens and styles. Build each concept's header, buttons and cards inside it; shared components make the concepts identical below the hero.
+- **Real differences.** Concepts differ on at least two axes: hero scale (giant, mid, minimal), composition anchor, background mode, density, image priority, or color strategy within the approved palette. A palette swap is a variant, not a concept. Across the set, show at least two header patterns (for example logo left with inline nav; centered logo with split nav; two-tier with catalog and search), for stores two card treatments, and each radius system still open.
+- **Must-haves visible.** Every concept shows each must-have in a meaningful role, not only in tiny labels.
+- **Text over images.** Before placing text over a photo, find its bright and busy areas. Choose a crop that leaves calm space, or move the text; a gradient does not rescue a busy area.
+- **Single concept when justified.** With a precise direction or an established design system, create one focused concept and explain why alternatives would add little.
+- **Images.** At most one key image per concept, generated with the cheapest model, after telling the designer the planned number of generations.
 
----
+Screenshot each concept, fix clipping and unreadable text, and run the reflex checks (anti-slop.md) and the lint (figma-lint.md). Present each concept with its idea and fit to the brief, its axes, how it adapts to mobile, where the must-haves appear, and one practical trade-off. Recommend one, and say which elements can be combined and which provisional tokens the concepts introduced.
+
+**Gate D.** Use the gate format: chosen concept, elements borrowed from others, final shape lock, provisional tokens. Write the Design Direction to `.wpaikit/design-direction.md` and start `.wpaikit/decision-log.md` with the gate A–D entries (knowledge/design/rules/design-direction.md). The Design Direction is the source of truth for the following pages; changes to it must be explicit. Move the chosen concept to Final Design and the others to Archive.
+
+## 6. Build
+
+Stage 6 repeats one cycle for each item in `.wpaikit/status.md`: page blocks, utility pieces, then mobile. Most of a design run happens here, so follow the cycle for every item, including small fixes that become new items. Before the first cycle, read "Building" in knowledge/design/rules/figma-build.md: components first (buttons with all states), cards, states, motion, mobile, clean-up.
+
+### The cycle
+
+1. **Pick.** Take the next open item: the designer's order first, otherwise the plan order. Mark it `in progress`. State its job, message, copy source, media role, action, and composition in one or two lines.
+2. **Variants or direct build.** Make two or three variants on Ideas when the designer asked for options, or when the Design Direction does not settle the item's pattern yet. Otherwise build directly. Variants differ in composition, not only in color; each gets one line on how it works at 375 px and what replaces any hover on touch.
+3. **Build.** Build in manageable sections, never a long page in one opaque call. Use instances; a pattern drawn a second time becomes a component. Build the states the item owns together with it. Keep page-wide rhythm and vary composition where content warrants it (visual-qa.md, Composition).
+4. **Check.** Run the lint and the layout check (figma-lint.md, `scripts/layout-lint.js`) on the new section, then take a screenshot and apply visual-qa.md. Fix and check again. Show the designer only checked work.
+5. **Present.** Present variants with a recommendation and wait for the choice. Present a direct build when the designer asked for block-by-block control, or at a checkpoint: after the hero, after each page, after each group of utility pieces. Otherwise continue. Mark presented items `review`.
+6. **Place.** Apply the requested adjustments, move the chosen variant to Final Design and the others to Archive, keeping prototype dependencies (figma-build.md, Clean-up). Re-run step 4 if the placed section changed.
+7. **Record.** Append the decision to `decision-log.md` (what was shown, chosen and rejected, the designer's words). Then rewrite the affected rules in `design-direction.md`, Global or the page subsection, so it states what applies now. Add the new node IDs to the ledger.
+8. **Update status.** Mark the item `done` (approved), `review`, `deferred`, or `waiting client`; add items the designer introduced; show the next two or three open items.
+
+### Other page types
+
+After the first page, every new page type (for example catalog, product, checkout, about) starts with a layout item:
+
+- Two or three layout variants on Ideas, built from the existing components and the Design Direction. Change the layout and the page-specific blocks, not the system. A variant that needs a new component, token or pattern says so, and the new piece is approved with it.
+- Then its blocks go through the cycle like the first page.
+- **Paired pages.** Pages of the same type for different products or sections (for example coffee and bread catalogs) use the same block structure unless the content differs. When they differ, say why. Compare them side by side before presenting.
+- **Mobile.** When mobile is in scope, adapt a whole group of approved pages in one pass, after their desktop versions are approved, so shared patterns (filters, sticky actions, drawers) are solved once.
+
+### In every cycle
+
+- **Images.** Generate final images with the approved treatment; label placeholders and generated images honestly.
+- **Icons.** Insert icons from the approved set as vectors via Iconify. Animated icons are a static frame plus an annotation (imagery-and-icons.md).
+- **Pattern inspiration** (21st.dev or similar): at most one or two patterns per project, translated into the spine's grammar.
+- **Motion:** gate every animation by frequency and purpose, keep to the budgets and named curves, and add it to the motion spec (knowledge/design/rules/motion.md). Hover effects are frequent and stay fast and quiet; hero and success moments may be richer.
+- **States, mobile, clean-up, bulk changes:** follow figma-build.md, Building.
+- **Screenshots and Figma calls:** follow figma-build.md, Working practice. If a call fails without an obvious reason, check its Plugin API pitfalls.
+
+## 7. Verify
+
+1. Run the read-only lint and the layout check (knowledge/design/skills/generate-design/scripts/layout-lint.js) from knowledge/design/rules/figma-lint.md on every completed page frame.
+2. Inspect full-page and per-section screenshots with knowledge/design/rules/visual-qa.md, including the anti-drift comparison with the approved concept. For stores, apply the commerce checks.
+3. Run design-quality-check in design mode against the brief, Design Direction, approved blocks, and copy deck.
+4. Fix Critical and high-impact Important findings, re-run the lint, and inspect fresh screenshots. Do not silently replace the chosen concept while fixing.
+5. Check the status file: every in-scope item is `done`, `deferred`, or `waiting client`. Report items still in `todo` or `review`.
+
+Report anything that could not be verified. A static Figma screenshot does not prove keyboard, screen-reader, zoom, or animation behavior. The agent cannot play prototypes in Present mode: name each prototype flow the designer should play, with what it should show.
+
+Afterwards, offer optional refinement passes by name, without running them unasked: bolder, quieter, distill, clarify copy, polish (design-quality-check, Refinement passes).
+
+## 8. Handoff
+
+Finish with:
+
+- links to Final Design sections and the Ideas and Archive pages;
+- the updated `design-direction.md`, `decision-log.md`, `copy-deck.md`, `status.md` and ledger;
+- the motion spec from the Design Direction, with the prototype flows the designer should play;
+- a mock inventory: for each distinctive ingredient (hero composition, signature motifs, imagery, icons, animated elements), how it should be implemented and what must not be lost;
+- open items from the status file (deferred and waiting client), plus draft copy, demo products, proof slots, generated images that need real photos, font licenses the client must obtain;
+- the checks performed and browser-only checks pending;
+- a handoff note in `.wpaikit/project.md`: where the records are, the Figma file and page IDs, what is approved, a pointer to the status file, and the working rules agreed with the designer. Do not write it into `CLAUDE.md` or `AGENTS.md` when WPAIKit manages them.
+
+Point to /figma-design-system in update mode to document the tokens and build the `_patterns` cache, /figma-components for components, and /prep-figma for a development-ready copy.
 
 ## Boundaries
 
-- Never generate Mobile frames unless `MOBILE = yes`
-- Never skip Phase 3 (Quality Check + Design Brief summary)
-- Always use Lorem ipsum for all text content
-- Never load DS tokens without a designer-provided URL
-- Never modify the Design System file — `TARGET_URL` is the only writable target
-- Load `figma-use` skill before every `use_figma` call without exception
-- Maximum 2 adjustment rounds per page/block
-- If Figma MCP tool call fails: show the error, ask if they want to retry or skip
+- Write only to the designer-specified target Figma file. Do not modify a separate design-system file or existing frames without an explicit request.
+- Do not create mobile frames unless requested.
+- Do not claim visual QA without an inspected screenshot, or lint results without running the script.
+- Never present rejected concepts or variants as final pages, and never delete them unless asked.
+- Do not crawl reference sites in bulk. Do not copy competitor copy, logos, or complete layouts.
+- Tell the designer before paid image generation, and keep to the stated number of calls.
+- If a Figma call fails, retry a transient failure once when reasonable, then report what exists and what remains incomplete. Do not loop indefinitely.

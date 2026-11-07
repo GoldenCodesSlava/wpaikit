@@ -1,0 +1,42 @@
+fix|2:24|text|#6B7280|#FFFFFF|4.5|gray/500
+fix|2:24|text|#717782|#FFFFFF|4.5|
+fix|I2:26;2:3|background|#2563EB|#FFFFFF|4.5|blue/600
+fix|I2:26;2:3|background|#3377C9|#FFFFFF|4.5|
+fix|I2:26;2:3|text|#1F2937|#60A5FA|4.5|gray/800
+fix|I2:26;2:3|text|#3A3939|#60A5FA|4.5|
+fix|2:29|text|#2563EB|#FFFFFF|4.5|blue/600
+fix|2:29|text|#4A79AD|#FFFFFF|4.5|
+fix|2:35|text|#6B7280|#FDE68A,#FFFBEB|3|gray/500
+fix|2:35|text|#848484|#FDE68A,#FFFBEB|3|
+fix|2:37|text|#6B7280|#F5F5F5|3|gray/500
+fix|2:37|text|#8E8E8E|#F5F5F5|3|
+fix|2:38|text|#4B5563|#F5F5F5|4.5|gray/600
+fix|2:38|text|#717070|#F5F5F5|4.5|
+fix|2:60|text|#6B7280|#FFFFFF|4.5|gray/500
+fix|2:60|text|#777676|#FFFFFF|4.5|
+fix|2:70|text|#6B7280|#FFFFFF|4.5|gray/500
+fix|2:70|text|#777676|#FFFFFF|4.5|
+fix|2:78|background|#15803D|#FFFFFF|4.5|green/700
+fix|2:78|background|#208843|#FFFFFF|4.5|
+fix|2:78|text|#374151|#22C55E|4.5|gray/700
+fix|2:78|text|#414040|#22C55E|4.5|
+fix|2:100|text|#9CA3AF|#1F2937|4.5|gray/400
+fix|2:100|text|#878F9D|#1F2937|4.5|
+fix|2:85|indicator fill|#3B82F6|#FFFFFF|3|blue/500
+fix|2:85|indicator fill|#5397EB|#FFFFFF|3|
+fix|2:15|icon colour|#6B7280|#FFFFFF|3|gray/500
+fix|2:15|icon colour|#92959B|#FFFFFF|3|
+fix|2:6|component|#3B82F6|#FFFFFF|3|blue/500
+fix|2:69|border|#6B7280|#FFFFFF|3|gray/500
+fix|2:69|border|#939599|#FFFFFF|3|
+fix|2:75|border|#6B7280|#FFFFFF|3|gray/500
+fix|2:75|border|#92959B|#FFFFFF|3|
+fix|2:86|border|#6B7280|#FFFFFF|3|gray/500
+fix|2:86|border|#92959B|#FFFFFF|3|
+fix|2:87|border|#6B7280|#FFFFFF|3|gray/500
+fix|2:87|border|#92959B|#FFFFFF|3|
+fix|2:97|indicator fill|#6B7280|#FFFFFF|3|gray/500
+fix|2:97|indicator fill|#92959B|#FFFFFF|3|
+fix|2:98|indicator fill|#6B7280|#FFFFFF|3|gray/500
+fix|2:98|indicator fill|#92959B|#FFFFFF|3|
+fix|2:72|error text|#DC2626|#FFFFFF|4.5|red/600

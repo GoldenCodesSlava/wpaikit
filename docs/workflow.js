@@ -144,6 +144,8 @@ const translations = {
     'skills.seeVerify': 'See verify stage',
     'skills.generateDesign':
       'Interactively collect design materials and generate a full UI in Figma from brief, design system, and brand references.',
+    'skills.wcagDesignTest':
+      'WCAG 2.2 audit of a Figma frame: a deterministic lint, a screenshot pass and a browser checklist, with a computed fix for every finding and a report frame next to the design.',
     'skills.updateDS':
       'Add new Figma frames to an existing design system — merge tokens and update Figma page without deleting existing data.',
     'skills.setupFonts':
@@ -302,6 +304,8 @@ const translations = {
     'skills.seeVerify': 'Смотреть этап проверки',
     'skills.generateDesign':
       'Интерактивный сбор материалов и генерация полного UI в Figma из brief, design system и бренд-референсов.',
+    'skills.wcagDesignTest':
+      'Аудит Figma frame по WCAG 2.2: детерминированный lint, проверка по скриншоту и чек-лист для браузера, рассчитанное исправление для каждого замечания и отчёт рядом с дизайном.',
     'skills.updateDS':
       'Добавляет новые Figma frames в существующую дизайн-систему — мержит токены и обновляет Figma page без удаления данных.',
     'skills.setupFonts':
@@ -463,6 +467,8 @@ const translations = {
     'skills.seeVerify': 'Vezi etapa de verificare',
     'skills.generateDesign':
       'Colecteaza interactiv materiale de design si genereaza un UI complet in Figma din brief, sistem de design si referinte de brand.',
+    'skills.wcagDesignTest':
+      'Audit WCAG 2.2 al unui Figma frame: lint determinist, verificare dupa screenshot si checklist pentru browser, cu o corectie calculata pentru fiecare problema si un raport langa design.',
     'skills.updateDS':
       'Adauga frame-uri Figma noi la un sistem de design existent — imbina token-uri si actualizeaza pagina Figma fara a sterge datele existente.',
     'skills.setupFonts':
@@ -551,6 +557,8 @@ const fullDocumentationTranslations = {
       'Interactively collects the brief, Figma project URL, references, Design System, brand assets, icon library, and Pexels API key, then generates UI in Figma.',
     'full.commands.designQuality':
       'Checks a brief or Figma frames for category reflex, banned patterns, color strategy, register consistency, theme logic, typography, and layout rhythm.',
+    'full.commands.wcagDesignTest':
+      'Audits a Figma frame against WCAG 2.2 and places a report next to it: a snapshot with numbered pins, cards with computed fixes, and annotations on the flagged layers. The design is not changed.',
     'full.commands.analyzeFigma':
       'Audits a Figma frame for implementation readiness: Auto Layout, tokens, responsive variants, reusable components, and semantic naming.',
     'full.commands.figmaDesignSystem':
@@ -753,6 +761,8 @@ cd wp-content/themes/{slug}
       'Интерактивно собирает brief, Figma project URL, референсы, Design System, brand assets, icon library и Pexels API key, затем генерирует UI в Figma.',
     'full.commands.designQuality':
       'Проверяет brief или Figma frames на category reflex, banned patterns, цветовую стратегию, register consistency, theme logic, typography и layout rhythm.',
+    'full.commands.wcagDesignTest':
+      'Проверяет Figma frame по WCAG 2.2 и ставит рядом отчёт: снимок с номерами, карточки с рассчитанными исправлениями и аннотации на проблемных слоях. Дизайн не меняется.',
     'full.commands.analyzeFigma':
       'Аудитирует Figma frame на готовность к реализации: Auto Layout, токены, responsive variants, reusable components и semantic naming.',
     'full.commands.figmaDesignSystem':
@@ -956,6 +966,8 @@ cd wp-content/themes/{slug}
       'Colecteaza interactiv brief-ul, Figma project URL, referinte, Design System, brand assets, icon library si Pexels API key, apoi genereaza UI in Figma.',
     'full.commands.designQuality':
       'Verifica brief-ul sau Figma frames pentru category reflex, banned patterns, strategie de culoare, register consistency, theme logic, typography si layout rhythm.',
+    'full.commands.wcagDesignTest':
+      'Verifica un Figma frame dupa WCAG 2.2 si pune langa el un raport: snapshot cu pini numerotati, carduri cu corectii calculate si adnotari pe straturile cu probleme. Designul nu se modifica.',
     'full.commands.analyzeFigma':
       'Auditeaza un Figma frame pentru readiness de implementare: Auto Layout, token-uri, responsive variants, reusable components si semantic naming.',
     'full.commands.figmaDesignSystem':

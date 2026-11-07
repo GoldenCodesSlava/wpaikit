@@ -1,5 +1,5 @@
 ---
-description: Audit a design brief or existing Figma frames for predictable AI patterns, category reflexes, and design quality issues
+description: Review a design brief or Figma frames for brief fit, visual clarity, consistency, and evidence-based improvements
 argument-hint: [<figma-url>]
 ---
 
