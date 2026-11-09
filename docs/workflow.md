@@ -197,77 +197,54 @@ Fiecare comandă citește automat fișierele din `knowledge/` înainte de execu�
 
 ### `/generate-design`
 
-**Scop:** Generează un design UI direct în Figma pe baza unui brief de proiect, sistem de design și referințe.
+**Scop:** Cercetează piața și referințele, stabilește cu designerul tonul, fundațiile, fonturile, blocurile și textele cheie, explorează concepte distincte, apoi construiește direcția aleasă în Figma pe tokeni aprobați și o verifică cu screenshot-uri și un lint mecanic.
 
 ```
 /generate-design
 ```
 
-**Fără argumente** — comanda este complet interactivă.
+**Fără argumente** — comanda este interactivă. Minimul de care are nevoie: URL-ul fișierului Figma țintă și descrierea proiectului.
 
-**Flux de lucru în 5 faze:**
+**Nouă etape, patru porți.** O poartă (gate) este o oprire: asistentul prezintă deciziile, fiecare cu o recomandare, și așteaptă un răspuns explicit. Între porți lucrează fără să ceară permisiune la fiecare pas.
 
-**Faza 1 — Colectare materiale (6 pași)**
+| Etapă                  | Rezultat                                                                                                                                  |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| 0 Setup                | Acces, paginile Final Design / Ideas / Archive / Design System / Flows, fonturile disponibile în Figma                                    |
+| 1 Brief                | Audiență, acțiune principală, register, scenă, must-have-uri → `.wpaikit/design-brief.md` (cu `/design-quality-check` în brief mode)       |
+| 2 Cercetare            | 3–5 concurenți, tonul vocii, 3–5 referințe → **Gate A**                                                                                   |
+| 3 Fundații             | Paletă cu perechi de contrast, 2–3 perechi de fonturi, set de iconițe, tratarea imaginilor → **Gate B** → Variables și Text Styles        |
+| 4 Structură și texte   | Planul de blocuri, piese utilitare (stări, overlay-uri, 404, stări goale), textele cheie → **Gate C** → `.wpaikit/status.md`              |
+| 5 Concepte             | 2–3 concepte pe pagina Ideas, diferite pe cel puțin două axe → **Gate D** → Design Direction                                               |
+| 6 Construcție          | Un ciclu pentru fiecare element din status: alegere, variante sau construcție directă, lint + layout check + screenshot, prezentare, plasare, înregistrare |
+| 7 Verificare           | Lint, screenshot-uri, comparație cu conceptul aprobat, `/design-quality-check` în design mode                                              |
+| 8 Handoff              | Linkuri, înregistrări, elemente deschise, verificări rămase pentru browser, notă în `.wpaikit/project.md`                                  |
 
-1. URL-ul proiectului Figma țintă
-2. URL cu referințe/exemple (moodboard, proiect similar)
-3. URL Design System (sau `/figma-design-system` mai întâi, sau paletă neutră)
-4. Brand assets — logo/imagine cu paleta de brand (dacă nu există DS)
-5. Bibliotecă de iconițe — pagină Figma cu iconițe proprii (recomandat), sau skip
-6. Pexels API key — pentru fotografii reale adaptate stilului proiectului (sau skip)
+**Înregistrări în `.wpaikit/`** (în folderul proiectului clientului):
 
-**Faza 2 — Brief de proiect (un singur bloc de întrebări)**
-
-- Descrierea business-ului, industria, audiența
-- Register: brand (landing, portofoliu) / product (SaaS, dashboard)
-- Stilul vizual: minimal / bold / luxury / playful / corporate / editorial
-- Strategia de culori: restrained / committed / full / drenched
-- **Scenă** — o propoziție: cine folosește, unde, la ce lumină, în ce stare de spirit
-  _(din scenă se derivă automat: Theme light/dark, Density, Tone — nu se întreabă separat)_
-- Calitate: wireframe / hi-fi
-- Mod generare: pagină cu pagină / bloc cu bloc
-- Mobile: da / nu (implicit nu)
-- Pagini și secțiuni
-- Limba conținutului
-- **Lățimea containerului:** 1200 / 1280 / 1440 / 1536 px
-- **Blocuri full-width:** da / nu (secțiuni care ies din container — Hero, Gallery, CTA banner)
-- Inspirație și anti-referințe (opțional)
-
-**Faza 3 — Quality Check + Design Brief Summary**
-
-- Rulează automat `/design-quality-check` în brief mode
-- Verifică: category reflex, absolute bans, strategia de culori, register, tema
-- Fiecare problemă: `[accept] [suggest different] [keep original]`
-- Afișează Design Brief complet — confirmi înainte de generare
-
-**Faza 4 — Generare în Figma**
-
-- Structura obligatorie per bloc: `[SectionName]` (Fill 100%, Auto Layout, centrat, 20px H padding) → `Container` (lățime fixă din brief) → conținut
-- Fotografii: fetch automat din Pexels pe baza industriei + tonului + tipului de secțiune
-- Iconițe: componente din biblioteca furnizată, nu vectori auto-generați
-
-**Faza 5 — Finalizare**
-
-- Sugerează comenzile următoare: `/design-quality-check`, `/figma-design-system`, `/prep-figma`
-
-**Opțiuni de generare:**
-
-- **Pagină cu pagină** — generează o pagină întreagă, apoi `[continue / adjust / stop]`
-- **Bloc cu bloc** — generează câte un bloc pe rând, control complet
+| Fișier                            | Ce conține                                                                                                    |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `project.md`                      | Nota de handoff: ce este proiectul, unde sunt toate, regulile agreate cu designerul                            |
+| `status.md`                       | Toate blocurile și stările cu statusul lor: `todo`, `in progress`, `review`, `done`, `deferred`, `waiting client` |
+| `design-direction.md`             | Sistemul actual: reguli globale și câte o secțiune pentru fiecare tip de pagină                                |
+| `decision-log.md`                 | Istoria deciziilor: ce s-a arătat, ce s-a ales și de ce                                                        |
+| `figma-ledger.json`               | Harta de la nume semantice la ID-urile din Figma                                                               |
+| `design-brief.md`, `copy-deck.md` | Brief-ul, must-have-urile, tonul; textele aprobate                                                             |
 
 **Note:**
 
-- Textul generat este Lorem ipsum
-- Mobile se generează doar dacă este solicitat explicit
-- Desktop: 1440px lățime frame; container: lățime aleasă în brief
+- Textele sunt reale sau draft, marcate `approved` / `draft`, nu Lorem ipsum. Recenziile, logo-urile și cifrele inventate nu se prezintă ca fapte.
+- Mobile se face doar la cerere, după aprobarea versiunilor desktop.
+- Variantele respinse merg pe pagina Archive, nu se șterg.
+- Generarea plătită de imagini (Figma AI) se anunță înainte, cu numărul de generări.
+- La reluare, asistentul citește `project.md`, `status.md`, ledger-ul și Design Direction înainte să continue. La întrebarea „ce a rămas?” răspunde din `status.md`.
 
-**Când se folosește:** La începutul proiectului, când designerul vrea să genereze machetele din brief.
+**Când se folosește:** La începutul proiectului, când nu există încă machetă.
 
 ---
 
 ### `/design-quality-check`
 
-**Scop:** Auditează un brief de design sau frame-uri Figma existente pentru pattern-uri AI predictibile, reflexe de categorie și probleme de calitate vizuală.
+**Scop:** Verifică un brief de design sau frame-uri Figma: potrivirea cu scopul proiectului, originalitatea, coerența și defectele vizibile.
 
 ```
 /design-quality-check
@@ -276,48 +253,20 @@ Fiecare comandă citește automat fișierele din `knowledge/` înainte de execu�
 
 **Două moduri detectate automat:**
 
-- **Brief mode** (fără URL) — verifică intenția de design înainte de generare
-- **Design mode** (cu URL Figma) — citește frame-urile și auditează output-ul vizual
+- **Brief mode** (fără URL) — audiența, sarcina principală, register-ul, limba textelor, constrângerile și presupunerile care pot schimba designul. Verifică dacă scena și cuvintele vocii brandului sunt concrete. Pattern-urile familiare sunt întrebări pentru proiect, nu interdicții automate.
+- **Design mode** (cu URL Figma) — screenshot-uri la fiecare viewport cerut și lint read-only. Verifică fundațiile și lock-urile aprobate, blocurile cerute și textele, apoi conținutul, ierarhia, compoziția, coerența sistemului, accesibilitatea vizibilă, responsive, iconițele, stările și caracterul distinctiv. Pentru magazine: produs, preț, acțiune de cumpărare și coș.
 
-**Ce verifică (ambele moduri):**
-
-| #   | Check                                                                                                         | Tip       |
-| --- | ------------------------------------------------------------------------------------------------------------- | --------- |
-| 1   | Category reflex (first-order) — industrie + culori = rezultat predictibil                                     | ✗ critic  |
-| 2   | Category reflex (second-order) — anti-reflexul comun după evitarea primului                                   | ⚠ warning |
-| 3   | Absolute bans: side-stripe borders, gradient text, glassmorphism, hero metric, card grid identic, modal-first | ✗ critic  |
-| 4   | Validarea strategiei de culori (restrained/committed/full/drenched)                                           | ✗ / ⚠     |
-| 5   | Register consistency (brand vs product)                                                                       | ⚠ warning |
-| 6   | Theme logic — tema urmează scena, nu reflexul                                                                 | ⚠ warning |
-| 7   | Anti-reference proximity — direcția seamănă cu ce trebuie evitat                                              | ⚠ warning |
-| 8   | Typography hierarchy — doar design mode                                                                       | ⚠ warning |
-| 9   | Layout rhythm — doar design mode                                                                              | ⚠ warning |
-
-**Output:**
-
-```
-✓ Color strategy: Committed — correct
-⚠ Category reflex (first-order): Healthcare + white + teal = predictable
-  → Proposed: warm off-white + deep slate
-  [accept] [suggest different] [keep original]
-✗ Identical card grid detected in Features section
-  → Proposed: 1 spotlight + 2 list items
-  [accept] [suggest different] [keep original]
-──────────────────────────────────────────────
-Summary: 1 critical ✗ · 1 warning ⚠ · 1 passed ✓
-```
-
-**Fix flow:** Pentru fiecare problemă alegi `[accept]`, `[suggest different]` sau `[keep original]`.
+**Output:** pentru fiecare problemă — frame-ul, dovada, impactul și cea mai mică corecție utilă, împărțite în defecte critice, îmbunătățiri importante și preferințe stilistice. Verificările posibile doar în browser sunt raportate ca neverificate.
 
 **Note:**
 
-- Warning-urile pot fi acceptate sau ignorate de designer
-- În brief mode: rulat automat de `/generate-design` înainte de generare
-- În design mode: oferă opțiunea de a aplica fix-urile direct în Figma
+- Ca audit separat rămâne read-only, dacă nu ceri corecturi.
+- Din `/generate-design` corectează defectele cu impact mare în frame-urile generate, apoi rulează din nou lint-ul și verifică screenshot-uri noi.
+- La final oferă treceri de rafinare (bolder, quieter, distill, clarify, polish), fără să le ruleze nechemat.
 
 **Când se folosește:**
 
-- Automat, înainte de orice generare (integrat în `/generate-design`)
+- Automat în `/generate-design`: brief mode la etapa 1, design mode la etapa 7
 - Manual, pentru a audita un design existent în Figma
 
 ---
@@ -922,7 +871,7 @@ cd {slug}                          # dacă init a creat un folder nou; knowledge
 
 ─── GENERARE DESIGN ─────────────────────────────────────────
 
-/generate-design                  # brief interactiv → generează design în Figma
+/generate-design                  # cercetare, fundații, concepte → design în Figma
   ↓ revizuiești și ajustezi în Figma
 
 ─── EXTRAGERE TOKENI ────────────────────────────────────────

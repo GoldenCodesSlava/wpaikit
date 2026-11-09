@@ -143,7 +143,7 @@ const translations = {
       'Automated post-generation checks for PHP, Twig, styles, and visual regressions.',
     'skills.seeVerify': 'See verify stage',
     'skills.generateDesign':
-      'Interactively collect design materials and generate a full UI in Figma from brief, design system, and brand references.',
+      'Research, agree on foundations and copy, explore concepts, then build and verify a Figma design on approved tokens. Keeps the design records in <code>.wpaikit/</code>.',
     'skills.wcagDesignTest':
       'WCAG 2.2 audit of a Figma frame: a deterministic lint, a screenshot pass and a browser checklist, with a computed fix for every finding and a report frame next to the design.',
     'skills.updateDS':
@@ -303,7 +303,7 @@ const translations = {
       'Автоматические post-generation проверки для PHP, Twig, стилей и visual regressions.',
     'skills.seeVerify': 'Смотреть этап проверки',
     'skills.generateDesign':
-      'Интерактивный сбор материалов и генерация полного UI в Figma из brief, design system и бренд-референсов.',
+      'Исследование, согласование фундамента и текстов, концепты, затем сборка и проверка дизайна в Figma на утверждённых токенах. Записи дизайна хранятся в <code>.wpaikit/</code>.',
     'skills.wcagDesignTest':
       'Аудит Figma frame по WCAG 2.2: детерминированный lint, проверка по скриншоту и чек-лист для браузера, рассчитанное исправление для каждого замечания и отчёт рядом с дизайном.',
     'skills.updateDS':
@@ -466,7 +466,7 @@ const translations = {
       'Verificari post-generation automate pentru PHP, Twig, stiluri si visual regressions.',
     'skills.seeVerify': 'Vezi etapa de verificare',
     'skills.generateDesign':
-      'Colecteaza interactiv materiale de design si genereaza un UI complet in Figma din brief, sistem de design si referinte de brand.',
+      'Cercetare, acord pe fundatii si texte, concepte, apoi construieste si verifica un design Figma pe tokeni aprobati. Pastreaza inregistrarile designului in <code>.wpaikit/</code>.',
     'skills.wcagDesignTest':
       'Audit WCAG 2.2 al unui Figma frame: lint determinist, verificare dupa screenshot si checklist pentru browser, cu o corectie calculata pentru fiecare problema si un raport langa design.',
     'skills.updateDS':
@@ -554,9 +554,9 @@ const fullDocumentationTranslations = {
     'full.commands.description':
       'Commands run in Claude Code from the theme root. Each command reads the required files from <code>knowledge/</code> first.',
     'full.commands.generateDesign':
-      'Interactively collects the brief, Figma project URL, references, Design System, brand assets, icon library, and Pexels API key, then generates UI in Figma.',
+      'Nine stages with four approval gates: brief, research (competitors, tone, references), foundations (palette, fonts, icons, then Variables and Text Styles), block plan and copy, 2-3 concepts, then a build cycle per item with a lint, a layout check and screenshots. Keeps the status, the Design Direction and the decision log in <code>.wpaikit/</code>.',
     'full.commands.designQuality':
-      'Checks a brief or Figma frames for category reflex, banned patterns, color strategy, register consistency, theme logic, typography, and layout rhythm.',
+      'Reviews a brief (no URL) or Figma frames (with a URL) for fit with the goal, originality, consistency and visible defects. Uses screenshots and a read-only lint; each issue gets its impact and the smallest useful fix.',
     'full.commands.wcagDesignTest':
       'Audits a Figma frame against WCAG 2.2 and places a report next to it: a snapshot with numbered pins, cards with computed fixes, and annotations on the flagged layers. The design is not changed.',
     'full.commands.analyzeFigma':
@@ -758,9 +758,9 @@ cd wp-content/themes/{slug}
     'full.commands.description':
       'Команды запускаются в Claude Code из корня темы. Каждая команда предварительно читает нужные файлы из <code>knowledge/</code>.',
     'full.commands.generateDesign':
-      'Интерактивно собирает brief, Figma project URL, референсы, Design System, brand assets, icon library и Pexels API key, затем генерирует UI в Figma.',
+      'Девять этапов и четыре гейта согласования: бриф, исследование (конкуренты, тон, референсы), фундамент (палитра, шрифты, иконки, затем Variables и Text Styles), план блоков и тексты, 2-3 концепта, затем цикл сборки по каждому пункту с линтом, проверкой вёрстки и скриншотами. Статус, Design Direction и журнал решений хранятся в <code>.wpaikit/</code>.',
     'full.commands.designQuality':
-      'Проверяет brief или Figma frames на category reflex, banned patterns, цветовую стратегию, register consistency, theme logic, typography и layout rhythm.',
+      'Проверяет бриф (без URL) или Figma frames (с URL): соответствие цели, оригинальность, согласованность и видимые дефекты. Работает по скриншотам и read-only линту; для каждой проблемы указывает влияние и минимальное исправление.',
     'full.commands.wcagDesignTest':
       'Проверяет Figma frame по WCAG 2.2 и ставит рядом отчёт: снимок с номерами, карточки с рассчитанными исправлениями и аннотации на проблемных слоях. Дизайн не меняется.',
     'full.commands.analyzeFigma':
@@ -963,9 +963,9 @@ cd wp-content/themes/{slug}
     'full.commands.description':
       'Comenzile ruleaza in Claude Code din radacina temei. Fiecare comanda citeste inainte fisierele necesare din <code>knowledge/</code>.',
     'full.commands.generateDesign':
-      'Colecteaza interactiv brief-ul, Figma project URL, referinte, Design System, brand assets, icon library si Pexels API key, apoi genereaza UI in Figma.',
+      'Noua etape si patru porti de aprobare: brief, cercetare (concurenti, ton, referinte), fundatii (paleta, fonturi, iconite, apoi Variables si Text Styles), planul de blocuri si textele, 2-3 concepte, apoi un ciclu de constructie pentru fiecare element cu lint, verificarea layout-ului si screenshot-uri. Pastreaza statusul, Design Direction si jurnalul deciziilor in <code>.wpaikit/</code>.',
     'full.commands.designQuality':
-      'Verifica brief-ul sau Figma frames pentru category reflex, banned patterns, strategie de culoare, register consistency, theme logic, typography si layout rhythm.',
+      'Verifica un brief (fara URL) sau Figma frames (cu URL): potrivirea cu scopul, originalitatea, coerenta si defectele vizibile. Foloseste screenshot-uri si un lint read-only; fiecare problema are impactul si cea mai mica corectie utila.',
     'full.commands.wcagDesignTest':
       'Verifica un Figma frame dupa WCAG 2.2 si pune langa el un raport: snapshot cu pini numerotati, carduri cu corectii calculate si adnotari pe straturile cu probleme. Designul nu se modifica.',
     'full.commands.analyzeFigma':
