@@ -14,8 +14,6 @@ Use five pages. Create the missing ones at stage 0, after the designer confirms.
 | Design System | Token and component documentation | Built by /figma-design-system with knowledge/design/rules/design-system-layout.md. /generate-design only reserves the page |
 | Flows | Maps of user scenarios | Only when the designer asks for scenario maps. Static snapshots, not a prototype |
 
-Prototype keyframes stay on Final Design next to the element they animate.
-
 ## Records
 
 All records live in `.wpaikit/` in the client project folder:
@@ -48,14 +46,12 @@ All records live in `.wpaikit/` in the client project folder:
   "textStyles": { "Heading/display": "S:f10aaf…," },
   "effectStyles": { "Elevation/overlay": "S:c5ded8…," },
   "images": { "hero.loaf": "imageHash" },
-  "flows": { "Hero intro": { "start": "91:258", "frames": ["91:258", "103:258"] } },
   "provisional": ["Heading/hero"]
 }
 ```
 
 - Write every ID a `use_figma` call returns into the ledger in the same cycle. Never reconstruct an ID from memory or from a screenshot.
 - Keys are stable semantic names (`page.section`), not layer names, which change.
-- Transition timings of flows go to `design-direction.md`; the ledger keeps only the frame IDs.
 - When an ID is not found, look the node up by name with a read-only call, then fix the ledger.
 
 ### Resuming after a break or context compaction
@@ -84,12 +80,11 @@ Then confirm the current item's nodes with one read-only `use_figma` call.
 
 - **Tokens.** Bind fills, strokes, radii, spacing, and text to the approved Variables and Text Styles.
 - **Names.** Keep semantic section and layer names compatible with knowledge/shared/rules/figma-blocks.md. Never overwrite existing frames; build next to them.
-- **Components first.** Reuse existing components. Turn the chosen concept's header, buttons, cards and icons into components, then build pages from instances. Buttons get their full state set (default, hover, pressed, focus, disabled, loading) and their motion (motion.md) before the first section. Never draw a button as a plain frame on a page. When a drawn pattern appears a second time, make it a component and replace the first copy with an instance.
+- **Components first.** Reuse existing components. Turn the chosen concept's header, buttons, cards and icons into components, then build pages from instances. Buttons get their full state set (default, hover, pressed, focus, disabled, loading) before the first section. Never draw a button as a plain frame on a page. When a drawn pattern appears a second time, make it a component and replace the first copy with an instance.
 - **Cards.** In a row, image tops, titles and footers align. The card fills the row height, and the footer (price, action) is pinned to the bottom.
 - **States.** Include the states that matter on the primary path: focus (a visible ring, 3:1 against its surroundings), hover or active, loading, error, success, empty, disabled. Build the states an item owns together with it, for example a form with its invalid, sending, sent and error states, on desktop and mobile. Document behavior a static frame cannot show.
-- **Motion.** Follow knowledge/design/rules/motion.md: decide whether it animates and why, keep to the budgets and named curves, agree on options before building keyframes, and record every animation in the motion spec.
 - **Mobile.** Adapt after the desktop direction is stable. Recompose rather than stack mechanically, and keep every function and content priority. Check that every element the desktop block promises is still visible (for example all products in a hero composition), that no button is clipped, and that hover-only features have a tap equivalent with a visible affordance. Inspect mobile screenshots separately.
-- **Clean-up.** Before moving frames between pages, list what the chosen elements depend on: keyframe frames of prototype animations, component sources, flow starting points. Those stay on Final Design. Moving frames between pages drops their prototype reactions, so after any move re-check reactions and flows, and restore them from the recorded timings.
+- **Clean-up.** Before moving frames between pages, list what the chosen elements depend on, such as component sources. Those stay on Final Design.
 - **Bulk changes.** Do not replace or restyle nodes by layer name alone: names lie (a layer named `Icon/plus` may hold a clock). Match by structure (type and children) and size, choose a variant by meaning when several share a structure, and check a screenshot of each replaced type.
 
 ## Known Plugin API pitfalls
@@ -112,6 +107,5 @@ These caused most of the defects that lint and screenshots caught in practice. A
 | Changes to an instance sublayer fail | Sublayers of an instance (`I…;…`) cannot be cloned or moved | Change component properties or the main component; detach only when the designer agrees |
 | A hidden layer in a component cannot be turned on in instances | Visibility is not exposed | Add a BOOLEAN component property and bind it to `visible` |
 | A group moves after `figma.group()` | The group takes the bounds of its children | Read the intended x and y before grouping and set them on the group afterwards |
-| Prototype animations stop after moving frames | Reactions are dropped when frames move between pages | Re-apply reactions from the recorded timings and check `flowStartingPoints` |
 | An export fails or is cut | Exported images are limited to 4096 px; clones can lose image fills on export | Use `scale = min(wanted, 4000 / height)`; export the original node, reached from another page with `getNodeByIdAsync` |
 | A script fails with a code size error | Inline vector paths or data exceed the script limit | Split the data or upload the asset (knowledge/design/rules/imagery-and-icons.md, Large vector art) |

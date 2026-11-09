@@ -34,9 +34,9 @@ Nine stages, four gates. A gate is a stop: present a proposal and wait for an ex
 | 3 Foundations | Palette, fonts, locks, icons, board → **Gate B** → Variables and Text Styles | foundations, typography-and-fonts, imagery-and-icons, anti-slop |
 | 4 Structure and copy | Block plan and copy deck → **Gate C** → status file | copy-and-tone, commerce (stores), project-status |
 | 5 Concepts | 2–3 concepts on Ideas → **Gate D** → Design Direction and decision log | design-direction, anti-slop, imagery-and-icons, figma-lint |
-| 6 Build | One cycle per status item, page by page | figma-build, project-status, motion, imagery-and-icons, figma-lint, visual-qa |
+| 6 Build | One cycle per status item, page by page | figma-build, project-status, imagery-and-icons, figma-lint, visual-qa |
 | 7 Verify | Lint, screenshots, critique, fixes | figma-lint, visual-qa, design-quality-check (design mode) |
-| 8 Handoff | Links, records, motion spec, open items, handoff note | design-direction, figma-build, motion |
+| 8 Handoff | Links, records, open items, handoff note | design-direction, figma-build |
 
 Rule files, read each when its stage starts:
 
@@ -52,7 +52,6 @@ Rule files, read each when its stage starts:
 - knowledge/design/rules/visual-qa.md
 - knowledge/design/rules/figma-lint.md
 - knowledge/design/rules/commerce.md
-- knowledge/design/rules/motion.md
 
 The quality check is in knowledge/design/skills/design-quality-check/SKILL.md.
 
@@ -119,8 +118,7 @@ After approval, create the approved Variables and Text Styles (foundations.md, "
 - **Header and footer are decisions, not fixed rows.** For each, describe the job and the content: navigation, catalog entry, search, cart, language, contacts, delivery info. The visual pattern is explored in the concepts. For stores, catalog entry, search and cart are required.
 - **Block plan.** Present a page-by-page block plan. Mark each block as required (by the brief or product type), proposed, or optional. For each, give its job (attract, explain, prove, compare, prompt action), main content, action, and contribution to usability, sales or task completion, and rhythm. Invite the designer to add, remove, or reorder. If a requested block seems harmful or redundant, explain the concern and a viable alternative rather than silently omitting it.
 - **Stores.** Apply knowledge/design/rules/commerce.md. A gallery and a catalog link do not replace a product shopping block.
-- **Utility pieces.** Add, from the start, what pages need besides blocks, and mark what is in scope: button and link states with motion; card states (hover, in cart, sold out, favourite, skeleton); form states (invalid, sending, sent, send error); header states (sticky, menu, search, cart badge); overlays (mini cart, option pickers, toasts, cookie consent); empty states, 404, back to top; mobile versions of all of these.
-- **SEO.** If SEO matters, suggest running /figma-seo-structure before the block plan is final.
+- **Utility pieces.** Add, from the start, what pages need besides blocks, and mark what is in scope: button and link states; card states (hover, in cart, sold out, favourite, skeleton); form states (invalid, sending, sent, send error); header states (sticky, menu, search, cart badge); overlays (mini cart, option pickers, toasts, cookie consent); empty states, 404, back to top; mobile versions of all of these.
 - **Copy deck.** Write the key copy per knowledge/design/rules/copy-and-tone.md: hero, section headlines, CTAs, offer, form labels. Use the approved tone and the competitor matrix, and run the originality check. Never invent testimonials, names, logos, or statistics as facts. Mark proof slots that need real data.
 - **Store demo data.** For a store without a catalog, generate representative products with plausible prices in the agreed currency and mark them as demo data.
 
@@ -144,7 +142,7 @@ Screenshot each concept, fix clipping and unreadable text, and run the reflex ch
 
 ## 6. Build
 
-Stage 6 repeats one cycle for each item in `.wpaikit/status.md`: page blocks, utility pieces, then mobile. Most of a design run happens here, so follow the cycle for every item, including small fixes that become new items. Before the first cycle, read "Building" in knowledge/design/rules/figma-build.md: components first (buttons with all states), cards, states, motion, mobile, clean-up.
+Stage 6 repeats one cycle for each item in `.wpaikit/status.md`: page blocks, utility pieces, then mobile. Most of a design run happens here, so follow the cycle for every item, including small fixes that become new items. Before the first cycle, read "Building" in knowledge/design/rules/figma-build.md: components first (buttons with all states), cards, states, mobile, clean-up.
 
 ### The cycle
 
@@ -153,7 +151,7 @@ Stage 6 repeats one cycle for each item in `.wpaikit/status.md`: page blocks, ut
 3. **Build.** Build in manageable sections, never a long page in one opaque call. Use instances; a pattern drawn a second time becomes a component. Build the states the item owns together with it. Keep page-wide rhythm and vary composition where content warrants it (visual-qa.md, Composition).
 4. **Check.** Run the lint and the layout check (figma-lint.md, `scripts/layout-lint.js`) on the new section, then take a screenshot and apply visual-qa.md. Fix and check again. Show the designer only checked work.
 5. **Present.** Present variants with a recommendation and wait for the choice. Present a direct build when the designer asked for block-by-block control, or at a checkpoint: after the hero, after each page, after each group of utility pieces. Otherwise continue. Mark presented items `review`.
-6. **Place.** Apply the requested adjustments, move the chosen variant to Final Design and the others to Archive, keeping prototype dependencies (figma-build.md, Clean-up). Re-run step 4 if the placed section changed.
+6. **Place.** Apply the requested adjustments, move the chosen variant to Final Design and the others to Archive, keeping their dependencies (figma-build.md, Clean-up). Re-run step 4 if the placed section changed.
 7. **Record.** Append the decision to `decision-log.md` (what was shown, chosen and rejected, the designer's words). Then rewrite the affected rules in `design-direction.md`, Global or the page subsection, so it states what applies now. Add the new node IDs to the ledger.
 8. **Update status.** Mark the item `done` (approved), `review`, `deferred`, or `waiting client`; add items the designer introduced; show the next two or three open items.
 
@@ -171,7 +169,6 @@ After the first page, every new page type (for example catalog, product, checkou
 - **Images.** Generate final images with the approved treatment; label placeholders and generated images honestly.
 - **Icons.** Insert icons from the approved set as vectors via Iconify. Animated icons are a static frame plus an annotation (imagery-and-icons.md).
 - **Pattern inspiration** (21st.dev or similar): at most one or two patterns per project, translated into the spine's grammar.
-- **Motion:** gate every animation by frequency and purpose, keep to the budgets and named curves, and add it to the motion spec (knowledge/design/rules/motion.md). Hover effects are frequent and stay fast and quiet; hero and success moments may be richer.
 - **States, mobile, clean-up, bulk changes:** follow figma-build.md, Building.
 - **Screenshots and Figma calls:** follow figma-build.md, Working practice. If a call fails without an obvious reason, check its Plugin API pitfalls.
 
@@ -183,7 +180,7 @@ After the first page, every new page type (for example catalog, product, checkou
 4. Fix Critical and high-impact Important findings, re-run the lint, and inspect fresh screenshots. Do not silently replace the chosen concept while fixing.
 5. Check the status file: every in-scope item is `done`, `deferred`, or `waiting client`. Report items still in `todo` or `review`.
 
-Report anything that could not be verified. A static Figma screenshot does not prove keyboard, screen-reader, zoom, or animation behavior. The agent cannot play prototypes in Present mode: name each prototype flow the designer should play, with what it should show.
+Report anything that could not be verified. A static Figma screenshot does not prove keyboard, screen-reader, or zoom behavior.
 
 Afterwards, offer optional refinement passes by name, without running them unasked: bolder, quieter, distill, clarify copy, polish (design-quality-check, Refinement passes).
 
@@ -193,8 +190,7 @@ Finish with:
 
 - links to Final Design sections and the Ideas and Archive pages;
 - the updated `design-direction.md`, `decision-log.md`, `copy-deck.md`, `status.md` and ledger;
-- the motion spec from the Design Direction, with the prototype flows the designer should play;
-- a mock inventory: for each distinctive ingredient (hero composition, signature motifs, imagery, icons, animated elements), how it should be implemented and what must not be lost;
+- a mock inventory: for each distinctive ingredient (hero composition, signature motifs, imagery, icons), how it should be implemented and what must not be lost;
 - open items from the status file (deferred and waiting client), plus draft copy, demo products, proof slots, generated images that need real photos, font licenses the client must obtain;
 - the checks performed and browser-only checks pending;
 - a handoff note in `.wpaikit/project.md`: where the records are, the Figma file and page IDs, what is approved, a pointer to the status file, and the working rules agreed with the designer. Do not write it into `CLAUDE.md` or `AGENTS.md` when WPAIKit manages them.

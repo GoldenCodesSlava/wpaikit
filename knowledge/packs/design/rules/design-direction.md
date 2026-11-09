@@ -31,8 +31,7 @@ Create it after gate D. Write each entry as a rule, not a story: "Product cards:
 - **Chosen concept (gate D):** a one-sentence idea; its axes (hero scale, composition anchor, background mode, density, image priority, header pattern, card treatment, radius system); elements borrowed from other concepts; the frame link.
 - **Visual language:** composition principle, typographic character, shape and material rules, signature motif or "second-read" moment if any. Reference the actual Figma tokens.
 - **Components:** each shared component with its variants, states and usage rules, for example "Button: primary for one action per screen; drop-fill hover, no movement".
-- **Interaction and motion:** primary path, essential states, and the motion spec table with one row per kind of animated element, plus the elements gated out and why (knowledge/design/rules/motion.md, Motion spec); behavior to verify in the browser.
-- **Prototype flows:** for each animation built in Figma, the flow name, the keyframe frame IDs in order, and each transition's delay, duration and easing. This is what lets reactions be restored after frames move.
+- **Interaction:** primary path, essential states, and behavior to verify in the browser.
 - **Responsive intent:** requested breakpoints and how priorities or composition change; what replaces hover on touch.
 - **Content voice:** a pointer to the tone profile in `.wpaikit/design-brief.md` and to `.wpaikit/copy-deck.md`; claims that require confirmation.
 - **Provisional tokens:** Variables or Text Styles added after gate B, each with its approval status.
@@ -63,10 +62,10 @@ Append one entry per decision, in the same cycle as the decision (generate-desig
 ```markdown
 ### 12 · 2026-10-31 · Home — Bread process
 - Shown: BP1 «Раскрытие буханки» (101:1), BP2 «Нарезка» (101:2), BP3 «Слои» (101:3)
-- Chosen: BP1, with a softer animation and a product card on hover over a slice
+- Chosen: BP1, with a product card on hover over a slice
 - Designer: «Шаги не нужно привязывать к кускам»
 - Rejected: BP2, BP3 — moved to Archive
-- Changed in the Design Direction: Pages › Home › Bread process; Global › Prototype flows
+- Changed in the Design Direction: Pages › Home › Bread process
 - Tokens: none
 ```
 

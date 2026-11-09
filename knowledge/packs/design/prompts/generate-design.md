@@ -65,7 +65,7 @@ Every gate uses the gate format:
 - Record the chosen direction, borrowed elements and the final shape lock in `.wpaikit/design-direction.md`, and the gate decisions in `.wpaikit/decision-log.md`. The chosen concept moves to Final Design, the others to Archive.
 
 ### Stage 6 — Build
-- First read "Building" in `knowledge/design/rules/figma-build.md`: components first (buttons with all states), cards, states, motion, mobile, clean-up.
+- First read "Building" in `knowledge/design/rules/figma-build.md`: components first (buttons with all states), cards, states, mobile, clean-up.
 - Then repeat one cycle per item in the status file:
   1. pick the next item and mark it `in progress`;
   2. make 2–3 variants on Ideas (each with a 375 px note and a tap equivalent for hover), or build directly when the direction settles the pattern;
@@ -77,7 +77,6 @@ Every gate uses the gate format:
   8. update the status file and show the next 2–3 open items.
 - Each new page type starts with 2–3 layout variants built from existing components. Paired pages (for example two catalogs) keep the same block structure unless the content differs. Mobile is adapted for a group of approved pages in one pass.
 - Iconify vectors; final images with the approved treatment.
-- Motion (`knowledge/design/rules/motion.md`): animate only what passes the frequency and purpose gate; hover stays fast and quiet; keep to the budgets (interface under 300 ms) and named curves, never ease-in; agree on options with a disposable live preview where possible, then build keyframes for the chosen one; record each animation in the motion spec with its reduced-motion variant.
 - Mobile only if requested; mobile items go through the same cycle.
 - Screenshots: the changed section at reduced size; full page only at checkpoints. Keep the Plugin API pitfalls from figma-build.md in mind.
 
@@ -86,8 +85,7 @@ Every gate uses the gate format:
 - Fix and re-check. Report status items still in `todo` or `review`. Offer optional refinement passes.
 
 ### Stage 8 — Handoff
-- Links, records, motion spec, mock inventory, open items, and pending browser checks.
-- Prototype flows the designer must play in Present mode.
+- Links, records, mock inventory, open items, and pending browser checks.
 - A handoff note for the next session in `.wpaikit/project.md`, pointing to the status file.
 
 ## Constraints

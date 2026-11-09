@@ -113,12 +113,9 @@ Self-check: replace the brand name with a competitor's. If the sentence still wo
 
 Compare generated copy with the captured competitor texts (knowledge/design/rules/research-references.md). Rewrite any sentence that shares a distinctive run of 6 or more words with a competitor, or that copies a competitor's slogan or recognizable structure.
 
-## 7. Copy status and SEO coordination
+## 7. Copy status
 
 Keep a copy deck in `.wpaikit/copy-deck.md`: page → section → text, each marked `approved` (supplied or confirmed by the designer) or `draft`. Add a Figma annotation "Copy: draft" or "Copy: approved" on each section frame. Layer names stay semantic and carry no status (knowledge/shared/rules/figma-blocks.md).
-
-- If SEO matters for the project, run /figma-seo-structure before the block plan is fixed.
-- /figma-seo-texts replaces `draft` copy and must ask before changing `approved` copy.
 
 ---
 Sources: NN/g "Tone of Voice Dimensions", Apple HIG Writing, Microsoft Writing Style Guide, Mailchimp Content Style Guide, GOV.UK style guide. Parts adapted from Impeccable (Apache-2.0).
